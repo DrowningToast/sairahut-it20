@@ -1,0 +1,21 @@
+{
+    "name": "database",
+    "version": "0.0.0",
+    "dependencies": {
+        "@prisma/client": "latest",
+        "dotenv-cli": "^7.2.1",
+        "env": "workspace:*",
+        "zod-prisma-types": "^2.7.4"
+    },
+    "scripts": {
+        "init": "prisma init",
+        "pg:push": "dotenv -e ../../.env -- prisma db push",
+        "pg:generate": " dotenv -e ../../.env -- prisma generate",
+        "studio": "dotenv -e ../../.env -- prisma studio"
+    },
+    "devDependencies": {
+        "prisma": "^4.16.2"
+    },
+    "main": "./index.ts",
+    "types": "./index.ts"
+}
