@@ -8,8 +8,16 @@
 		"resolveJsonModule": true,
 		"skipLibCheck": true,
 		"sourceMap": true,
-		"strict": true
-	}
+		"strict": true,
+		"rootDir": "./"
+	},
+	"exclude": [
+		"./node_modules/**",
+		"./.svelte-kit/[!ambient.d.ts]**",
+		"./src/service-worker.js",
+		"./src/service-worker.ts",
+		"./src/service-worker.d.ts"
+	]
 	// Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias
 	//
 	// If you want to overwrite includes/excludes, make sure to copy over the relevant includes/excludes

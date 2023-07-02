@@ -23,6 +23,9 @@
     },
     "pg:generate": {
       "cache": false
+    },
+    "db:studio": {
+      "cache": true
     }
   }
 }

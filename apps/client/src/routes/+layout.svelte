@@ -1,18 +1,15 @@
 <script>
-	import "../app.postcss";
-  	import CreditFooter from "../components/CreditFooter.svelte";
-    import Header from '../components/Header.svelte';
-    import './styles.css';
+	import Header from '$components/svelte/Header.svelte';
+	import LandingFooter from '$components/svelte/LandingFooter.svelte';
+	import '../app.postcss';
 </script>
 
 <div class="w-full min-h-screen flex flex-col">
-	<Header>
-	</Header>
+	<Header />
 
 	<main>
-		<slot></slot>
+		<slot />
 	</main>
 
-	<CreditFooter/>
+	<LandingFooter />
 </div>
-

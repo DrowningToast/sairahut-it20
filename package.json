@@ -6,7 +6,8 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "db:push": "turbo run pg:push",
-    "db:generate": "turbo run pg:generate"
+    "db:generate": "turbo run pg:generate",
+    "studio": "turbo run db:studio"
   },
   "devDependencies": {
     "@turbo/gen": "^1.9.7",
