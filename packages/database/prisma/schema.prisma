@@ -40,16 +40,45 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  create_at DateTime @default(now())
+  update_at DateTime @default(now()) @updatedAt
+}
+
+enum PlayerType {
+  // default role - cannot access shits
+  NONE
+  // Guest probably will be unused, for special occasion
+  GUEST
+  // IT21
+  FRESHMEN
+  // IT20
+  SOPHOMORE
+  // < IT19
+  SENIOR
 }
 
 model User {
-  id            String    @id @default(cuid())
+  create_at DateTime @default(now())
+  update_at DateTime @default(now()) @updatedAt
+
+  id            String    @id @unique @default(cuid())
   name          String?
   email         String?   @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
+
+  type PlayerType @default(NONE)
+
+  // เมื่อ type == SOPHOMORE
+  sophomoreDetails   SophomoreDetails? @relation(fields: [sophomoreDetailsId], references: [id])
+  sophomoreDetailsId String?           @unique
+
+  // เมื่อ type == FRESHMEN
+  freshmenDetails   FreshmenDetails? @relation(fields: [freshmenDetailsId], references: [id])
+  freshmenDetailsId String?          @unique
 }
 
 model VerificationToken {
@@ -58,4 +87,52 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+enum NameTitle {
+  MR
+  MRS
+}
+
+enum Branch {
+  IT
+  DSBA
+  BIT
+  AIT
+}
+
+model FreshmenDetails {
+  create_at DateTime @default(now())
+  update_at DateTime @updatedAt
+
+  id   String @id @unique @default(cuid())
+  User User?
+}
+
+model SophomoreDetails {
+  create_at DateTime @default(now())
+  update_at DateTime @updatedAt
+
+  id             String    @id @unique @default(cuid())
+  // name - surname in airtable
+  fullname       String
+  // title in airtable
+  title          NameTitle
+  // student id in airtable
+  student_id     Int
+  // nickname in airtable
+  nickname       String
+  // branch สาขา
+  branch         Branch
+  // join event in airtable
+  // ดูว่ารุ่นพี่คนนั้นประสงค์ที่จะเข้าร่วมกิจกรรมหรือไม่
+  participate    Boolean
+  // อยากมีน้อง 2 คน in airtable
+  many_fresh     Boolean
+  facebook_link  String
+  instagram_link String
+  // เบอร์โทรศัพท์
+  phone          String
+
+  User User?
 }

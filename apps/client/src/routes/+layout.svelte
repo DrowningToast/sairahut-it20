@@ -4,12 +4,12 @@
 	import '../app.postcss';
 </script>
 
-<div class="w-full min-h-screen flex flex-col">
-	<Header />
+<div class="w-full min-h-screen flex flex-col font-noto">
+	<!-- <Header /> -->
 
 	<main>
 		<slot />
 	</main>
 
-	<LandingFooter />
+	<!-- <LandingFooter /> -->
 </div>

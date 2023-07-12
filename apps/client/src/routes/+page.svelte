@@ -1,26 +1,33 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import DynamicLoginButton from '$components/svelte/DynamicLoginButton.svelte';
+	import LandingFooter from '$components/svelte/LandingFooter.svelte';
 	import LoginButton from '$components/svelte/LoginButton.svelte';
+	import LogoutButton from '$components/svelte/LogoutButton.svelte';
+	import Button from '$components/ui/button/Button.svelte';
+	import { AuthController } from '$lib/auth/AuthController';
 	import { trpc } from '$lib/trpc/client';
-
-	let greeting = 'press the button to load data';
-	let loading = false;
 
 	const loadData = async () => {
 		console.log('bruh moment');
-		loading = true;
-		greeting = await trpc($page).greeting.query();
-		loading = false;
+		await trpc($page).greeting.query();
 	};
+
+	const { isSignedIn } = AuthController($page);
+
+	$: console.log($page.data.session);
 </script>
 
-<a
-	href="#load"
-	role="button"
-	class="secondary"
-	aria-busy={loading}
-	on:click|preventDefault={loadData}>Load</a
->
-<p>{greeting}</p>
+<div class="min-h-screen flex flex-col">
+	<div class="px-8 py-16 md:px-16 md:py-24 flex flex-col gap-y-4">
+		<h1 class="text-5xl font-semibold">IT Sairahut</h1>
+		<p>
+			Lorem, ipsum dolor sit amet consectetur adipisicing elit. Labore corrupti, dolorum neque nulla
+			voluptas a veniam quisquam illum et, consequatur repudiandae, libero saepe dolores ad? Commodi
+			earum dignissimos incidunt minima?
+		</p>
+		<DynamicLoginButton />
+	</div>
 
-<LoginButton />
+	<LandingFooter />
+</div>

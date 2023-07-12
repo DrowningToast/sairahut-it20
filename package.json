@@ -6,6 +6,7 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "db:push": "turbo run pg:push",
+    "db:force-push": "turbo run pg:force-push",
     "db:generate": "turbo run pg:generate",
     "studio": "turbo run db:studio"
   },

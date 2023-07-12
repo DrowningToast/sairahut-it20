@@ -1,33 +1,29 @@
 <script lang="ts">
-	import type { VariantProps } from "class-variance-authority";
-	import type {
-		HTMLAnchorAttributes,
-		HTMLButtonAttributes
-	} from "svelte/elements";
-	import { cn } from "$lib/utils";
-	import { buttonVariants } from ".";
+	import type { VariantProps } from 'class-variance-authority';
+	import type { HTMLAnchorAttributes, HTMLButtonAttributes } from 'svelte/elements';
+	import { cn } from '$lib/utils';
+	import { buttonVariants } from '.';
 
 	let className: string | undefined | null = undefined;
 	export { className as class };
-	export let href: HTMLAnchorAttributes["href"] = undefined;
-	export let type: HTMLButtonAttributes["type"] = undefined;
-	export let variant: VariantProps<typeof buttonVariants>["variant"] =
-		"default";
-	export let size: VariantProps<typeof buttonVariants>["size"] = "default";
+	export let href: HTMLAnchorAttributes['href'] = undefined;
+	export let type: HTMLButtonAttributes['type'] = undefined;
+	export let variant: VariantProps<typeof buttonVariants>['variant'] = 'default';
+	export let size: VariantProps<typeof buttonVariants>['size'] = 'default';
 
 	type Props = {
 		class?: string | null;
-		variant?: VariantProps<typeof buttonVariants>["variant"];
-		size?: VariantProps<typeof buttonVariants>["size"];
+		variant?: VariantProps<typeof buttonVariants>['variant'];
+		size?: VariantProps<typeof buttonVariants>['size'];
 	};
 
 	interface AnchorElement extends Props, HTMLAnchorAttributes {
-		href?: HTMLAnchorAttributes["href"];
+		href?: HTMLAnchorAttributes['href'];
 		type?: never;
 	}
 
 	interface ButtonElement extends Props, HTMLButtonAttributes {
-		type?: HTMLButtonAttributes["type"];
+		type?: HTMLButtonAttributes['type'];
 		href?: never;
 	}
 
@@ -35,10 +31,13 @@
 </script>
 
 <svelte:element
-	this={href ? "a" : "button"}
+	this={href ? 'a' : 'button'}
 	type={href ? undefined : type}
 	{href}
-	class={cn(buttonVariants({ variant, size, className }))}
+	class={cn(
+		buttonVariants({ variant, size, className }),
+		'px-2 py-2 inline-block justify-center gap-x-2 w-48 md:w-64 lg:w-80'
+	)}
 	{...$$restProps}
 	on:click
 	on:change

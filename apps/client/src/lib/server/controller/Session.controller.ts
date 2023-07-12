@@ -1,3 +1,0 @@
-const SessionController = () => {
-	return {};
-};
