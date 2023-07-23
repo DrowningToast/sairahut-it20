@@ -1,8 +1,5 @@
 import type { Context } from '$lib/trpc/context';
-import type { RequestEvent } from '@sveltejs/kit';
 import { TRPCError, initTRPC } from '@trpc/server';
-import type { PrismaClient } from 'database';
-import delay from 'delay';
 import superjson from 'superjson';
 import type { routers } from './router/routers';
 
@@ -30,3 +27,5 @@ const enforcedAuth = t.middleware(({ ctx, next }) => {
 export const protectedProcedure = t.procedure.use(enforcedAuth);
 
 export type Routers = typeof routers;
+
+export const createTRPCRouter = t.router;

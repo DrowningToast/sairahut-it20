@@ -7,10 +7,10 @@
 	import Button from '$components/ui/button/Button.svelte';
 	import { AuthController } from '$lib/auth/AuthController';
 	import { trpc } from '$lib/trpc/client';
+	import { onMount } from 'svelte';
 
 	const loadData = async () => {
-		console.log('bruh moment');
-		await trpc($page).greeting.query();
+		await trpc($page).example.greeting.query();
 	};
 
 	const { isSignedIn } = AuthController($page);
@@ -26,6 +26,7 @@
 			voluptas a veniam quisquam illum et, consequatur repudiandae, libero saepe dolores ad? Commodi
 			earum dignissimos incidunt minima?
 		</p>
+		<button on:click={loadData}> test </button>
 		<DynamicLoginButton />
 	</div>
 

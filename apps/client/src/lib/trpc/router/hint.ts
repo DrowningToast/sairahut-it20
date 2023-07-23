@@ -1,5 +1,4 @@
-import { protectedProcedure } from '../procedure';
-import { createTRPCRouter } from './routers';
+import { createTRPCRouter, protectedProcedure } from '../procedure';
 import { z } from 'zod';
 
 export const hintRouter = createTRPCRouter({

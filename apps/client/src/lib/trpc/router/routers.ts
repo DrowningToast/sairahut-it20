@@ -1,10 +1,8 @@
-import { t } from '../procedure';
-import { exampleRouter } from './example';
+import { createTRPCRouter, t } from '../procedure';
 import { hintRouter } from './hint';
-
-export const createTRPCRouter = t.router;
+import { exampleRouter } from './example';
 
 export const routers = createTRPCRouter({
-	exampleRouter,
-	hintRouter
+	example: exampleRouter,
+	hint: hintRouter
 });
