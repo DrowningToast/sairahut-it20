@@ -163,7 +163,10 @@ model FreshmenDetails {
 
   thisOrThat ThisOrThat[]
 
+  // Passcodes that have been used
   usedPasscodes PasscodeInstances[]
+
+  // QR Codes that have been scanned
   scannedQRs    QRInstances[]
 }
 
@@ -196,6 +199,9 @@ model SophomoreDetails {
   phone          String
 
   User              User?
+
+  // QR instances that have been created
   QRInstances       QRInstances[]
+  // Passcode instances that have been created
   PasscodeInstances PasscodeInstances[]
 }
