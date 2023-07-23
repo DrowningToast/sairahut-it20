@@ -101,17 +101,26 @@ enum Branch {
   AIT
 }
 
+enum ThisOrThat {
+  LEFT
+  RIGHT
+}
+
 model FreshmenDetails {
   create_at DateTime @default(now())
   update_at DateTime @updatedAt
 
   id   String @id @unique @default(cuid())
   User User?
+
+  thisOrThat ThisOrThat[]
 }
 
 model SophomoreDetails {
   create_at DateTime @default(now())
   update_at DateTime @updatedAt
+
+  thisOrThat ThisOrThat[]
 
   id             String    @id @unique @default(cuid())
   // name - surname in airtable
