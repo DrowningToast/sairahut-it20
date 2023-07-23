@@ -1,7 +1,10 @@
 import type { Context } from '$lib/trpc/context';
-import { initTRPC } from '@trpc/server';
+import type { RequestEvent } from '@sveltejs/kit';
+import { TRPCError, initTRPC } from '@trpc/server';
+import type { PrismaClient } from 'database';
 import delay from 'delay';
 import superjson from 'superjson';
+import type { routers } from './router/routers';
 
 export const t = initTRPC.context<Context>().create({
 	transformer: superjson,
@@ -10,15 +13,20 @@ export const t = initTRPC.context<Context>().create({
 	}
 });
 
-export const createTRPCRouter = t.router;
-
 export const publicProcedure = t.procedure;
 
-export const router = t.router({
-	greeting: t.procedure.query(async () => {
-		await delay(500); // 👈 simulate an expensive operation
-		return `Hello tRPC v10 @ ${new Date().toLocaleTimeString()}`;
-	})
+const enforcedAuth = t.middleware(({ ctx, next }) => {
+	const { user } = ctx;
+
+	if (!user) {
+		throw new TRPCError({ code: 'UNAUTHORIZED' });
+	}
+
+	return next({
+		ctx
+	});
 });
 
-export type Router = typeof router;
+export const protectedProcedure = t.procedure.use(enforcedAuth);
+
+export type Routers = typeof routers;
