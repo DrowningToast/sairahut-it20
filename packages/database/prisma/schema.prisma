@@ -81,8 +81,8 @@ model User {
   freshmenDetailsId String?          @unique
 
   balance    Int       @default(0)
-  Factions   Factions? @relation(fields: [factionsId], references: [id])
-  factionsId String?
+  faction   Factions? @relation(fields: [factionId], references: [id])
+  factionId String?
 }
 
 model VerificationToken {
