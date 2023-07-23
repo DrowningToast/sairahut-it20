@@ -80,7 +80,9 @@ model User {
   freshmenDetails   FreshmenDetails? @relation(fields: [freshmenDetailsId], references: [id])
   freshmenDetailsId String?          @unique
 
-  balance Int @default(0)
+  balance    Int       @default(0)
+  Factions   Factions? @relation(fields: [factionsId], references: [id])
+  factionsId String?
 }
 
 model VerificationToken {
@@ -123,6 +125,29 @@ model QRInstances {
   ownerId String
 }
 
+model PasscodeInstances {
+  id String @id @unique @default(uuid())
+
+  create_at DateTime @default(now())
+  update_at DateTime @default(now()) @updatedAt
+
+  usedBy   FreshmenDetails? @relation(fields: [usedById], references: [id])
+  usedById String?
+
+  owner   SophomoreDetails @relation(fields: [ownerId], references: [id])
+  ownerId String
+}
+
+model Factions {
+  id      String @id @unique @default(cuid())
+  // Display Name
+  name    String
+  // Short Name eg. HU, AL, GT
+  handler String
+
+  users User[]
+}
+
 model FreshmenDetails {
   create_at DateTime @default(now())
   update_at DateTime @updatedAt
@@ -131,7 +156,9 @@ model FreshmenDetails {
   User User?
 
   thisOrThat ThisOrThat[]
-  scannedQRs QRInstances[]
+
+  usedPasscodes PasscodeInstances[]
+  scannedQRs    QRInstances[]
 }
 
 model SophomoreDetails {
@@ -162,6 +189,7 @@ model SophomoreDetails {
   // เบอร์โทรศัพท์
   phone          String
 
-  User        User?
-  QRInstances QRInstances[]
+  User              User?
+  QRInstances       QRInstances[]
+  PasscodeInstances PasscodeInstances[]
 }
