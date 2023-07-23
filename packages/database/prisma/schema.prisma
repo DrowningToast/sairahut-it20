@@ -112,28 +112,34 @@ enum ThisOrThat {
   RIGHT
 }
 
+// One instance per one freshmen 
 model QRInstances {
   id String @id @unique @default(uuid())
 
   create_at DateTime @default(now())
   update_at DateTime @default(now()) @updatedAt
 
+  // Freshmen use this QR Code
   scannedBy   FreshmenDetails? @relation(fields: [scannedById], references: [id])
   scannedById String?
 
+  // Who is the owner of this QR Code
   owner   SophomoreDetails @relation(fields: [ownerId], references: [id])
   ownerId String
 }
 
+// One instance per one freshmen
 model PasscodeInstances {
   id String @id @unique @default(uuid())
 
   create_at DateTime @default(now())
   update_at DateTime @default(now()) @updatedAt
 
+  // Freshmen use this passcode
   usedBy   FreshmenDetails? @relation(fields: [usedById], references: [id])
   usedById String?
 
+  // Who is the owner of this Passcode
   owner   SophomoreDetails @relation(fields: [ownerId], references: [id])
   ownerId String
 }
