@@ -79,6 +79,10 @@ model User {
   // เมื่อ type == FRESHMEN
   freshmenDetails   FreshmenDetails? @relation(fields: [freshmenDetailsId], references: [id])
   freshmenDetailsId String?          @unique
+
+  balance    Int       @default(0)
+  faction   Factions? @relation(fields: [factionId], references: [id])
+  factionId String?
 }
 
 model VerificationToken {
@@ -101,17 +105,77 @@ enum Branch {
   AIT
 }
 
+enum ThisOrThat {
+  // LEFT - Left side of choices (this)
+  LEFT
+  // RIGHT - Right side of choices (that)
+  RIGHT
+}
+
+// One instance per one freshmen 
+model QRInstances {
+  id String @id @unique @default(uuid())
+
+  create_at DateTime @default(now())
+  update_at DateTime @default(now()) @updatedAt
+
+  // Freshmen use this QR Code
+  scannedBy   FreshmenDetails? @relation(fields: [scannedById], references: [id])
+  scannedById String?
+
+  // Who is the owner of this QR Code
+  owner   SophomoreDetails @relation(fields: [ownerId], references: [id])
+  ownerId String
+}
+
+// One instance per one freshmen
+model PasscodeInstances {
+  id String @id @unique @default(uuid())
+
+  create_at DateTime @default(now())
+  update_at DateTime @default(now()) @updatedAt
+
+  // Freshmen use this passcode
+  usedBy   FreshmenDetails? @relation(fields: [usedById], references: [id])
+  usedById String?
+
+  // Who is the owner of this Passcode
+  owner   SophomoreDetails @relation(fields: [ownerId], references: [id])
+  ownerId String
+}
+
+model Factions {
+  id      String @id @unique @default(cuid())
+  // Display Name
+  name    String
+  // Short Name eg. HU, AL, GT
+  handler String
+
+  users User[]
+}
+
 model FreshmenDetails {
   create_at DateTime @default(now())
   update_at DateTime @updatedAt
 
   id   String @id @unique @default(cuid())
   User User?
+
+  thisOrThat ThisOrThat[]
+
+  // Passcodes that have been used
+  usedPasscodes PasscodeInstances[]
+
+  // QR Codes that have been scanned
+  scannedQRs    QRInstances[]
 }
 
 model SophomoreDetails {
   create_at DateTime @default(now())
   update_at DateTime @updatedAt
+
+  thisOrThat ThisOrThat[]
+  hints      String[]
 
   id             String    @id @unique @default(cuid())
   // name - surname in airtable
@@ -134,5 +198,10 @@ model SophomoreDetails {
   // เบอร์โทรศัพท์
   phone          String
 
-  User User?
+  User              User?
+
+  // QR instances that have been created
+  QRInstances       QRInstances[]
+  // Passcode instances that have been created
+  PasscodeInstances PasscodeInstances[]
 }
