@@ -102,7 +102,9 @@ enum Branch {
 }
 
 enum ThisOrThat {
+  // LEFT - Left side of choices (this)
   LEFT
+  // RIGHT - Right side of choices (that)
   RIGHT
 }
 
