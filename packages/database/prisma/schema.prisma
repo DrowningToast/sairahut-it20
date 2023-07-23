@@ -123,6 +123,7 @@ model SophomoreDetails {
   update_at DateTime @updatedAt
 
   thisOrThat ThisOrThat[]
+  hints      String[]
 
   id             String    @id @unique @default(cuid())
   // name - surname in airtable
