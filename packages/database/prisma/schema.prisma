@@ -79,6 +79,8 @@ model User {
   // เมื่อ type == FRESHMEN
   freshmenDetails   FreshmenDetails? @relation(fields: [freshmenDetailsId], references: [id])
   freshmenDetailsId String?          @unique
+
+  balance Int @default(0)
 }
 
 model VerificationToken {
@@ -108,6 +110,19 @@ enum ThisOrThat {
   RIGHT
 }
 
+model QRInstances {
+  id String @id @unique @default(uuid())
+
+  create_at DateTime @default(now())
+  update_at DateTime @default(now()) @updatedAt
+
+  scannedBy   FreshmenDetails? @relation(fields: [scannedById], references: [id])
+  scannedById String?
+
+  owner   SophomoreDetails @relation(fields: [ownerId], references: [id])
+  ownerId String
+}
+
 model FreshmenDetails {
   create_at DateTime @default(now())
   update_at DateTime @updatedAt
@@ -116,6 +131,7 @@ model FreshmenDetails {
   User User?
 
   thisOrThat ThisOrThat[]
+  scannedQRs QRInstances[]
 }
 
 model SophomoreDetails {
@@ -146,5 +162,6 @@ model SophomoreDetails {
   // เบอร์โทรศัพท์
   phone          String
 
-  User User?
+  User        User?
+  QRInstances QRInstances[]
 }
