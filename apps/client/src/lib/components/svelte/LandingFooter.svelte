@@ -8,16 +8,16 @@
 	import { Heart } from 'lucide-svelte';
 </script>
 
-<footer class="mt-auto py-4 text-center">
+<footer class="mt-auto py-4 text-center bg-zinc-700">
 	<HoverCard>
-		Made with love by
+		<p class="text-yellow-200 inline">Made with ♥ by</p>
 		<HoverCardTrigger
-			href="https://github.com/sveltejs"
+			href="https://www.instagram.com/sairahut_itkmitl/"
 			target="_blank"
 			rel="noreferrer noopener"
 			class="text-blue-500 hover:underline underline-offset-4 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-black"
 		>
-			Gus
+		<p class="text-yellow-200 inline underline">IT20 Technical Team</p>
 		</HoverCardTrigger>
 		<HoverCardContent class="w-auto">
 			<div class="flex justify-between gap-x-4">
