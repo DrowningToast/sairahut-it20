@@ -2,16 +2,9 @@
 	import { page } from '$app/stores';
 	import DynamicLoginButton from '$components/svelte/DynamicLoginButton.svelte';
 	import LandingFooter from '$components/svelte/LandingFooter.svelte';
-	import LoginButton from '$components/svelte/LoginButton.svelte';
-	import LogoutButton from '$components/svelte/LogoutButton.svelte';
-	import Button from '$components/ui/button/Button.svelte';
 	import { AuthController } from '$lib/auth/AuthController';
-	import { trpc } from '$lib/trpc/client';
-	import { onMount } from 'svelte';
 
-	const loadData = async () => {
-		await trpc($page).example.greeting.query();
-	};
+	const loadData = async () => {};
 
 	const { isSignedIn } = AuthController($page);
 
