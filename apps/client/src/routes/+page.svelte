@@ -3,8 +3,12 @@
 	import DynamicLoginButton from '$components/svelte/DynamicLoginButton.svelte';
 	import LandingFooter from '$components/svelte/LandingFooter.svelte';
 	import { AuthController } from '$lib/auth/AuthController';
+	import { trpc } from '$lib/trpc';
 
-	const loadData = async () => {};
+	const loadData = async () => {
+		const response = await trpc.greet.query({ name: 'Gus' });
+		return response;
+	};
 
 	const { isSignedIn } = AuthController($page);
 
