@@ -1,10 +1,10 @@
 import { AirtableController } from '$lib/airtable-api/controller';
 import { prisma } from '$lib/serverUtils';
-import { redirect, type Handle } from '@sveltejs/kit';
-import Airtable from 'airtable';
+import { signOut } from '@auth/sveltekit/client';
+import type { Handle } from '@sveltejs/kit';
 import type { Branch } from 'database';
 
-const determineYear = (email: string) => {
+export const determineYear = (email: string) => {
 	const year = parseInt(email[0] + email[1]);
 	return year - 45;
 };
@@ -38,13 +38,14 @@ export const firstTimeMiddleware: Handle = async ({ event, resolve }) => {
 
 		// if the user IT20
 		if (gen === 20) {
+			console.log('isus');
 			// fetch the IT20 airtable
 			const res = await AirtableController.participantIT20.getParticipantByStudentId(
 				user.email.replace('@kmitl.ac.th', '')
 			);
 
 			if (!res) {
-				return redirect(307, '/unauthorized');
+				throw new Error('Email not found');
 			}
 
 			// populate the user details
@@ -68,6 +69,7 @@ export const firstTimeMiddleware: Handle = async ({ event, resolve }) => {
 						}
 					}
 				}),
+				// update user status
 				prisma.user.update({
 					where: {
 						email: user.email
@@ -83,11 +85,6 @@ export const firstTimeMiddleware: Handle = async ({ event, resolve }) => {
 		if (gen == 21) {
 			null;
 		}
-	}
-
-	// Check if the hint and this or that available
-	if (false) {
-		null;
 	}
 
 	const response = resolve(event);

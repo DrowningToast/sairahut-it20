@@ -12,7 +12,7 @@
 			studentId: 65070225
 		});
 
-		atData = response;
+		// atData = response;
 	};
 
 	const { isSignedIn } = AuthController($page);

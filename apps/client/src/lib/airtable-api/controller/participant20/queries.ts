@@ -7,6 +7,12 @@ export const getParticipantByStudentId = async (studentId: string) => {
 		})
 		.all();
 
+	if (query.length === 0) return null;
+
+	if (query[0].get('participate') !== 'ต้องการเล่นสายรหัสต่อ') {
+		return null;
+	}
+
 	const data = {
 		title: query[0].get('title') as 'นาย' | 'นางสาว',
 		studentId: query[0].get('student_id') as string,
