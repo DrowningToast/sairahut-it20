@@ -5,5 +5,5 @@ const airtable = new Airtable({
 })
 
 export const sophomoreParticipant = airtable
-    .base('appbzEGuRMvyaUfOD/tblp5dpoleZrCmClI')
+    .base('appbzEGuRMvyaUfOD')
     .table('20 - participant')

@@ -5,11 +5,14 @@
 	import { AuthController } from '$lib/auth/AuthController';
 	import { trpc } from '$lib/trpc';
 
-	let atData = null
+	$: atData = null
 
 	const loadData = async () => {
-		const response = await trpc.user.query()
-		atData = response;
+		const response = await trpc.sophomores.getParticipantByStudentId.query({
+			studentId: 65070171
+		})
+
+		atData = response
 	};
 
 	const { isSignedIn } = AuthController($page);
@@ -29,7 +32,7 @@
 		<DynamicLoginButton />
 	</div>
 
-	{$atData}
+	{JSON.stringify(atData)}
 
 	<LandingFooter />
 </div>

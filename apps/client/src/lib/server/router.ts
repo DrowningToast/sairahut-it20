@@ -2,8 +2,7 @@
 import { z } from 'zod';
 import { createRouter } from './context';
 import { publicProcedure } from './procedure';
-import { userRouters } from './routes/userRouters';
-import { sophomoreParticipant } from '$lib/airtable-api';
+import { sophomoreRouters } from './routes/sophomoreRouters';
 
 export const appRouter = createRouter({
 	greet: publicProcedure
@@ -15,16 +14,7 @@ export const appRouter = createRouter({
 		.query(({ ctx, input }) => {
 			return `Hello ${input.name}`;
 		}),
-	user: publicProcedure
-		.query(async () => {
-			const query = await sophomoreParticipant.select({
-				filterByFormula: `student id = ${65070171}`
-			}).all()
-
-			console.log('Query:', query);
-
-			return query
-		})
+	sophomores: sophomoreRouters
 });
 
 export type AppRouter = typeof appRouter;
