@@ -52,7 +52,7 @@ enum PlayerType {
   GUEST
   // IT21
   FRESHMEN
-  // IT20
+  // IT20, Senior's player
   SOPHOMORE
   // < IT19
   SENIOR
@@ -70,6 +70,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
 
+  // First timer would be NONE
   type PlayerType @default(NONE)
 
   // เมื่อ type == SOPHOMORE
@@ -80,7 +81,7 @@ model User {
   freshmenDetails   FreshmenDetails? @relation(fields: [freshmenDetailsId], references: [id])
   freshmenDetailsId String?          @unique
 
-  balance    Int       @default(0)
+  balance   Int       @default(0)
   faction   Factions? @relation(fields: [factionId], references: [id])
   factionId String?
 }
@@ -167,7 +168,7 @@ model FreshmenDetails {
   usedPasscodes PasscodeInstances[]
 
   // QR Codes that have been scanned
-  scannedQRs    QRInstances[]
+  scannedQRs QRInstances[]
 }
 
 model SophomoreDetails {
@@ -183,7 +184,7 @@ model SophomoreDetails {
   // title in airtable
   title          NameTitle
   // student id in airtable
-  student_id     Int
+  student_id     String
   // nickname in airtable
   nickname       String
   // branch สาขา
@@ -198,7 +199,7 @@ model SophomoreDetails {
   // เบอร์โทรศัพท์
   phone          String
 
-  User              User?
+  User User?
 
   // QR instances that have been created
   QRInstances       QRInstances[]

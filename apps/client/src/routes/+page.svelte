@@ -5,14 +5,14 @@
 	import { AuthController } from '$lib/auth/AuthController';
 	import { trpc } from '$lib/trpc';
 
-	$: atData = null
+	$: atData = null;
 
 	const loadData = async () => {
 		const response = await trpc.sophomores.getParticipantByStudentId.query({
-			studentId: 65070171
-		})
+			studentId: 65070225
+		});
 
-		atData = response
+		atData = response;
 	};
 
 	const { isSignedIn } = AuthController($page);

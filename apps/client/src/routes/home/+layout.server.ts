@@ -1,14 +1,12 @@
 import { redirect } from '@sveltejs/kit';
-import type { LayoutServerLoad } from '../$types';
+import type { LayoutServerLoad } from './$types';
 
-export const load: LayoutServerLoad = async (event) => {
-	const session = await event.locals.getSession();
-
-	if (!session?.user?.email) {
+export const load: LayoutServerLoad = async ({ locals }) => {
+	if (!locals.session) {
 		throw redirect(302, '/unauthorized');
 	}
 
 	return {
-		session
+		session: await locals.getSession()
 	};
 };

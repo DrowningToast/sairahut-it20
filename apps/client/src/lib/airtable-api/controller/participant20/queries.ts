@@ -1,0 +1,25 @@
+import { sophomoreParticipant } from './base';
+
+export const getParticipantByStudentId = async (studentId: string) => {
+	const query = await sophomoreParticipant
+		.select({
+			filterByFormula: `student_id = ${studentId}`
+		})
+		.all();
+
+	const data = {
+		title: query[0].get('title') as 'นาย' | 'นางสาว',
+		studentId: query[0].get('student_id') as string,
+		firstname: query[0].get('firstname') as string,
+		surname: query[0].get('surname') as string,
+		nickname: query[0].get('nickname') as string,
+		branch: query[0].get('branch'),
+		facebook_link: query[0].get('facebook_link') as string,
+		instragram_link: query[0].get('instagram_link') as string,
+		many_fresh: query[0].get('many_fresh') as boolean,
+		participate: query[0].get('participate') === 'ต้องการเล่นสายรหัสต่อ',
+		phone: query[0].get('phone') as string
+	};
+
+	return data;
+};
