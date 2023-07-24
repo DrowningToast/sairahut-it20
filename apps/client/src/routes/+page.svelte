@@ -2,15 +2,12 @@
 	import { page } from '$app/stores';
 	import DynamicLoginButton from '$components/svelte/DynamicLoginButton.svelte';
 	import LandingFooter from '$components/svelte/LandingFooter.svelte';
-	import LoginButton from '$components/svelte/LoginButton.svelte';
-	import LogoutButton from '$components/svelte/LogoutButton.svelte';
-	import Button from '$components/ui/button/Button.svelte';
 	import { AuthController } from '$lib/auth/AuthController';
-	import { trpc } from '$lib/trpc/client';
+	import { trpc } from '$lib/trpc';
 
 	const loadData = async () => {
-		console.log('bruh moment');
-		await trpc($page).greeting.query();
+		const response = await trpc.greet.query({ name: 'Gus' });
+		return response;
 	};
 
 	const { isSignedIn } = AuthController($page);
@@ -26,6 +23,7 @@
 			voluptas a veniam quisquam illum et, consequatur repudiandae, libero saepe dolores ad? Commodi
 			earum dignissimos incidunt minima?
 		</p>
+		<button on:click={loadData}> test </button>
 		<DynamicLoginButton />
 	</div>
 
