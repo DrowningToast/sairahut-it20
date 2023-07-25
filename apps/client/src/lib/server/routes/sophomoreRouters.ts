@@ -16,5 +16,10 @@ export const sophomoreRouters = createRouter({
 				studentId + ''
 			);
 			return response;
+		}),
+	submitThisOrThat: protectedProcedure
+		.input(z.array(z.string()))
+		.mutation(({ ctx }) => {
+			return
 		})
 });
