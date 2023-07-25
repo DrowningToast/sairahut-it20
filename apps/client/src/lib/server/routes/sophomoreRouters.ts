@@ -21,5 +21,10 @@ export const sophomoreRouters = createRouter({
 		.input(z.array(z.string()))
 		.mutation(({ ctx }) => {
 			return
+		}),
+	submitHints: protectedProcedure
+		.input(z.array(z.string()))
+		.mutation(({ ctx }) => {
+			return
 		})
 });
