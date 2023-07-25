@@ -1,6 +1,5 @@
 import { AirtableController } from '$lib/airtable-api/controller';
 import { prisma } from '$lib/serverUtils';
-import { signOut } from '@auth/sveltekit/client';
 import type { Handle } from '@sveltejs/kit';
 import type { Branch } from 'database';
 
