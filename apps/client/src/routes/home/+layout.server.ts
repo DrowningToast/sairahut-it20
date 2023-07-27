@@ -1,6 +1,6 @@
 import { redirect } from '@sveltejs/kit';
 import type { LayoutServerLoad } from './$types';
-
+import type { SophomoreDetails } from 'database';
 export const load: LayoutServerLoad = async ({ locals }) => {
 	const { user, session } = locals;
 
@@ -10,7 +10,7 @@ export const load: LayoutServerLoad = async ({ locals }) => {
 	}
 
 	// Check if the hints are ready?
-	if (user?.type === 'SOPHOMORE' && !user.sophomoreDetails?.hints.length) {
+	if (user?.type === 'SOPHOMORE' && !user.sophomoreDetails) {
 		throw redirect(307, '/hints');
 	}
 
