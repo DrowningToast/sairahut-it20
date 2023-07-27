@@ -1,7 +1,15 @@
 // See https://kit.svelte.dev/docs/types#app
 
 import type { Session } from '@auth/core/types';
-import type { Factions, FreshmenDetails, Prisma, SophomoreDetails, User } from 'database';
+import type {
+	Factions,
+	FreshmenDetails,
+	HintSlugs,
+	Hints,
+	Prisma,
+	SophomoreDetails,
+	User
+} from 'database';
 
 // for information about these interfaces
 declare global {
@@ -12,7 +20,14 @@ declare global {
 			user:
 				| (User & {
 						faction?: Factions | null;
-						sophomoreDetails?: SophomoreDetails | null;
+						sophomoreDetails?:
+							| (SophomoreDetails & {
+									hints:
+										| (Hints & {
+												slug: HintSlugs;
+										  })[];
+							  })
+							| null;
 						freshmenDetails?: FreshmenDetails | null;
 				  })
 				| null;

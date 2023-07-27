@@ -19,7 +19,15 @@ export const injectSessionMiddleware: Handle = async ({ event, resolve }) => {
 			},
 			include: {
 				faction: true,
-				sophomoreDetails: true,
+				sophomoreDetails: {
+					include: {
+						hints: {
+							include: {
+								slug: true
+							}
+						}
+					}
+				},
 				freshmenDetails: true
 			}
 		});

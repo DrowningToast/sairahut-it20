@@ -1,4 +1,3 @@
-import { PlayerType } from 'database';
 import type { LayoutServerLoad } from '../home/$types';
 import { redirect } from '@sveltejs/kit';
 
@@ -11,7 +10,7 @@ export const load: LayoutServerLoad = async ({ locals }) => {
     }
 
     // if user is already done this or that
-    if (user?.type === PlayerType.FRESHMEN) {
+    if (user?.type === 'FRESHMEN') {
         throw redirect(307, '/unauthorized');
     }
 

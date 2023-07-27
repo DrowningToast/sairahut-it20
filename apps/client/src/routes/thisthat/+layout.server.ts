@@ -1,11 +1,9 @@
-import { trpcOnServer } from '$lib/trpc';
 import { redirect } from '@sveltejs/kit';
 import type { LayoutServerLoad } from '../home/$types';
+import { prisma } from '$lib/serverUtils';
 
 export const load: LayoutServerLoad = async ({ locals }) => {
     const { user, session } = locals;
-
-    const trpc = trpcOnServer(fetch)
 
     // Check auth guard
     if (!session) {
@@ -13,12 +11,17 @@ export const load: LayoutServerLoad = async ({ locals }) => {
     }
 
     // if user is already done this or that
-    const data = await trpc
-        .sophomores.getDatabaseParticipantByEmail.query({
+    const data = await prisma.user.findUnique({
+        where: {
             email: user?.email as string
-        })
+        },
+        include: {
+            sophomoreDetails: true,
+            freshmenDetails: true
+        }
+    })
 
-    if (data?.sophomoreDetails) {
+    if (data?.sophomoreDetails?.thisOrThat || data?.freshmenDetails?.thisOrThat) {
         redirect(307, '/')
     }
 

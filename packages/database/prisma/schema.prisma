@@ -172,14 +172,14 @@ model FreshmenDetails {
 }
 
 model HintSlugs {
-  id    String  @id @unique @default(cuid())
-  slug  String
+  slug        String @id @unique
+  displayName String
 
   Hints Hints[]
 }
 
 model Hints {
-  slug       HintSlugs @relation(fields: [hintSlugId], references: [id])
+  slug       HintSlugs @relation(fields: [hintSlugId], references: [slug])
   hintSlugId String
   content    String
 
