@@ -9,7 +9,7 @@ export const load: LayoutServerLoad = async ({ locals }) => {
 	}
 
 	// Check if the hints are ready?
-	if (user?.type === 'SOPHOMORE' && !user.sophomoreDetails?.hints.length) {
+	if (user?.type === 'SOPHOMORE' && !user.sophomoreDetails) {
 		throw redirect(307, '/hints');
 	}
 

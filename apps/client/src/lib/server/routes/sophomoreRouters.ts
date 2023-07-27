@@ -3,6 +3,7 @@ import { createRouter } from '../context';
 import { protectedProcedure } from '../procedure';
 import { AirtableController } from '$lib/airtable-api/controller';
 import { prisma } from '$lib/serverUtils';
+import { ThisOrThat } from 'database';
 
 export const sophomoreRouters = createRouter({
 	getAirtableParticipantByStudentId: protectedProcedure
@@ -22,7 +23,7 @@ export const sophomoreRouters = createRouter({
 		.input(z.object({
 			email: z.string()
 		}))
-		.query(async ({ input: { email }}) => {
+		.query(async ({ input: { email } }) => {
 			const query = await prisma.user.findUnique({
 				where: {
 					email
@@ -35,13 +36,35 @@ export const sophomoreRouters = createRouter({
 		}),
 	submitThisOrThat: protectedProcedure
 		.input(z.array(z.string()))
-		.mutation(({ ctx }) => {
-			return
+		.mutation(async ({ ctx, input }) => {
+			await prisma.user.update({
+				data: {
+					sophomoreDetails: {
+						update: {
+							thisOrThat: input as any
+						}
+					}
+				},
+				where: {
+					email: ctx.user?.email as string
+				}
+			})
+
+			return 'OK'
 		}),
 	submitHints: protectedProcedure
 		.input(z.array(z.string()))
-		.mutation(({ ctx }) => {
-			return
+		.mutation(async ({ ctx, input }) => {
+			const { user } = ctx;
+
+			const processData = input.map((value) => ({
+				sophomoreId: user?.sophomoreDetailsId as string,
+				content: value,
+				hintSlugId: ''
+			}))
+
+			
+			const data = await prisma.hints.createMany()
 		}),
 
 });

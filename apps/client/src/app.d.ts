@@ -21,12 +21,7 @@ declare global {
 				| (User & {
 						faction?: Factions | null;
 						sophomoreDetails?:
-							| (SophomoreDetails & {
-									hints:
-										| (Hints & {
-												slug: HintSlugs;
-										  })[];
-							  })
+							| SophomoreDetails
 							| null;
 						freshmenDetails?: FreshmenDetails | null;
 				  })

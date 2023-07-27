@@ -21,8 +21,10 @@ export const load: LayoutServerLoad = async ({ locals }) => {
         }
     })
 
-    if (data?.sophomoreDetails?.thisOrThat || data?.freshmenDetails?.thisOrThat) {
-        redirect(307, '/')
+    console.log(data?.sophomoreDetails)
+
+    if (data?.sophomoreDetails?.thisOrThat.length || data?.freshmenDetails?.thisOrThat.length) {
+        throw redirect(307, '/')
     }
 
     return {
