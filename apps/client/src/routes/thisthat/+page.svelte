@@ -1,19 +1,19 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { trpc } from '$lib/trpc';
-	import { ThisOrThat } from 'database';
+	import type { ThisOrThat } from 'database';
 
 	const thisOrThat: ThisOrThat[] = [
-		ThisOrThat.LEFT,
-		ThisOrThat.RIGHT,
-		ThisOrThat.LEFT,
-		ThisOrThat.RIGHT,
-		ThisOrThat.LEFT,
-		ThisOrThat.RIGHT,
-		ThisOrThat.LEFT,
-		ThisOrThat.RIGHT,
-		ThisOrThat.LEFT,
-		ThisOrThat.RIGHT
+		'LEFT',
+		'RIGHT',
+		'LEFT',
+		'RIGHT',
+		'LEFT',
+		'RIGHT',
+		'LEFT',
+		'RIGHT',
+		'LEFT',
+		'RIGHT',
 	];
 
 	const submitData = async () => {
