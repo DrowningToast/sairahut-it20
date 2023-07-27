@@ -3,7 +3,6 @@ import { createRouter } from '../context';
 import { protectedProcedure } from '../procedure';
 import { AirtableController } from '$lib/airtable-api/controller';
 import { prisma } from '$lib/serverUtils';
-import { ThisOrThat } from 'database';
 
 export const sophomoreRouters = createRouter({
 	getAirtableParticipantByStudentId: protectedProcedure
@@ -41,7 +40,8 @@ export const sophomoreRouters = createRouter({
 				data: {
 					sophomoreDetails: {
 						update: {
-							thisOrThat: input as any
+							thisOrThat: input as any,
+							thisOrThatReady: true
 						}
 					}
 				},
@@ -55,16 +55,43 @@ export const sophomoreRouters = createRouter({
 	submitHints: protectedProcedure
 		.input(z.array(z.string()))
 		.mutation(async ({ ctx, input }) => {
-			const { user } = ctx;
+			const hintSlugId = [
+				'appearance',
+				'height',
+				'personality',
+				'sex',
+				'food',
+				'hobby',
+				'quote',
+				'place',
+				'fashion',
+				'name_hint'
+			]
 
-			const processData = input.map((value) => ({
-				sophomoreId: user?.sophomoreDetailsId as string,
+			const { user } = ctx;
+			const sophomoreDetailsId = user?.sophomoreDetailsId as string
+			const processData = input.map((value, index) => ({
+				sophomoreId: sophomoreDetailsId,
 				content: value,
-				hintSlugId: ''
+				hintSlugId: hintSlugId[index]
 			}))
 
-			
-			const data = await prisma.hints.createMany()
+			const hints = await prisma.hints.createMany({
+				data: processData
+			})
+
+			await prisma.sophomoreDetails.update({
+				data: {
+					hintsReady: true
+				},
+				where: {
+					id: sophomoreDetailsId
+				}
+			})
+
+			console.log(hints)
+
+			return 'OK'
 		}),
 
 });

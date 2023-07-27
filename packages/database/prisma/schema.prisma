@@ -193,8 +193,10 @@ model SophomoreDetails {
   create_at DateTime @default(now())
   update_at DateTime @updatedAt
 
-  thisOrThat ThisOrThat[]
-  hints      Hints[]
+  thisOrThat      ThisOrThat[]
+  thisOrThatReady Boolean      @default(false)
+  hints           Hints[]
+  hintsReady      Boolean      @default(false)
 
   id             String    @id @unique @default(cuid())
   // name - surname in airtable

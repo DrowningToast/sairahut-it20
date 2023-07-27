@@ -15,17 +15,8 @@ export const load: LayoutServerLoad = async ({ locals }) => {
         throw redirect(307, '/unauthorized');
     }
 
-    const sophomoreDetails = await prisma.sophomoreDetails.findUnique({
-        where: {
-            id: user?.sophomoreDetailsId as string
-        },
-        include: {
-            hints: true
-        }
-    })
-
-    if (sophomoreDetails?.hints.length !== 0) {
-        throw redirect(307, '/')
+    if (user?.sophomoreDetails?.hintsReady) {
+        throw redirect(307, '/home')
     }
 
     return {

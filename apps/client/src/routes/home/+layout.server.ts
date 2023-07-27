@@ -18,6 +18,15 @@ export const load: LayoutServerLoad = async ({ locals }) => {
 		}
 	})
 
+
+	const data = await prisma.hints.findMany({
+		where: {
+			sophomoreId: user?.sophomoreDetailsId as string
+		}
+	})
+
+	console.log(data)
+
 	// Check if the hints are ready?
 	if (user?.type === 'SOPHOMORE' && sophomoreDetails?.hints.length === 0) {
 		throw redirect(307, '/hints');
