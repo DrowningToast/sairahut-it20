@@ -162,7 +162,8 @@ model FreshmenDetails {
   id   String @id @unique @default(cuid())
   User User?
 
-  thisOrThat ThisOrThat[]
+  thisOrThat      ThisOrThat[]
+  thisOrThatReady Boolean      @default(false)
 
   // Passcodes that have been used
   usedPasscodes PasscodeInstances[]
