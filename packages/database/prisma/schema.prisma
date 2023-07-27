@@ -171,12 +171,30 @@ model FreshmenDetails {
   scannedQRs QRInstances[]
 }
 
+model HintSlugs {
+  id    String  @id @unique @default(cuid())
+  slug  String
+
+  Hints Hints[]
+}
+
+model Hints {
+  slug       HintSlugs @relation(fields: [hintSlugId], references: [id])
+  hintSlugId String
+  content    String
+
+  sophomore   SophomoreDetails @relation(fields: [sophomoreId], references: [id])
+  sophomoreId String
+
+  @@id([hintSlugId, sophomoreId])
+}
+
 model SophomoreDetails {
   create_at DateTime @default(now())
   update_at DateTime @updatedAt
 
   thisOrThat ThisOrThat[]
-  hints      String[]
+  hints      Hints[]
 
   id             String    @id @unique @default(cuid())
   // name - surname in airtable
