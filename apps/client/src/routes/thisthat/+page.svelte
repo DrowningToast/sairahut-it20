@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { trpc } from '$lib/trpc';
 	import { ThisOrThat } from 'database';
 
@@ -17,6 +18,7 @@
 
 	const submitData = async () => {
 		await trpc.sophomores.submitThisOrThat.mutate(thisOrThat);
+		goto('/home')
 	};
 </script>
 

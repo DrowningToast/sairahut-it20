@@ -2,9 +2,10 @@ import { z } from 'zod';
 import { createRouter } from '../context';
 import { protectedProcedure } from '../procedure';
 import { AirtableController } from '$lib/airtable-api/controller';
+import { prisma } from '$lib/serverUtils';
 
 export const sophomoreRouters = createRouter({
-	getParticipantByStudentId: protectedProcedure
+	getAirtableParticipantByStudentId: protectedProcedure
 		.input(
 			z.object({
 				studentId: z.number()
@@ -17,6 +18,21 @@ export const sophomoreRouters = createRouter({
 			);
 			return response;
 		}),
+	getDatabaseParticipantByEmail: protectedProcedure
+		.input(z.object({
+			email: z.string()
+		}))
+		.query(async ({ input: { email }}) => {
+			const query = await prisma.user.findUnique({
+				where: {
+					email
+				},
+				select: {
+					sophomoreDetails: true,
+				}
+			})
+			return query;
+		}),
 	submitThisOrThat: protectedProcedure
 		.input(z.array(z.string()))
 		.mutation(({ ctx }) => {
@@ -26,5 +42,6 @@ export const sophomoreRouters = createRouter({
 		.input(z.array(z.string()))
 		.mutation(({ ctx }) => {
 			return
-		})
+		}),
+
 });

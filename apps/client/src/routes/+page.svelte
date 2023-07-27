@@ -8,7 +8,7 @@
 	$: atData = null;
 
 	const loadData = async () => {
-		const response = await trpc.sophomores.getParticipantByStudentId.query({
+		const response = await trpc.sophomores.getAirtableParticipantByStudentId.query({
 			studentId: 65070225
 		});
 
