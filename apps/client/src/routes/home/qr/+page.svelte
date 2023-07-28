@@ -1,4 +1,6 @@
 <script lang="ts">
+	// https://github.com/t0ngk/sairahut/blob/main/src/routes/scanner/%2Bpage.svelte
+
 	import { trpc } from '$lib/trpc';
 
 	import { onMount } from 'svelte';
