@@ -5,11 +5,6 @@
 	import { AuthController } from '$lib/auth/AuthController';
 	import { trpc } from '$lib/trpc';
 
-	const loadData = async () => {
-		const response = await trpc.greet.query({ name: 'Gus' });
-		return response;
-	};
-
 	const { isSignedIn } = AuthController($page);
 
 	$: console.log($page.data.session);
@@ -23,7 +18,7 @@
 			voluptas a veniam quisquam illum et, consequatur repudiandae, libero saepe dolores ad? Commodi
 			earum dignissimos incidunt minima?
 		</p>
-		<button on:click={loadData}> test </button>
+
 		<DynamicLoginButton />
 	</div>
 

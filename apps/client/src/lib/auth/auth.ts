@@ -3,6 +3,28 @@ import { PrismaAdapter } from '@auth/prisma-adapter';
 import { SvelteKitAuth } from '@auth/sveltekit';
 import { client } from 'database/db';
 import Google from '@auth/core/providers/google';
+import { AirtableController } from '$lib/airtable-api/controller';
+import { determineYear } from '$lib/middlewares/firstTimeMiddleware';
+
+/**
+ *
+ * If the user hasn't registered, sign the user out
+ *
+ * @param email
+ * @returns
+ */
+const checkForRegistration = async (email: string) => {
+	const gen = determineYear(email);
+
+	if (gen === 20) {
+		const res = await AirtableController.participantIT20.getParticipantByStudentId(
+			email.replace('@kmitl.ac.th', '')
+		);
+		return !!res;
+	}
+
+	return true;
+};
 
 export const AuthHook = SvelteKitAuth({
 	providers: [
@@ -17,7 +39,15 @@ export const AuthHook = SvelteKitAuth({
 	callbacks: {
 		signIn: async ({ user, account, profile }) => {
 			const checkKMITLDomain = profile?.email?.includes('@kmitl.ac.th');
-			return !!checkKMITLDomain;
+
+			// The user doesn't have an email will result in error
+			if (!profile?.email) {
+				return false;
+			}
+
+			const checkUnregis = checkForRegistration(profile?.email);
+
+			return !!checkKMITLDomain && checkUnregis;
 		}
 	},
 	pages: {

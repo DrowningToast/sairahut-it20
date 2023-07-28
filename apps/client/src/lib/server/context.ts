@@ -1,9 +1,9 @@
 import { prisma } from '$lib/serverUtils';
-import type { RequestEvent } from '@sveltejs/kit';
-import { initTRPC, TRPCError } from '@trpc/server';
+import { initTRPC } from '@trpc/server';
 import type { inferAsyncReturnType } from '@trpc/server';
 import type { FetchCreateContextFnOptions } from '@trpc/server/adapters/fetch';
-import { PrismaClient, type User } from 'database';
+import { PrismaClient } from 'database';
+import type { User } from 'database';
 
 function getCookie(cookiesString: string, name: string) {
 	const match = cookiesString.match(new RegExp('(^| )' + name + '=([^;]+)'));
@@ -27,7 +27,13 @@ export const createSvelteKitContext =
 						sessionToken: sessionTokenCookie
 					},
 					select: {
-						user: true
+						user: {
+							include: {
+								faction: true,
+								sophomoreDetails: true,
+								freshmenDetails: true
+							}
+						}
 					}
 				})
 			)?.user;
