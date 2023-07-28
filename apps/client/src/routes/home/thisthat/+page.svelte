@@ -1,6 +1,8 @@
 <script>
 	import QuesThisOrThat from '$components/svelte/QuesThisOrThat.svelte';
 	import SrhButton from '$components/svelte/SRHButton.svelte';
+	import { trpc } from '$lib/trpc';
+	import { redirect } from '@sveltejs/kit';
 
 	const selecteds = new Array(10).fill(null);
 	const choices = [
@@ -21,6 +23,13 @@
 		selecteds.filter((selected) => {
 			return !!selected;
 		}).length == choices.length;
+
+	const submitThisOrThat = async () => {
+		const res = await trpc.thisThat.submitThisOrThat.mutate(selecteds);
+		if (res === 'OK') {
+			redirect(307, '/home');
+		}
+	};
 </script>
 
 <div class=" drop-shadow-[0px_0px_7.5px_#FFAEBD] leading-10 text-white font-krub">
@@ -35,12 +44,18 @@
 	</p>
 </div>
 <div class="flex flex-col text-white relative gap-y-10 mt-10 overflow-visible">
-	{#each choices as choice, index }
-		<QuesThisOrThat leftText={choice.left} rightText={choice.right} bind:selected={selecteds[index]} />
+	{#each choices as choice, index}
+		<QuesThisOrThat
+			leftText={choice.left}
+			rightText={choice.right}
+			bind:selected={selecteds[index]}
+		/>
 	{/each}
 </div>
 
 <div class=" text-center mt-16 text-accent">
 	<p>อย่าลืมแคปรูปนี้แล้วแท๊กลง IG: @sairahut_itkmitl</p>
 </div>
-<SrhButton disabled={!readyToSubmit} class="px-4">ยืนยันคำตอบ</SrhButton>
+<SrhButton on:click|default={submitThisOrThat} disabled={!readyToSubmit} class="px-4"
+	>ยืนยันคำตอบ</SrhButton
+>

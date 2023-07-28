@@ -55,7 +55,7 @@ export const firstTimeMiddleware: Handle = async ({ event, resolve }) => {
 						nickname: res.nickname,
 						participate: res.participate,
 						phone: res.phone,
-						student_id: res.studentId,
+						student_id: res.studentId + '',
 						User: {
 							connect: {
 								email: user?.email

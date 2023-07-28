@@ -34,25 +34,6 @@ export const sophomoreRouters = createRouter({
 			});
 			return query;
 		}),
-	submitThisOrThat: protectedProcedure
-		.input(z.array(z.string()).min(10).max(10))
-		.mutation(async ({ ctx, input }) => {
-			await prisma.user.update({
-				data: {
-					sophomoreDetails: {
-						update: {
-							thisOrThat: input as any,
-							thisOrThatReady: true
-						}
-					}
-				},
-				where: {
-					email: ctx.user?.email as string
-				}
-			});
-
-			return 'OK';
-		}),
 	submitHints: protectedProcedure
 		.input(z.array(z.string()).min(10).max(10))
 		.mutation(async ({ ctx, input }) => {
