@@ -2,7 +2,7 @@
 	import QuesThisOrThat from '$components/svelte/QuesThisOrThat.svelte';
 	import SrhButton from '$components/svelte/SRHButton.svelte';
 
-	$: selecteds = new Array(10).fill(null);
+	const selecteds = new Array(10).fill(null);
 	const choices = [
 		{ left: 'ต่างจังหวัด', right: 'กรุงเทพ & ปริมณฑล' },
 		{ left: 'เล่นเกม', right: 'อ่านหนังสือ' },
@@ -20,7 +20,7 @@
 	$: readyToSubmit =
 		selecteds.filter((selected) => {
 			return !!selected;
-		}).length >= 10;
+		}).length == choices.length;
 </script>
 
 <div class=" drop-shadow-[0px_0px_7.5px_#FFAEBD] leading-10 text-white font-krub">
@@ -35,14 +35,9 @@
 	</p>
 </div>
 <div class="flex flex-col text-white relative gap-y-10 mt-10 overflow-visible">
-	<QuesThisOrThat leftText={'AAA'} rightText={'BBB'} bind:selected={selecteds[0]} />
-	<!-- {#each choices as choice, index}
-		<QuesThisOrThat
-			leftText={choice.left}
-			rightText={choice.right}
-			bind:selected={selecteds[index]}
-		/>
-	{/each} -->
+	{#each choices as choice, index }
+		<QuesThisOrThat leftText={choice.left} rightText={choice.right} bind:selected={selecteds[index]} />
+	{/each}
 </div>
 
 <div class=" text-center mt-16 text-accent">
