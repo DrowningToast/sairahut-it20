@@ -1,11 +1,11 @@
 import { z } from 'zod';
 import { createRouter } from '../context';
-import { protectedProcedure } from '../procedure';
+import { oldProcedure } from '../procedure';
 import { AirtableController } from '$lib/airtable-api/controller';
 import { prisma } from '$lib/serverUtils';
 
 export const sophomoreRouters = createRouter({
-	getAirtableParticipantByStudentId: protectedProcedure
+	getAirtableParticipantByStudentId: oldProcedure
 		.input(
 			z.object({
 				studentId: z.number()
@@ -17,7 +17,7 @@ export const sophomoreRouters = createRouter({
 			);
 			return response;
 		}),
-	getDatabaseParticipantByEmail: protectedProcedure
+	getDatabaseParticipantByEmail: oldProcedure
 		.input(
 			z.object({
 				email: z.string()
@@ -34,7 +34,7 @@ export const sophomoreRouters = createRouter({
 			});
 			return query;
 		}),
-	submitHints: protectedProcedure
+	submitHints: oldProcedure
 		.input(z.array(z.string()).min(10).max(10))
 		.mutation(async ({ ctx, input }) => {
 			const hintSlugId = [
