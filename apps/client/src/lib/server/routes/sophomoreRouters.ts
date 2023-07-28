@@ -72,5 +72,9 @@ export const sophomoreRouters = createRouter({
 			});
 
 			return 'OK';
-		})
+		}),
+	getHintSlugs: oldProcedure.query(async ({ ctx }) => {
+		const response = await prisma.hintSlugs.findMany({});
+		return response;
+	})
 });
