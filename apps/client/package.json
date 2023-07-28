@@ -48,6 +48,7 @@
 		"dotenv-cli": "^7.2.1",
 		"env": "workspace:^0.0.0",
 		"lucide-svelte": "^0.257.0",
+		"qr-scanner": "^1.4.2",
 		"radix-svelte": "^0.8.0",
 		"superjson": "^1.12.4",
 		"tailwind-merge": "^1.13.2",

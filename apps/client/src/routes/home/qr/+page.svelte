@@ -1,12 +1,41 @@
 <script lang="ts">
 	import { trpc } from '$lib/trpc';
 
+	import { onMount } from 'svelte';
+	import QrScanner from 'qr-scanner';
+
+	let videoElement: HTMLVideoElement;
+	let isScanned = false;
+
 	const submitData = async (id: string) => {
 		const data = await trpc.freshmens.submitScannedQR.query(id);
 		console.log(data);
 	};
+
+	const setScanner = () => {
+		const qrScanner = new QrScanner(
+			videoElement,
+			async ({ data }) => {
+				isScanned = true;
+
+				submitData(data);
+
+				qrScanner.stop();
+			},
+			{
+				highlightScanRegion: true,
+				onDecodeError() {}
+			}
+		);
+
+		qrScanner.start();
+	};
+
+	onMount(() => {
+		setScanner();
+	});
 </script>
 
-<button on:click={() => submitData('clkmn62f4000008l27sw5guot')}
-	>This button is placeholder for when qr is scanned</button
->
+<video class="rounded" bind:this={videoElement}>
+	<track kind="captions" />
+</video>
