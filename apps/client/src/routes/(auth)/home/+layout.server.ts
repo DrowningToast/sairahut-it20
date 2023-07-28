@@ -8,21 +8,16 @@ export const load: LayoutServerLoad = async ({ locals }) => {
 	console.log(user);
 	console.log(session);
 
-	// Check auth guard
-	if (!session) {
-		throw redirect(307, '/');
-	}
-
 	// commented for testing reasons
 
 	// Check if the hints are ready?
 	if (user?.type === 'SOPHOMORE' && !user.sophomoreDetails?.hintsReady) {
-		throw redirect(307, '/home/set-hints');
+		throw redirect(307, '/set-hints');
 	}
 
 	// check if the this or that is set?
 	if (!(user?.sophomoreDetails?.thisOrThatReady || user?.freshmenDetails?.thisOrThatReady)) {
-		throw redirect(307, '/home/this-or-that');
+		throw redirect(307, '/this-or-that');
 	}
 
 	return {
