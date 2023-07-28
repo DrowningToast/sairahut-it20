@@ -115,7 +115,7 @@ enum ThisOrThat {
 
 // One instance per one freshmen 
 model QRInstances {
-  id String @id @unique @default(uuid())
+  id String @id @unique @default(cuid())
 
   create_at DateTime @default(now())
   update_at DateTime @default(now()) @updatedAt
@@ -169,7 +169,8 @@ model FreshmenDetails {
   usedPasscodes PasscodeInstances[]
 
   // QR Codes that have been scanned
-  scannedQRs QRInstances[]
+  scannedQRs    QRInstances[]
+  scannedQRLeft Int           @default(10)
 }
 
 model HintSlugs {

@@ -26,7 +26,7 @@ export const PasscodeInstancesScalarFieldEnumSchema = z.enum(['id','create_at','
 
 export const FactionsScalarFieldEnumSchema = z.enum(['id','name','handler']);
 
-export const FreshmenDetailsScalarFieldEnumSchema = z.enum(['create_at','update_at','id','thisOrThat','thisOrThatReady']);
+export const FreshmenDetailsScalarFieldEnumSchema = z.enum(['create_at','update_at','id','thisOrThat','thisOrThatReady','scannedQRLeft']);
 
 export const HintSlugsScalarFieldEnumSchema = z.enum(['slug','displayName']);
 
@@ -134,7 +134,7 @@ export type VerificationToken = z.infer<typeof VerificationTokenSchema>
 /////////////////////////////////////////
 
 export const QRInstancesSchema = z.object({
-  id: z.string().uuid(),
+  id: z.string().cuid(),
   create_at: z.coerce.date(),
   update_at: z.coerce.date(),
   scannedById: z.string().nullable(),
@@ -179,6 +179,7 @@ export const FreshmenDetailsSchema = z.object({
   update_at: z.coerce.date(),
   id: z.string().cuid(),
   thisOrThatReady: z.boolean(),
+  scannedQRLeft: z.number().int(),
 })
 
 export type FreshmenDetails = z.infer<typeof FreshmenDetailsSchema>
@@ -446,6 +447,7 @@ export const FreshmenDetailsSelectSchema: z.ZodType<Prisma.FreshmenDetailsSelect
   id: z.boolean().optional(),
   thisOrThat: z.boolean().optional(),
   thisOrThatReady: z.boolean().optional(),
+  scannedQRLeft: z.boolean().optional(),
   User: z.union([z.boolean(),z.lazy(() => UserArgsSchema)]).optional(),
   usedPasscodes: z.union([z.boolean(),z.lazy(() => PasscodeInstancesFindManyArgsSchema)]).optional(),
   scannedQRs: z.union([z.boolean(),z.lazy(() => QRInstancesFindManyArgsSchema)]).optional(),
@@ -836,7 +838,7 @@ export const QRInstancesOrderByWithRelationInputSchema: z.ZodType<Prisma.QRInsta
 }).strict();
 
 export const QRInstancesWhereUniqueInputSchema: z.ZodType<Prisma.QRInstancesWhereUniqueInput> = z.object({
-  id: z.string().uuid().optional()
+  id: z.string().cuid().optional()
 }).strict();
 
 export const QRInstancesOrderByWithAggregationInputSchema: z.ZodType<Prisma.QRInstancesOrderByWithAggregationInput> = z.object({
@@ -958,6 +960,7 @@ export const FreshmenDetailsWhereInputSchema: z.ZodType<Prisma.FreshmenDetailsWh
   id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   thisOrThat: z.lazy(() => EnumThisOrThatNullableListFilterSchema).optional(),
   thisOrThatReady: z.union([ z.lazy(() => BoolFilterSchema),z.boolean() ]).optional(),
+  scannedQRLeft: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   User: z.union([ z.lazy(() => UserRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional().nullable(),
   usedPasscodes: z.lazy(() => PasscodeInstancesListRelationFilterSchema).optional(),
   scannedQRs: z.lazy(() => QRInstancesListRelationFilterSchema).optional()
@@ -969,6 +972,7 @@ export const FreshmenDetailsOrderByWithRelationInputSchema: z.ZodType<Prisma.Fre
   id: z.lazy(() => SortOrderSchema).optional(),
   thisOrThat: z.lazy(() => SortOrderSchema).optional(),
   thisOrThatReady: z.lazy(() => SortOrderSchema).optional(),
+  scannedQRLeft: z.lazy(() => SortOrderSchema).optional(),
   User: z.lazy(() => UserOrderByWithRelationInputSchema).optional(),
   usedPasscodes: z.lazy(() => PasscodeInstancesOrderByRelationAggregateInputSchema).optional(),
   scannedQRs: z.lazy(() => QRInstancesOrderByRelationAggregateInputSchema).optional()
@@ -984,9 +988,12 @@ export const FreshmenDetailsOrderByWithAggregationInputSchema: z.ZodType<Prisma.
   id: z.lazy(() => SortOrderSchema).optional(),
   thisOrThat: z.lazy(() => SortOrderSchema).optional(),
   thisOrThatReady: z.lazy(() => SortOrderSchema).optional(),
+  scannedQRLeft: z.lazy(() => SortOrderSchema).optional(),
   _count: z.lazy(() => FreshmenDetailsCountOrderByAggregateInputSchema).optional(),
+  _avg: z.lazy(() => FreshmenDetailsAvgOrderByAggregateInputSchema).optional(),
   _max: z.lazy(() => FreshmenDetailsMaxOrderByAggregateInputSchema).optional(),
-  _min: z.lazy(() => FreshmenDetailsMinOrderByAggregateInputSchema).optional()
+  _min: z.lazy(() => FreshmenDetailsMinOrderByAggregateInputSchema).optional(),
+  _sum: z.lazy(() => FreshmenDetailsSumOrderByAggregateInputSchema).optional()
 }).strict();
 
 export const FreshmenDetailsScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.FreshmenDetailsScalarWhereWithAggregatesInput> = z.object({
@@ -998,6 +1005,7 @@ export const FreshmenDetailsScalarWhereWithAggregatesInputSchema: z.ZodType<Pris
   id: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   thisOrThat: z.lazy(() => EnumThisOrThatNullableListFilterSchema).optional(),
   thisOrThatReady: z.union([ z.lazy(() => BoolWithAggregatesFilterSchema),z.boolean() ]).optional(),
+  scannedQRLeft: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
 }).strict();
 
 export const HintSlugsWhereInputSchema: z.ZodType<Prisma.HintSlugsWhereInput> = z.object({
@@ -1492,7 +1500,7 @@ export const VerificationTokenUncheckedUpdateManyInputSchema: z.ZodType<Prisma.V
 }).strict();
 
 export const QRInstancesCreateInputSchema: z.ZodType<Prisma.QRInstancesCreateInput> = z.object({
-  id: z.string().uuid().optional(),
+  id: z.string().cuid().optional(),
   create_at: z.coerce.date().optional(),
   update_at: z.coerce.date().optional(),
   scannedBy: z.lazy(() => FreshmenDetailsCreateNestedOneWithoutScannedQRsInputSchema).optional(),
@@ -1500,7 +1508,7 @@ export const QRInstancesCreateInputSchema: z.ZodType<Prisma.QRInstancesCreateInp
 }).strict();
 
 export const QRInstancesUncheckedCreateInputSchema: z.ZodType<Prisma.QRInstancesUncheckedCreateInput> = z.object({
-  id: z.string().uuid().optional(),
+  id: z.string().cuid().optional(),
   create_at: z.coerce.date().optional(),
   update_at: z.coerce.date().optional(),
   scannedById: z.string().optional().nullable(),
@@ -1508,7 +1516,7 @@ export const QRInstancesUncheckedCreateInputSchema: z.ZodType<Prisma.QRInstances
 }).strict();
 
 export const QRInstancesUpdateInputSchema: z.ZodType<Prisma.QRInstancesUpdateInput> = z.object({
-  id: z.union([ z.string().uuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   create_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   scannedBy: z.lazy(() => FreshmenDetailsUpdateOneWithoutScannedQRsNestedInputSchema).optional(),
@@ -1516,7 +1524,7 @@ export const QRInstancesUpdateInputSchema: z.ZodType<Prisma.QRInstancesUpdateInp
 }).strict();
 
 export const QRInstancesUncheckedUpdateInputSchema: z.ZodType<Prisma.QRInstancesUncheckedUpdateInput> = z.object({
-  id: z.union([ z.string().uuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   create_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   scannedById: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -1524,7 +1532,7 @@ export const QRInstancesUncheckedUpdateInputSchema: z.ZodType<Prisma.QRInstances
 }).strict();
 
 export const QRInstancesCreateManyInputSchema: z.ZodType<Prisma.QRInstancesCreateManyInput> = z.object({
-  id: z.string().uuid().optional(),
+  id: z.string().cuid().optional(),
   create_at: z.coerce.date().optional(),
   update_at: z.coerce.date().optional(),
   scannedById: z.string().optional().nullable(),
@@ -1532,13 +1540,13 @@ export const QRInstancesCreateManyInputSchema: z.ZodType<Prisma.QRInstancesCreat
 }).strict();
 
 export const QRInstancesUpdateManyMutationInputSchema: z.ZodType<Prisma.QRInstancesUpdateManyMutationInput> = z.object({
-  id: z.union([ z.string().uuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   create_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const QRInstancesUncheckedUpdateManyInputSchema: z.ZodType<Prisma.QRInstancesUncheckedUpdateManyInput> = z.object({
-  id: z.union([ z.string().uuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   create_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   scannedById: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
@@ -1651,6 +1659,7 @@ export const FreshmenDetailsCreateInputSchema: z.ZodType<Prisma.FreshmenDetailsC
   id: z.string().cuid().optional(),
   thisOrThat: z.union([ z.lazy(() => FreshmenDetailsCreatethisOrThatInputSchema),z.lazy(() => ThisOrThatSchema).array() ]).optional(),
   thisOrThatReady: z.boolean().optional(),
+  scannedQRLeft: z.number().int().optional(),
   User: z.lazy(() => UserCreateNestedOneWithoutFreshmenDetailsInputSchema).optional(),
   usedPasscodes: z.lazy(() => PasscodeInstancesCreateNestedManyWithoutUsedByInputSchema).optional(),
   scannedQRs: z.lazy(() => QRInstancesCreateNestedManyWithoutScannedByInputSchema).optional()
@@ -1662,6 +1671,7 @@ export const FreshmenDetailsUncheckedCreateInputSchema: z.ZodType<Prisma.Freshme
   id: z.string().cuid().optional(),
   thisOrThat: z.union([ z.lazy(() => FreshmenDetailsCreatethisOrThatInputSchema),z.lazy(() => ThisOrThatSchema).array() ]).optional(),
   thisOrThatReady: z.boolean().optional(),
+  scannedQRLeft: z.number().int().optional(),
   User: z.lazy(() => UserUncheckedCreateNestedOneWithoutFreshmenDetailsInputSchema).optional(),
   usedPasscodes: z.lazy(() => PasscodeInstancesUncheckedCreateNestedManyWithoutUsedByInputSchema).optional(),
   scannedQRs: z.lazy(() => QRInstancesUncheckedCreateNestedManyWithoutScannedByInputSchema).optional()
@@ -1673,6 +1683,7 @@ export const FreshmenDetailsUpdateInputSchema: z.ZodType<Prisma.FreshmenDetailsU
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   thisOrThat: z.union([ z.lazy(() => FreshmenDetailsUpdatethisOrThatInputSchema),z.lazy(() => ThisOrThatSchema).array() ]).optional(),
   thisOrThatReady: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
+  scannedQRLeft: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   User: z.lazy(() => UserUpdateOneWithoutFreshmenDetailsNestedInputSchema).optional(),
   usedPasscodes: z.lazy(() => PasscodeInstancesUpdateManyWithoutUsedByNestedInputSchema).optional(),
   scannedQRs: z.lazy(() => QRInstancesUpdateManyWithoutScannedByNestedInputSchema).optional()
@@ -1684,6 +1695,7 @@ export const FreshmenDetailsUncheckedUpdateInputSchema: z.ZodType<Prisma.Freshme
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   thisOrThat: z.union([ z.lazy(() => FreshmenDetailsUpdatethisOrThatInputSchema),z.lazy(() => ThisOrThatSchema).array() ]).optional(),
   thisOrThatReady: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
+  scannedQRLeft: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   User: z.lazy(() => UserUncheckedUpdateOneWithoutFreshmenDetailsNestedInputSchema).optional(),
   usedPasscodes: z.lazy(() => PasscodeInstancesUncheckedUpdateManyWithoutUsedByNestedInputSchema).optional(),
   scannedQRs: z.lazy(() => QRInstancesUncheckedUpdateManyWithoutScannedByNestedInputSchema).optional()
@@ -1694,7 +1706,8 @@ export const FreshmenDetailsCreateManyInputSchema: z.ZodType<Prisma.FreshmenDeta
   update_at: z.coerce.date().optional(),
   id: z.string().cuid().optional(),
   thisOrThat: z.union([ z.lazy(() => FreshmenDetailsCreatethisOrThatInputSchema),z.lazy(() => ThisOrThatSchema).array() ]).optional(),
-  thisOrThatReady: z.boolean().optional()
+  thisOrThatReady: z.boolean().optional(),
+  scannedQRLeft: z.number().int().optional()
 }).strict();
 
 export const FreshmenDetailsUpdateManyMutationInputSchema: z.ZodType<Prisma.FreshmenDetailsUpdateManyMutationInput> = z.object({
@@ -1703,6 +1716,7 @@ export const FreshmenDetailsUpdateManyMutationInputSchema: z.ZodType<Prisma.Fres
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   thisOrThat: z.union([ z.lazy(() => FreshmenDetailsUpdatethisOrThatInputSchema),z.lazy(() => ThisOrThatSchema).array() ]).optional(),
   thisOrThatReady: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
+  scannedQRLeft: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const FreshmenDetailsUncheckedUpdateManyInputSchema: z.ZodType<Prisma.FreshmenDetailsUncheckedUpdateManyInput> = z.object({
@@ -1711,6 +1725,7 @@ export const FreshmenDetailsUncheckedUpdateManyInputSchema: z.ZodType<Prisma.Fre
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   thisOrThat: z.union([ z.lazy(() => FreshmenDetailsUpdatethisOrThatInputSchema),z.lazy(() => ThisOrThatSchema).array() ]).optional(),
   thisOrThatReady: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
+  scannedQRLeft: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const HintSlugsCreateInputSchema: z.ZodType<Prisma.HintSlugsCreateInput> = z.object({
@@ -2448,21 +2463,32 @@ export const FreshmenDetailsCountOrderByAggregateInputSchema: z.ZodType<Prisma.F
   update_at: z.lazy(() => SortOrderSchema).optional(),
   id: z.lazy(() => SortOrderSchema).optional(),
   thisOrThat: z.lazy(() => SortOrderSchema).optional(),
-  thisOrThatReady: z.lazy(() => SortOrderSchema).optional()
+  thisOrThatReady: z.lazy(() => SortOrderSchema).optional(),
+  scannedQRLeft: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const FreshmenDetailsAvgOrderByAggregateInputSchema: z.ZodType<Prisma.FreshmenDetailsAvgOrderByAggregateInput> = z.object({
+  scannedQRLeft: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const FreshmenDetailsMaxOrderByAggregateInputSchema: z.ZodType<Prisma.FreshmenDetailsMaxOrderByAggregateInput> = z.object({
   create_at: z.lazy(() => SortOrderSchema).optional(),
   update_at: z.lazy(() => SortOrderSchema).optional(),
   id: z.lazy(() => SortOrderSchema).optional(),
-  thisOrThatReady: z.lazy(() => SortOrderSchema).optional()
+  thisOrThatReady: z.lazy(() => SortOrderSchema).optional(),
+  scannedQRLeft: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const FreshmenDetailsMinOrderByAggregateInputSchema: z.ZodType<Prisma.FreshmenDetailsMinOrderByAggregateInput> = z.object({
   create_at: z.lazy(() => SortOrderSchema).optional(),
   update_at: z.lazy(() => SortOrderSchema).optional(),
   id: z.lazy(() => SortOrderSchema).optional(),
-  thisOrThatReady: z.lazy(() => SortOrderSchema).optional()
+  thisOrThatReady: z.lazy(() => SortOrderSchema).optional(),
+  scannedQRLeft: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const FreshmenDetailsSumOrderByAggregateInputSchema: z.ZodType<Prisma.FreshmenDetailsSumOrderByAggregateInput> = z.object({
+  scannedQRLeft: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const BoolWithAggregatesFilterSchema: z.ZodType<Prisma.BoolWithAggregatesFilter> = z.object({
@@ -3806,6 +3832,7 @@ export const FreshmenDetailsCreateWithoutUserInputSchema: z.ZodType<Prisma.Fresh
   id: z.string().cuid().optional(),
   thisOrThat: z.union([ z.lazy(() => FreshmenDetailsCreatethisOrThatInputSchema),z.lazy(() => ThisOrThatSchema).array() ]).optional(),
   thisOrThatReady: z.boolean().optional(),
+  scannedQRLeft: z.number().int().optional(),
   usedPasscodes: z.lazy(() => PasscodeInstancesCreateNestedManyWithoutUsedByInputSchema).optional(),
   scannedQRs: z.lazy(() => QRInstancesCreateNestedManyWithoutScannedByInputSchema).optional()
 }).strict();
@@ -3816,6 +3843,7 @@ export const FreshmenDetailsUncheckedCreateWithoutUserInputSchema: z.ZodType<Pri
   id: z.string().cuid().optional(),
   thisOrThat: z.union([ z.lazy(() => FreshmenDetailsCreatethisOrThatInputSchema),z.lazy(() => ThisOrThatSchema).array() ]).optional(),
   thisOrThatReady: z.boolean().optional(),
+  scannedQRLeft: z.number().int().optional(),
   usedPasscodes: z.lazy(() => PasscodeInstancesUncheckedCreateNestedManyWithoutUsedByInputSchema).optional(),
   scannedQRs: z.lazy(() => QRInstancesUncheckedCreateNestedManyWithoutScannedByInputSchema).optional()
 }).strict();
@@ -3964,6 +3992,7 @@ export const FreshmenDetailsUpdateWithoutUserInputSchema: z.ZodType<Prisma.Fresh
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   thisOrThat: z.union([ z.lazy(() => FreshmenDetailsUpdatethisOrThatInputSchema),z.lazy(() => ThisOrThatSchema).array() ]).optional(),
   thisOrThatReady: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
+  scannedQRLeft: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   usedPasscodes: z.lazy(() => PasscodeInstancesUpdateManyWithoutUsedByNestedInputSchema).optional(),
   scannedQRs: z.lazy(() => QRInstancesUpdateManyWithoutScannedByNestedInputSchema).optional()
 }).strict();
@@ -3974,6 +4003,7 @@ export const FreshmenDetailsUncheckedUpdateWithoutUserInputSchema: z.ZodType<Pri
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   thisOrThat: z.union([ z.lazy(() => FreshmenDetailsUpdatethisOrThatInputSchema),z.lazy(() => ThisOrThatSchema).array() ]).optional(),
   thisOrThatReady: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
+  scannedQRLeft: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   usedPasscodes: z.lazy(() => PasscodeInstancesUncheckedUpdateManyWithoutUsedByNestedInputSchema).optional(),
   scannedQRs: z.lazy(() => QRInstancesUncheckedUpdateManyWithoutScannedByNestedInputSchema).optional()
 }).strict();
@@ -4001,6 +4031,7 @@ export const FreshmenDetailsCreateWithoutScannedQRsInputSchema: z.ZodType<Prisma
   id: z.string().cuid().optional(),
   thisOrThat: z.union([ z.lazy(() => FreshmenDetailsCreatethisOrThatInputSchema),z.lazy(() => ThisOrThatSchema).array() ]).optional(),
   thisOrThatReady: z.boolean().optional(),
+  scannedQRLeft: z.number().int().optional(),
   User: z.lazy(() => UserCreateNestedOneWithoutFreshmenDetailsInputSchema).optional(),
   usedPasscodes: z.lazy(() => PasscodeInstancesCreateNestedManyWithoutUsedByInputSchema).optional()
 }).strict();
@@ -4011,6 +4042,7 @@ export const FreshmenDetailsUncheckedCreateWithoutScannedQRsInputSchema: z.ZodTy
   id: z.string().cuid().optional(),
   thisOrThat: z.union([ z.lazy(() => FreshmenDetailsCreatethisOrThatInputSchema),z.lazy(() => ThisOrThatSchema).array() ]).optional(),
   thisOrThatReady: z.boolean().optional(),
+  scannedQRLeft: z.number().int().optional(),
   User: z.lazy(() => UserUncheckedCreateNestedOneWithoutFreshmenDetailsInputSchema).optional(),
   usedPasscodes: z.lazy(() => PasscodeInstancesUncheckedCreateNestedManyWithoutUsedByInputSchema).optional()
 }).strict();
@@ -4080,6 +4112,7 @@ export const FreshmenDetailsUpdateWithoutScannedQRsInputSchema: z.ZodType<Prisma
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   thisOrThat: z.union([ z.lazy(() => FreshmenDetailsUpdatethisOrThatInputSchema),z.lazy(() => ThisOrThatSchema).array() ]).optional(),
   thisOrThatReady: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
+  scannedQRLeft: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   User: z.lazy(() => UserUpdateOneWithoutFreshmenDetailsNestedInputSchema).optional(),
   usedPasscodes: z.lazy(() => PasscodeInstancesUpdateManyWithoutUsedByNestedInputSchema).optional()
 }).strict();
@@ -4090,6 +4123,7 @@ export const FreshmenDetailsUncheckedUpdateWithoutScannedQRsInputSchema: z.ZodTy
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   thisOrThat: z.union([ z.lazy(() => FreshmenDetailsUpdatethisOrThatInputSchema),z.lazy(() => ThisOrThatSchema).array() ]).optional(),
   thisOrThatReady: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
+  scannedQRLeft: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   User: z.lazy(() => UserUncheckedUpdateOneWithoutFreshmenDetailsNestedInputSchema).optional(),
   usedPasscodes: z.lazy(() => PasscodeInstancesUncheckedUpdateManyWithoutUsedByNestedInputSchema).optional()
 }).strict();
@@ -4149,6 +4183,7 @@ export const FreshmenDetailsCreateWithoutUsedPasscodesInputSchema: z.ZodType<Pri
   id: z.string().cuid().optional(),
   thisOrThat: z.union([ z.lazy(() => FreshmenDetailsCreatethisOrThatInputSchema),z.lazy(() => ThisOrThatSchema).array() ]).optional(),
   thisOrThatReady: z.boolean().optional(),
+  scannedQRLeft: z.number().int().optional(),
   User: z.lazy(() => UserCreateNestedOneWithoutFreshmenDetailsInputSchema).optional(),
   scannedQRs: z.lazy(() => QRInstancesCreateNestedManyWithoutScannedByInputSchema).optional()
 }).strict();
@@ -4159,6 +4194,7 @@ export const FreshmenDetailsUncheckedCreateWithoutUsedPasscodesInputSchema: z.Zo
   id: z.string().cuid().optional(),
   thisOrThat: z.union([ z.lazy(() => FreshmenDetailsCreatethisOrThatInputSchema),z.lazy(() => ThisOrThatSchema).array() ]).optional(),
   thisOrThatReady: z.boolean().optional(),
+  scannedQRLeft: z.number().int().optional(),
   User: z.lazy(() => UserUncheckedCreateNestedOneWithoutFreshmenDetailsInputSchema).optional(),
   scannedQRs: z.lazy(() => QRInstancesUncheckedCreateNestedManyWithoutScannedByInputSchema).optional()
 }).strict();
@@ -4228,6 +4264,7 @@ export const FreshmenDetailsUpdateWithoutUsedPasscodesInputSchema: z.ZodType<Pri
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   thisOrThat: z.union([ z.lazy(() => FreshmenDetailsUpdatethisOrThatInputSchema),z.lazy(() => ThisOrThatSchema).array() ]).optional(),
   thisOrThatReady: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
+  scannedQRLeft: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   User: z.lazy(() => UserUpdateOneWithoutFreshmenDetailsNestedInputSchema).optional(),
   scannedQRs: z.lazy(() => QRInstancesUpdateManyWithoutScannedByNestedInputSchema).optional()
 }).strict();
@@ -4238,6 +4275,7 @@ export const FreshmenDetailsUncheckedUpdateWithoutUsedPasscodesInputSchema: z.Zo
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   thisOrThat: z.union([ z.lazy(() => FreshmenDetailsUpdatethisOrThatInputSchema),z.lazy(() => ThisOrThatSchema).array() ]).optional(),
   thisOrThatReady: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
+  scannedQRLeft: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   User: z.lazy(() => UserUncheckedUpdateOneWithoutFreshmenDetailsNestedInputSchema).optional(),
   scannedQRs: z.lazy(() => QRInstancesUncheckedUpdateManyWithoutScannedByNestedInputSchema).optional()
 }).strict();
@@ -4429,14 +4467,14 @@ export const PasscodeInstancesCreateManyUsedByInputEnvelopeSchema: z.ZodType<Pri
 }).strict();
 
 export const QRInstancesCreateWithoutScannedByInputSchema: z.ZodType<Prisma.QRInstancesCreateWithoutScannedByInput> = z.object({
-  id: z.string().uuid().optional(),
+  id: z.string().cuid().optional(),
   create_at: z.coerce.date().optional(),
   update_at: z.coerce.date().optional(),
   owner: z.lazy(() => SophomoreDetailsCreateNestedOneWithoutQRInstancesInputSchema)
 }).strict();
 
 export const QRInstancesUncheckedCreateWithoutScannedByInputSchema: z.ZodType<Prisma.QRInstancesUncheckedCreateWithoutScannedByInput> = z.object({
-  id: z.string().uuid().optional(),
+  id: z.string().cuid().optional(),
   create_at: z.coerce.date().optional(),
   update_at: z.coerce.date().optional(),
   ownerId: z.string()
@@ -4774,14 +4812,14 @@ export const UserCreateOrConnectWithoutSophomoreDetailsInputSchema: z.ZodType<Pr
 }).strict();
 
 export const QRInstancesCreateWithoutOwnerInputSchema: z.ZodType<Prisma.QRInstancesCreateWithoutOwnerInput> = z.object({
-  id: z.string().uuid().optional(),
+  id: z.string().cuid().optional(),
   create_at: z.coerce.date().optional(),
   update_at: z.coerce.date().optional(),
   scannedBy: z.lazy(() => FreshmenDetailsCreateNestedOneWithoutScannedQRsInputSchema).optional()
 }).strict();
 
 export const QRInstancesUncheckedCreateWithoutOwnerInputSchema: z.ZodType<Prisma.QRInstancesUncheckedCreateWithoutOwnerInput> = z.object({
-  id: z.string().uuid().optional(),
+  id: z.string().cuid().optional(),
   create_at: z.coerce.date().optional(),
   update_at: z.coerce.date().optional(),
   scannedById: z.string().optional().nullable()
@@ -5062,7 +5100,7 @@ export const PasscodeInstancesCreateManyUsedByInputSchema: z.ZodType<Prisma.Pass
 }).strict();
 
 export const QRInstancesCreateManyScannedByInputSchema: z.ZodType<Prisma.QRInstancesCreateManyScannedByInput> = z.object({
-  id: z.string().uuid().optional(),
+  id: z.string().cuid().optional(),
   create_at: z.coerce.date().optional(),
   update_at: z.coerce.date().optional(),
   ownerId: z.string()
@@ -5090,21 +5128,21 @@ export const PasscodeInstancesUncheckedUpdateManyWithoutUsedPasscodesInputSchema
 }).strict();
 
 export const QRInstancesUpdateWithoutScannedByInputSchema: z.ZodType<Prisma.QRInstancesUpdateWithoutScannedByInput> = z.object({
-  id: z.union([ z.string().uuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   create_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   owner: z.lazy(() => SophomoreDetailsUpdateOneRequiredWithoutQRInstancesNestedInputSchema).optional()
 }).strict();
 
 export const QRInstancesUncheckedUpdateWithoutScannedByInputSchema: z.ZodType<Prisma.QRInstancesUncheckedUpdateWithoutScannedByInput> = z.object({
-  id: z.union([ z.string().uuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   create_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   ownerId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const QRInstancesUncheckedUpdateManyWithoutScannedQRsInputSchema: z.ZodType<Prisma.QRInstancesUncheckedUpdateManyWithoutScannedQRsInput> = z.object({
-  id: z.union([ z.string().uuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   create_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   ownerId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
@@ -5136,7 +5174,7 @@ export const HintsCreateManySophomoreInputSchema: z.ZodType<Prisma.HintsCreateMa
 }).strict();
 
 export const QRInstancesCreateManyOwnerInputSchema: z.ZodType<Prisma.QRInstancesCreateManyOwnerInput> = z.object({
-  id: z.string().uuid().optional(),
+  id: z.string().cuid().optional(),
   create_at: z.coerce.date().optional(),
   update_at: z.coerce.date().optional(),
   scannedById: z.string().optional().nullable()
@@ -5160,21 +5198,21 @@ export const HintsUncheckedUpdateWithoutSophomoreInputSchema: z.ZodType<Prisma.H
 }).strict();
 
 export const QRInstancesUpdateWithoutOwnerInputSchema: z.ZodType<Prisma.QRInstancesUpdateWithoutOwnerInput> = z.object({
-  id: z.union([ z.string().uuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   create_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   scannedBy: z.lazy(() => FreshmenDetailsUpdateOneWithoutScannedQRsNestedInputSchema).optional()
 }).strict();
 
 export const QRInstancesUncheckedUpdateWithoutOwnerInputSchema: z.ZodType<Prisma.QRInstancesUncheckedUpdateWithoutOwnerInput> = z.object({
-  id: z.union([ z.string().uuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   create_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   scannedById: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const QRInstancesUncheckedUpdateManyWithoutQRInstancesInputSchema: z.ZodType<Prisma.QRInstancesUncheckedUpdateManyWithoutQRInstancesInput> = z.object({
-  id: z.union([ z.string().uuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   create_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   scannedById: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
