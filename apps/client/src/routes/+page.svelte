@@ -2,22 +2,15 @@
 	import { page } from '$app/stores';
 	import DynamicLoginButton from '$components/svelte/DynamicLoginButton.svelte';
 	import LandingFooter from '$components/svelte/LandingFooter.svelte';
-	import LoginButton from '$components/svelte/LoginButton.svelte';
-	import LogoutButton from '$components/svelte/LogoutButton.svelte';
-	import Button from '$components/ui/button/Button.svelte';
 	import { AuthController } from '$lib/auth/AuthController';
-	import { trpc } from '$lib/trpc/client';
-
-	const loadData = async () => {
-		console.log('bruh moment');
-		await trpc($page).greeting.query();
-	};
+	import { trpc } from '$lib/trpc';
 
 	const { isSignedIn } = AuthController($page);
 
 	$: console.log($page.data.session);
 </script>
 
+<<<<<<< HEAD
 <div class="min-h-screen flex flex-col bg-gradient-to-b from-primary to-black">
 	<div class="px-3 py-16 md:px-16 md:py-24 flex flex-col gap-y-4">
 		<div class="text-center relative">
@@ -63,6 +56,18 @@ xx สิงหาคม พ.ศ. 2566 จนถึง xx สิงหาคม 
 			<img src="./konnok-footer.png" alt="" class="w-full my-2">
 <DynamicLoginButton />
 		</div>
+=======
+<div class="min-h-screen flex flex-col">
+	<div class="px-8 py-16 md:px-16 md:py-24 flex flex-col gap-y-4">
+		<h1 class="text-5xl font-semibold">IT Sairahut</h1>
+		<p>
+			Lorem, ipsum dolor sit amet consectetur adipisicing elit. Labore corrupti, dolorum neque nulla
+			voluptas a veniam quisquam illum et, consequatur repudiandae, libero saepe dolores ad? Commodi
+			earum dignissimos incidunt minima?
+		</p>
+
+		<DynamicLoginButton />
+>>>>>>> origin/main
 	</div>
 
 	<LandingFooter />

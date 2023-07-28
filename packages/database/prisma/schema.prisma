@@ -52,7 +52,7 @@ enum PlayerType {
   GUEST
   // IT21
   FRESHMEN
-  // IT20
+  // IT20, Senior's player
   SOPHOMORE
   // < IT19
   SENIOR
@@ -70,6 +70,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
 
+  // First timer would be NONE
   type PlayerType @default(NONE)
 
   // เมื่อ type == SOPHOMORE
@@ -80,7 +81,7 @@ model User {
   freshmenDetails   FreshmenDetails? @relation(fields: [freshmenDetailsId], references: [id])
   freshmenDetailsId String?          @unique
 
-  balance    Int       @default(0)
+  balance   Int       @default(0)
   faction   Factions? @relation(fields: [factionId], references: [id])
   factionId String?
 }
@@ -161,21 +162,42 @@ model FreshmenDetails {
   id   String @id @unique @default(cuid())
   User User?
 
-  thisOrThat ThisOrThat[]
+  thisOrThat      ThisOrThat[]
+  thisOrThatReady Boolean      @default(false)
 
   // Passcodes that have been used
   usedPasscodes PasscodeInstances[]
 
   // QR Codes that have been scanned
-  scannedQRs    QRInstances[]
+  scannedQRs QRInstances[]
+}
+
+model HintSlugs {
+  slug        String @id @unique
+  displayName String
+
+  Hints Hints[]
+}
+
+model Hints {
+  slug       HintSlugs @relation(fields: [hintSlugId], references: [slug])
+  hintSlugId String
+  content    String
+
+  sophomore   SophomoreDetails @relation(fields: [sophomoreId], references: [id])
+  sophomoreId String
+
+  @@id([hintSlugId, sophomoreId])
 }
 
 model SophomoreDetails {
   create_at DateTime @default(now())
   update_at DateTime @updatedAt
 
-  thisOrThat ThisOrThat[]
-  hints      String[]
+  thisOrThat      ThisOrThat[]
+  thisOrThatReady Boolean      @default(false)
+  hints           Hints[]
+  hintsReady      Boolean      @default(false)
 
   id             String    @id @unique @default(cuid())
   // name - surname in airtable
@@ -183,7 +205,7 @@ model SophomoreDetails {
   // title in airtable
   title          NameTitle
   // student id in airtable
-  student_id     Int
+  student_id     String
   // nickname in airtable
   nickname       String
   // branch สาขา
@@ -198,7 +220,7 @@ model SophomoreDetails {
   // เบอร์โทรศัพท์
   phone          String
 
-  User              User?
+  User User?
 
   // QR instances that have been created
   QRInstances       QRInstances[]
