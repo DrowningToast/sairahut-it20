@@ -10,7 +10,7 @@
 	$: console.log($page.data.session);
 </script>
 
-<div class="min-h-screen flex flex-col bg-gradient-to-b from-primary to-black">
+<div class="">
 	<div class="px-3 py-16 md:px-16 md:py-24 flex flex-col gap-y-4">
 		<div class="text-center relative">
 			<img src="./konnok.png" alt="" class=" absolute bottom-1 -right-0" />
