@@ -12,7 +12,7 @@
 		dress: string,
 		name: string;
 
-	let readyToSubmit: boolean = false;
+	let isAlreadySubmit: boolean = false;
 
 	const onReset = () => {
 		skin = personal = height = sex = fav_food = hobby = fav_place = dress = name = '';
@@ -20,6 +20,7 @@
 
 	const onSubmit = () => {
 		// onsubmit
+        // isAlreadySubmit = true;
 	};
 </script>
 
@@ -31,44 +32,44 @@
 <div class="text-white flex flex-col gap-y-7 font-extralight font-krub mt-3">
 	<div class="flex flex-col gap-y-2">
 		<p>รูปร่าง</p>
-		<Input class=" text-white bg-blue-400/25" value={skin} isDisabled={readyToSubmit} />
+		<Input class=" text-white bg-blue-400/25" value={skin} isDisabled={isAlreadySubmit} />
 	</div>
 	<div class="flex flex-col gap-y-2">
 		<p>นิสัย</p>
-		<Input class=" text-white bg-blue-400/25 " value={personal} isDisabled={readyToSubmit} />
+		<Input class=" text-white bg-blue-400/25 " value={personal} isDisabled={isAlreadySubmit} />
 	</div>
 	<div class="flex flex-col gap-y-2">
 		<p>ส่วนสูง</p>
-		<Input class=" text-white bg-blue-400/25 " value={height} isDisabled={readyToSubmit} />
+		<Input class=" text-white bg-blue-400/25 " value={height} isDisabled={isAlreadySubmit} />
 	</div>
 	<div class="flex flex-col gap-y-2">
 		<p>เพศ</p>
-		<Input class=" text-white bg-blue-400/25 " value={sex} isDisabled={readyToSubmit} />
+		<Input class=" text-white bg-blue-400/25 " value={sex} isDisabled={isAlreadySubmit} />
 	</div>
 	<div class="flex flex-col gap-y-2">
 		<p>ชอบกินอะไร</p>
-		<Input class=" text-white bg-blue-400/25 " value={fav_food} isDisabled={readyToSubmit} />
+		<Input class=" text-white bg-blue-400/25 " value={fav_food} isDisabled={isAlreadySubmit} />
 	</div>
 	<div class="flex flex-col gap-y-2">
 		<p>งานอดิเรก</p>
-		<Input class=" text-white bg-blue-400/25 " value={hobby} isDisabled={readyToSubmit} />
+		<Input class=" text-white bg-blue-400/25 " value={hobby} isDisabled={isAlreadySubmit} />
 	</div>
 	<div class="flex flex-col gap-y-2">
 		<p>ชอบอยู่ที่ไหนในคณะ</p>
-		<Input class=" text-white bg-blue-400/25 " value={fav_place} isDisabled={readyToSubmit} />
+		<Input class=" text-white bg-blue-400/25 " value={fav_place} isDisabled={isAlreadySubmit} />
 	</div>
 	<div class="flex flex-col gap-y-2">
 		<p>เป็นคนแต่งกายแบบไหนหยอ</p>
-		<Input class=" text-white bg-blue-400/25 " value={dress} isDisabled={readyToSubmit} />
+		<Input class=" text-white bg-blue-400/25 " value={dress} isDisabled={isAlreadySubmit} />
 	</div>
 	<div class="flex flex-col gap-y-2">
 		<p>ใบ้เกี่ยวกับชื่อตัวเองหน่อย</p>
-		<Input class=" text-white bg-blue-400/25 " value={name} isDisabled={readyToSubmit} />
+		<Input class=" text-white bg-blue-400/25 " value={name} isDisabled={isAlreadySubmit} />
 	</div>
 	<div class="flex justify-between mt-2">
-		{#if !readyToSubmit}
+		{#if !isAlreadySubmit}
 			<div class="w-full flex justify-start">
-				<SRHButton class="w-10/12" on:click={onReset} disable={readyToSubmit}>RESET</SRHButton>
+				<SRHButton class="w-10/12" on:click={onReset} >RESET</SRHButton>
 			</div>
 			<div class="w-full flex justify-end">
 				<SRHButton class="w-10/12" on:click={onSubmit}>SAVE</SRHButton>
