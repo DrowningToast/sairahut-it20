@@ -74,11 +74,11 @@ model User {
   type PlayerType @default(NONE)
 
   // เมื่อ type == SOPHOMORE
-  sophomoreDetails   SophomoreDetails? @relation(fields: [sophomoreDetailsId], references: [id])
+  sophomoreDetails   SophomoreDetails? @relation(fields: [sophomoreDetailsId], references: [id], onDelete: Cascade)
   sophomoreDetailsId String?           @unique
 
   // เมื่อ type == FRESHMEN
-  freshmenDetails   FreshmenDetails? @relation(fields: [freshmenDetailsId], references: [id])
+  freshmenDetails   FreshmenDetails? @relation(fields: [freshmenDetailsId], references: [id], onDelete: Cascade)
   freshmenDetailsId String?          @unique
 
   balance   Int       @default(0)
@@ -184,7 +184,7 @@ model Hints {
   hintSlugId String
   content    String
 
-  sophomore   SophomoreDetails @relation(fields: [sophomoreId], references: [id])
+  sophomore   SophomoreDetails @relation(fields: [sophomoreId], references: [id], onDelete: Cascade)
   sophomoreId String
 
   @@id([hintSlugId, sophomoreId])
