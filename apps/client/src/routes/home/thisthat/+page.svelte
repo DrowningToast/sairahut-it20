@@ -1,6 +1,6 @@
 <script>
+	import QuesThisOrThat from '$components/svelte/QuesThisOrThat.svelte';
 	import SrhButton from '$components/svelte/SRHButton.svelte';
-	import QuesThisOrThat from './../../../lib/components/svelte/QuesThisOrThat.svelte';
 
 	$: selecteds = new Array(10).fill(null);
 	const choices = [
@@ -35,16 +35,17 @@
 	</p>
 </div>
 <div class="flex flex-col text-white relative gap-y-10 mt-10 overflow-visible">
-	{#each choices as choice, index (choice)}
+	<QuesThisOrThat leftText={'AAA'} rightText={'BBB'} bind:selected={selecteds[0]} />
+	<!-- {#each choices as choice, index}
 		<QuesThisOrThat
 			leftText={choice.left}
 			rightText={choice.right}
 			bind:selected={selecteds[index]}
 		/>
-	{/each}
+	{/each} -->
 </div>
 
-<div class=" text-center mt-16 text-accent-3">
+<div class=" text-center mt-16 text-accent">
 	<p>อย่าลืมแคปรูปนี้แล้วแท๊กลง IG: @sairahut_itkmitl</p>
 </div>
 <SrhButton disabled={!readyToSubmit} class="px-4">ยืนยันคำตอบ</SrhButton>
