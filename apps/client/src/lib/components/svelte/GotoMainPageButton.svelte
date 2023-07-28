@@ -6,11 +6,8 @@
 </script>
 
 <a href={redirect}
-	><Button
-		><div class="flex items-center gap-x-1">
-			<div class="w-8 grid place-items-center">
-				<DoorOpen />
-			</div>
+	><Button class="bg-neutral-900 drop-shadow-[0px_0px_3px_#FFFADD]"
+		><div class="flex items-center justify-center text-accent">
 			Enter the website
 		</div></Button
 	></a

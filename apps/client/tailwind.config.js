@@ -77,6 +77,9 @@ const config = {
 				noto: ['Noto Sans Thai', ...fontFamily.sans],
 				krub: ['Krub', ...fontFamily.sans],
 				Pridi: ['Pridi', ...fontFamily.sans],
+			},
+			scale: {
+				'-100': '-1',
 			}
 		}
 	},
