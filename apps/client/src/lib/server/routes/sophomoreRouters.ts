@@ -34,7 +34,7 @@ export const sophomoreRouters = createRouter({
 			return query;
 		}),
 	submitThisOrThat: protectedProcedure
-		.input(z.array(z.string()))
+		.input(z.array(z.string()).min(10).max(10))
 		.mutation(async ({ ctx, input }) => {
 			await prisma.user.update({
 				data: {
