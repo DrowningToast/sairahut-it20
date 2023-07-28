@@ -3,7 +3,7 @@
 
 	let className: string | undefined | null = undefined;
 	export { className as class };
-
+	export let isDisabled: boolean = false;
 	import Button from '$components/ui/button/Button.svelte';
 	import { cn } from '$lib/utils';
 </script>
@@ -20,7 +20,7 @@
 	on:keyup
 	on:mouseenter
 	on:mouseleave
->
+>	
 	<div class="flex items-center justify-center text-accent">
 		<slot />
 	</div>
