@@ -8,8 +8,8 @@ export const thisThatRouter = createRouter({
 		.input(
 			z
 				.array(z.enum(['LEFT', 'RIGHT']))
-				.min(10)
-				.max(10)
+				.min(11)
+				.max(11)
 		)
 		.mutation(async ({ ctx, input }) => {
 			await prisma.user.update({
