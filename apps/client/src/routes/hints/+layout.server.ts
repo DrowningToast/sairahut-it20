@@ -9,11 +9,12 @@ export const load: LayoutServerLoad = async ({ locals }) => {
         throw redirect(307, '/');
     }
 
-    // if user is already done this or that
+    // if user is freshmen
     if (user?.type === 'FRESHMEN') {
         throw redirect(307, '/unauthorized');
     }
 
+    // if user has done hints already
     if (user?.sophomoreDetails?.hintsReady) {
         throw redirect(307, '/home')
     }

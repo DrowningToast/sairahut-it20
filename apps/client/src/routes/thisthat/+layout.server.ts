@@ -11,19 +11,7 @@ export const load: LayoutServerLoad = async ({ locals }) => {
     }
 
     // if user is already done this or that
-    const data = await prisma.user.findUnique({
-        where: {
-            email: user?.email as string
-        },
-        include: {
-            sophomoreDetails: true,
-            freshmenDetails: true
-        }
-    })
-
-    console.log(data?.sophomoreDetails)
-
-    if (data?.sophomoreDetails?.thisOrThat.length || data?.freshmenDetails?.thisOrThat.length) {
+    if (user?.sophomoreDetails?.thisOrThatReady || user?.freshmenDetails?.thisOrThatReady) {
         throw redirect(307, '/')
     }
 
