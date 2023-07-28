@@ -18,6 +18,8 @@
 		<CardButtonMenu isActived={isPasswordActive} img_active={"../password-active.png"} img_inactive={"../password-inactive.png"} text={"กรอกรหัสเพื่อรับคำใบ้"} link={"#"}/>
 		<CardButtonMenu isActived={isProfileActive} img_active={"../profile-active.png"} img_inactive={"../profile-inactive.png"} text={"บัตรประจำตัว"} link={"#"}/>
 	</div>
-	<LogoutButton />
+	<div class="flex justify-center mt-7">
+		<LogoutButton />
+	</div>
 </div>
 

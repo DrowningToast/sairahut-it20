@@ -11,7 +11,7 @@
 <Button
 	class={cn(
 		buttonVariants({ className }),
-		'bg-neutral-900 drop-shadow-[0px_0px_3px_#FFFADD] active:bg-neutral-900 focus:bg-neutral-900 '
+		'bg-neutral-900 drop-shadow-[0px_0px_5px_#FFFADD] active:bg-neutral-900 focus:bg-neutral-900 '
 	)}
 	{...$$restProps}
 	on:click
