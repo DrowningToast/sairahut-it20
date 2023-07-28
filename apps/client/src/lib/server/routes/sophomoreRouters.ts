@@ -53,7 +53,7 @@ export const sophomoreRouters = createRouter({
 			return 'OK'
 		}),
 	submitHints: protectedProcedure
-		.input(z.array(z.string()))
+		.input(z.array(z.string()).min(10).max(10))
 		.mutation(async ({ ctx, input }) => {
 			const hintSlugId = [
 				'appearance',
