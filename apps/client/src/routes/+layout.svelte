@@ -4,7 +4,7 @@
 	import '../app.postcss';
 </script>
 
-<div class="w-full min-h-screen flex flex-col font-noto">
+<div class="w-screen min-h-screen flex flex-col font-noto">
 	<!-- <Header /> -->
 
 	<main>
