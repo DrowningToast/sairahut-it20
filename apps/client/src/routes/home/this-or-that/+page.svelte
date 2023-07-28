@@ -1,4 +1,5 @@
 <script>
+	import { goto } from '$app/navigation';
 	import QuesThisOrThat from '$components/svelte/QuesThisOrThat.svelte';
 	import SrhButton from '$components/svelte/SRHButton.svelte';
 	import { trpc } from '$lib/trpc';
@@ -19,6 +20,8 @@
 		{ left: 'ไปเที่ยว', right: 'อยู่บ้าน' }
 	];
 
+	$: console.log(choices);
+
 	$: readyToSubmit =
 		selecteds.filter((selected) => {
 			return !!selected;
@@ -27,7 +30,7 @@
 	const submitThisOrThat = async () => {
 		const res = await trpc.thisThat.submitThisOrThat.mutate(selecteds);
 		if (res === 'OK') {
-			redirect(307, '/home');
+			goto('/home');
 		}
 	};
 </script>
@@ -54,7 +57,11 @@
 </div>
 
 <div class="text-center mt-12 text-accent flex flex-col gap-y-1 mb-2">
-	<p>อย่าลืมแคปรูปนี้แล้วแท๊กลง IG: @sairahut_itkmitl</p>
+	<p>
+		อย่าลืมแคปรูปนี้แล้วแท๊กลง IG: <a href="https://www.instagram.com/itgg.kmitl/" target="_blank"
+			>@sairahut_itkmitl</a
+		>
+	</p>
 	<p>เมื่อกดบันทึกข้อมูลแล้ว จะไม่สามารถกลับมาแก้ได้อีก</p>
 </div>
 <SrhButton on:click={submitThisOrThat} disabled={!readyToSubmit} class="px-4">ยืนยันคำตอบ</SrhButton
