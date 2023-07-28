@@ -37,9 +37,7 @@
 						อะไรคือกิจกรรมสายรหัส
 					</h4>
 				</div>
-				<p
-					class="text-white text-sm border-accent-alt border py-10 px-3 font-thin font-Pridi whitespace-pre"
-				>
+				<p class="text-white text-sm border-accent-alt border py-10 px-3 font-thin font-Pridi">
 					กิจกรรมสายรหัสครั้งที่ 8 จัดขึ้นเพื่อสร้างความสัมพันธ์อันดี ระหว่างรุ่นพี่
 					และรุ่นน้องมุ่งเน้นให้นักศึกษาได้รู้จักกันให้มากขึ้น ช่วยเหลือซึ่งกันและกัน
 					โดยจะเริ่มวันที่ xx สิงหาคม พ.ศ. 2566 จนถึง xx สิงหาคม พ.ศ. 2566 ที่ @คณะเทคโนโลยีสารสนเทศ
@@ -54,9 +52,7 @@
 						ใครสามารถเข้าร่วมได้บ้าง
 					</h4>
 				</div>
-				<p
-					class="text-white text-sm border-accent-alt border py-12 px-3 font-thin font-Pridi whitespace-pre"
-				>
+				<p class="text-white text-sm border-accent-alt border py-12 px-3 font-thin font-Pridi">
 					นักศึกษาคณะเทคโนโลยีสารสนเทศ สจล. รุ่นที่ 20 และ 21
 					จะสามารเข้าร่วมมาเป็นสายรหัสรุ่นพี่และเข้าร่วมกิจกรรมหลักได้ โดยรุ่นพี่
 					รุ่นอื่นสามารถเข้าร่วมกิจกรรมในส่วนอื่นๆ ได้เหมือนกัน
@@ -70,9 +66,7 @@
 						วิธีการเข้าร่วม (IT20 และ IT21)
 					</h4>
 				</div>
-				<p
-					class="text-white text-sm border-accent-alt border py-10 px-3 font-thin font-Pridi whitespace-pre"
-				>
+				<p class="text-white text-sm border-accent-alt border py-10 px-3 font-thin font-Pridi">
 					นักศึกษาต้องกรอกข้อมูลส่วนตัวนิสัย ความชอบของตนเองหลังจากเข้าสู่ระบบแล้วจึง
 					จะนับได้ว่าได้เข้าร่วมกิจกรรมโดนสมบูรณ์
 				</p>

@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { createRouter } from './context';
 import { publicProcedure } from './procedure';
 import { sophomoreRouters } from './routes/sophomoreRouters';
+import { thisThatRouter } from './routes/thisThatRouter';
 
 export const appRouter = createRouter({
 	greet: publicProcedure
@@ -14,7 +15,8 @@ export const appRouter = createRouter({
 		.query(({ ctx, input }) => {
 			return `Hello ${input.name}`;
 		}),
-	sophomores: sophomoreRouters
+	sophomores: sophomoreRouters,
+	thisThat: thisThatRouter
 });
 
 export type AppRouter = typeof appRouter;
