@@ -1,1 +1,5 @@
-import { Prisma, PrismaClient } from 'database';
+import { getHintSlugs, hintController } from './controllers/hintController';
+
+export const databaseController = {
+	hints: hintController
+};
