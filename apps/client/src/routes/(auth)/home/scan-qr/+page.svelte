@@ -7,6 +7,7 @@
 	import QrScanner from 'qr-scanner';
 	import { page } from '$app/stores';
 	import { AuthController } from '$lib/auth/AuthController';
+	import SrhButton from '$components/svelte/SRHButton.svelte';
 
 	let videoElement: HTMLVideoElement;
 	let qrScanner: QrScanner;
@@ -56,3 +57,7 @@
 <video class="rounded" bind:this={videoElement}>
 	<track kind="captions" />
 </video>
+
+<SrhButton>
+	กลับสู่หน้าหลัก
+</SrhButton>
