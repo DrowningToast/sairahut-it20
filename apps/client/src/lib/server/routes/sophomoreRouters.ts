@@ -3,6 +3,7 @@ import { createRouter } from '../context';
 import { oldProcedure } from '../procedure';
 import { AirtableController } from '$lib/airtable-api/controller';
 import { prisma } from '$lib/serverUtils';
+import { databaseController } from '../controllers';
 
 export const sophomoreRouters = createRouter({
 	getAirtableParticipantByStudentId: oldProcedure
@@ -58,23 +59,9 @@ export const sophomoreRouters = createRouter({
 				hintSlugId: hintSlugId[index]
 			}));
 
-			const hints = await prisma.hints.createMany({
-				data: processData
-			});
-
-			await prisma.sophomoreDetails.update({
-				data: {
-					hintsReady: true
-				},
-				where: {
-					id: sophomoreDetailsId
-				}
-			});
-
-			return 'OK';
+			await databaseController.hints.submitHintSlugs(sophomoreDetailsId, processData);
 		}),
 	getHintSlugs: oldProcedure.query(async ({ ctx }) => {
-		const response = await prisma.hintSlugs.findMany({});
-		return response;
+		return await databaseController.hints.getHintSlugs();
 	})
 });
