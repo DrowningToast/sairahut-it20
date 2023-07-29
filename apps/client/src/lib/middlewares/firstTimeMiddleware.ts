@@ -21,14 +21,10 @@ export const determineYear = (email: string) => {
 export const firstTimeMiddleware: Handle = async ({ event, resolve }) => {
 	const user = event.locals.user;
 
-	console.log(user);
-
 	// Set the user type
 	// If it's the first time user enters the website
 	if (user?.email && user.type === 'NONE') {
 		const gen = determineYear(user.email);
-
-		console.log(gen);
 
 		// if it's the senior
 		if (gen < 20) {
@@ -37,7 +33,6 @@ export const firstTimeMiddleware: Handle = async ({ event, resolve }) => {
 
 		// if the user IT20
 		if (gen === 20) {
-			console.log('isus');
 			// fetch the IT20 airtable
 			const res = await AirtableController.participantIT20.getParticipantByStudentId(
 				user.email.replace('@kmitl.ac.th', '')
@@ -46,6 +41,8 @@ export const firstTimeMiddleware: Handle = async ({ event, resolve }) => {
 			if (!res) {
 				throw new Error('Email not found');
 			}
+
+			console.log(res.many_fresh);
 
 			// populate the user details
 			await prisma.$transaction([
@@ -56,11 +53,11 @@ export const firstTimeMiddleware: Handle = async ({ event, resolve }) => {
 						facebook_link: res.facebook_link,
 						instagram_link: res.instragram_link,
 						fullname: res.firstname + ' ' + res.surname,
-						many_fresh: res.many_fresh,
+						many_fresh: !!res.many_fresh,
 						nickname: res.nickname,
 						participate: res.participate,
 						phone: res.phone,
-						student_id: res.studentId,
+						student_id: res.studentId + '',
 						User: {
 							connect: {
 								email: user?.email

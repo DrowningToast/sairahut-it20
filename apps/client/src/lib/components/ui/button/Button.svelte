@@ -36,7 +36,7 @@
 	{href}
 	class={cn(
 		buttonVariants({ variant, size, className }),
-		'px-2 py-2 inline-block justify-center gap-x-2 w-48 md:w-64 lg:w-80'
+		'px-12 py-2 inline-block justify-center gap-x-2 md:w-64 lg:w-80'
 	)}
 	{...$$restProps}
 	on:click
