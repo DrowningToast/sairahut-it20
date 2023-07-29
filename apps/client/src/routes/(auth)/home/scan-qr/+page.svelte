@@ -51,8 +51,8 @@
 	});
 </script>
 
-<div class="rounded">
-	<video class="overflow-hidden w-32 h-32" bind:this={videoElement}>
+<div class="rounded w-4/5 h-52">
+	<video class="overflow-hidden" bind:this={videoElement}>
 		<track kind="captions" />
 	</video>
 </div>
