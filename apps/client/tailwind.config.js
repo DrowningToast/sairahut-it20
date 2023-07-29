@@ -24,9 +24,18 @@ const config = {
 					DEFAULT: 'hsl(var(--primary))',
 					foreground: 'hsl(var(--primary-foreground))'
 				},
+				"primary-alt": {
+					DEFAULT: 'hsl(var(--primary-alt))',
+					foreground: 'hsl(var(--primary-alt-foreground))'
+
+				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
 					foreground: 'hsl(var(--secondary-foreground))'
+				},
+				tertiary: {
+					DEFAULT: 'hsl(var(--tertiary))',
+					foreground: 'hsl(var(--tertiary-foreground))'
 				},
 				destructive: {
 					DEFAULT: 'hsl(var(--destructive))',
@@ -39,6 +48,10 @@ const config = {
 				accent: {
 					DEFAULT: 'hsl(var(--accent))',
 					foreground: 'hsl(var(--accent-foreground))'
+				},
+				"accent-alt": {
+					DEFAULT: 'hsl(var(--accent-alt))',
+					foreground: 'hsl(var(--accent-alt-foreground))'
 				},
 				popover: {
 					DEFAULT: 'hsl(var(--popover))',
@@ -61,11 +74,17 @@ const config = {
 			},
 			fontFamily: {
 				sans: [...fontFamily.sans],
-				noto: ['Noto Sans Thai', ...fontFamily.sans]
+				noto: ['Noto Sans Thai', ...fontFamily.sans],
+				krub: ['Krub', ...fontFamily.sans],
+				Pridi: ['Pridi', ...fontFamily.sans],
+			},
+			scale: {
+				'-100': '-1',
 			}
 		}
 	},
-	plugins: [tailwindcssAnimate]
+	plugins: [tailwindcssAnimate],
+	
 };
 
 export default config;

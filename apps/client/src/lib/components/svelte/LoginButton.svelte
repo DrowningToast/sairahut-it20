@@ -12,8 +12,8 @@
 		signIn('google', {
 			callbackUrl: redirect
 		})}
-	><div class="flex items-center gap-x-1">
-		<div class="w-8 grid place-items-center"><KeyRound /></div>
-		Sign in with Google
+	class="bg-neutral-900 drop-shadow-[0px_0px_3px_#FFFADD]"
+	><div class="flex items-center justify-center text-accent">
+		<p class="">เข้าสู่ระบบด้วยบัญชีสถาบัน</p>
 	</div>
 </Button>
