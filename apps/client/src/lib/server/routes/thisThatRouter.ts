@@ -1,5 +1,6 @@
 import { prisma } from '$lib/serverUtils';
 import { createRouter } from '../context';
+import { hintController } from '../controllers/hintController';
 import { protectedProcedure } from '../procedure';
 import { z } from 'zod';
 
@@ -17,28 +18,25 @@ export const thisThatRouter = createRouter({
 				thisOrThatReady: true
 			}
 
+
 			if (ctx.user?.freshmenDetailsId != null) {
-				await prisma.user.update({
-					data: {
-						sophomoreDetails: {
-							update
-						}
-					},
-					where: {
-						email: ctx.user?.email as string
-					}
-				});
-			} else if (ctx.user?.sophomoreDetailsId != null) {
-				await prisma.user.update({
-					data: {
+				await hintController.submitHints(
+					ctx.user?.email as string,
+					{
 						freshmenDetails: {
 							update
 						}
-					},
-					where: {
-						email: ctx.user?.email as string
 					}
-				});
+				)
+			} else if (ctx.user?.sophomoreDetailsId != null) {
+				await hintController.submitHints(
+					ctx.user?.email as string,
+					{
+						sophomoreDetails: {
+							update
+						}
+					}
+				)
 			}
 
 			return 'OK';
