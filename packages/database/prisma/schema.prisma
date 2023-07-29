@@ -115,7 +115,7 @@ enum ThisOrThat {
 
 // One instance per one freshmen 
 model QRInstances {
-  id String @id @unique @default(uuid())
+  id String @id @unique @default(cuid())
 
   create_at DateTime @default(now())
   update_at DateTime @default(now()) @updatedAt
@@ -127,6 +127,9 @@ model QRInstances {
   // Who is the owner of this QR Code
   owner   SophomoreDetails @relation(fields: [ownerId], references: [id])
   ownerId String
+
+  // จำนวนที่ QR Code ตัวนี้สามารถสแกนได้
+  quota Int @default(1)
 }
 
 // One instance per one freshmen

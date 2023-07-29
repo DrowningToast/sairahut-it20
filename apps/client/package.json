@@ -2,7 +2,7 @@
 	"name": "client",
 	"version": "0.0.1",
 	"scripts": {
-		"dev": "dotenv -e ../../.env -- vite dev",
+		"dev": "dotenv -e ../../.env -- vite dev --host",
 		"build": "vite build",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -49,6 +49,7 @@
 		"dotenv-cli": "^7.2.1",
 		"env": "workspace:^0.0.0",
 		"lucide-svelte": "^0.257.0",
+		"qr-scanner": "^1.4.2",
 		"radix-svelte": "^0.8.0",
 		"superjson": "^1.12.4",
 		"tailwind-merge": "^1.13.2",

@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { createRouter } from './context';
 import { publicProcedure } from './procedure';
 import { sophomoreRouters } from './routes/sophomoreRouters';
+import { freshmenRouters } from './routes/freshmenRouters';
 import { thisThatRouter } from './routes/thisThatRouter';
 
 export const appRouter = createRouter({
@@ -16,6 +17,7 @@ export const appRouter = createRouter({
 			return `Hello ${input.name}`;
 		}),
 	sophomores: sophomoreRouters,
+	freshmens: freshmenRouters,
 	thisThat: thisThatRouter
 });
 

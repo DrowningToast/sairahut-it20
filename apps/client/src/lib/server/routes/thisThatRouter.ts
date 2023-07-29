@@ -1,5 +1,6 @@
 import { prisma } from '$lib/serverUtils';
 import { createRouter } from '../context';
+import { hintController } from '../controllers/hintController';
 import { protectedProcedure } from '../procedure';
 import { z } from 'zod';
 
@@ -12,19 +13,31 @@ export const thisThatRouter = createRouter({
 				.max(11)
 		)
 		.mutation(async ({ ctx, input }) => {
-			await prisma.user.update({
-				data: {
-					sophomoreDetails: {
-						update: {
-							thisOrThat: input,
-							thisOrThatReady: true
+			const update = {
+				thisOrThat: input,
+				thisOrThatReady: true
+			}
+
+
+			if (ctx.user?.freshmenDetailsId != null) {
+				await hintController.submitHints(
+					ctx.user?.email as string,
+					{
+						freshmenDetails: {
+							update
 						}
 					}
-				},
-				where: {
-					email: ctx.user?.email as string
-				}
-			});
+				)
+			} else if (ctx.user?.sophomoreDetailsId != null) {
+				await hintController.submitHints(
+					ctx.user?.email as string,
+					{
+						sophomoreDetails: {
+							update
+						}
+					}
+				)
+			}
 
 			return 'OK';
 		})

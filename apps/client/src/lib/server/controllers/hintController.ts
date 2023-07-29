@@ -27,7 +27,17 @@ export const submitHintSlugs = async (
 	return 'OK';
 };
 
+export const submitHints = async (email: string, details: any) => {
+	await prisma.user.update({
+		data: details,
+		where: {
+			email,
+		}
+	});
+}
+
 export const hintController = {
 	getHintSlugs,
-	submitHintSlugs
+	submitHintSlugs,
+	submitHints
 };
