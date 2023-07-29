@@ -1,5 +1,5 @@
 <script>
-	import CardButtonMenu from './../../lib/components/svelte/CardButtonMenu.svelte';
+	import CardButtonMenu from '$components/svelte/CardButtonMenu.svelte';
 	import LogoutButton from '$components/svelte/LogoutButton.svelte';
 
 	let isQrCodeActive = true;

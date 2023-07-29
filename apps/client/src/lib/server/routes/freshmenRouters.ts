@@ -16,9 +16,15 @@ export const freshmenRouters = createRouter({
             })
 
             if (!data) {
-                return { message: `QR Instance with ID: ${input} not found.` }
+                return {
+                    success: 0,
+                    message: `QR Instance with ID: ${input} not found.`
+                }
             } else if (data.scannedById) {
-                return { message: `QR Instance with ID: ${input} already scanned.` }
+                return {
+                    success: 0,
+                    message: `QR Instance with ID: ${input} already scanned.`
+                }
             }
 
             await prisma.qRInstances.update({
@@ -30,6 +36,9 @@ export const freshmenRouters = createRouter({
                 }
             })
 
-            return 'OK'
+            return {
+                success: 1,
+                message: 'OK',
+            }
         })
 })

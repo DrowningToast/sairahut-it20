@@ -2,7 +2,7 @@
 	"name": "client",
 	"version": "0.0.1",
 	"scripts": {
-		"dev": "dotenv -e ../../.env -- vite dev",
+		"dev": "dotenv -e ../../.env -- vite dev --host",
 		"build": "vite build",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",

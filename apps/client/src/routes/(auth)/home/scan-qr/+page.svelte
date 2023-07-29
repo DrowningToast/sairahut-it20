@@ -3,22 +3,29 @@
 
 	import { trpc } from '$lib/trpc';
 
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import QrScanner from 'qr-scanner';
 
 	let videoElement: HTMLVideoElement;
-	let isScanned = false;
+	let qrScanner: QrScanner;
 
 	const submitData = async (id: string) => {
 		const data = await trpc.freshmens.submitScannedQR.query(id);
+
 		console.log(data);
+
+		if (data.success === 0) {
+			qrScanner.start();
+		} else {
+			qrScanner.stop();
+		}
 	};
 
 	const setScanner = () => {
-		const qrScanner = new QrScanner(
+		qrScanner = new QrScanner(
 			videoElement,
 			async ({ data }) => {
-				isScanned = true;
+				console.log(data);
 
 				submitData(data);
 
@@ -26,6 +33,7 @@
 			},
 			{
 				highlightScanRegion: true,
+				maxScansPerSecond: 1,
 				onDecodeError() {}
 			}
 		);
@@ -33,11 +41,18 @@
 		qrScanner.start();
 	};
 
+	const destroyScanner = () => {
+		qrScanner.stop();
+		qrScanner.destroy();
+	};
+
 	onMount(() => {
 		setScanner();
 	});
 </script>
 
-<video class="rounded" bind:this={videoElement}>
-	<track kind="captions" />
-</video>
+<div class="rounded">
+	<video class="overflow-hidden w-32 h-32" bind:this={videoElement}>
+		<track kind="captions" />
+	</video>
+</div>
