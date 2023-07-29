@@ -54,6 +54,7 @@
 			bind:selected={selecteds[index]}
 		/>
 	{/each}
+	<img src="../middle-thisthat.png" alt="" class="absolute transform top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-3/4">
 </div>
 
 <div class="text-center mt-12 text-accent flex flex-col gap-y-1 mb-2 font-Pridi font-extralight">
