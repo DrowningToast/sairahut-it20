@@ -3,8 +3,10 @@
 
 	import { trpc } from '$lib/trpc';
 
-	import { onDestroy, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import QrScanner from 'qr-scanner';
+	import { page } from '$app/stores';
+	import { AuthController } from '$lib/auth/AuthController';
 
 	let videoElement: HTMLVideoElement;
 	let qrScanner: QrScanner;
@@ -51,8 +53,6 @@
 	});
 </script>
 
-<div class="rounded w-4/5 h-52">
-	<video class="overflow-hidden" bind:this={videoElement}>
-		<track kind="captions" />
-	</video>
-</div>
+<video class="rounded" bind:this={videoElement}>
+	<track kind="captions" />
+</video>

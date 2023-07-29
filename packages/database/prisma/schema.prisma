@@ -127,6 +127,9 @@ model QRInstances {
   // Who is the owner of this QR Code
   owner   SophomoreDetails @relation(fields: [ownerId], references: [id])
   ownerId String
+
+  // จำนวนที่ QR Code ตัวนี้สามารถสแกนได้
+  quota Int @default(1)
 }
 
 // One instance per one freshmen
@@ -169,8 +172,7 @@ model FreshmenDetails {
   usedPasscodes PasscodeInstances[]
 
   // QR Codes that have been scanned
-  scannedQRs    QRInstances[]
-  scannedQRLeft Int           @default(10)
+  scannedQRs QRInstances[]
 }
 
 model HintSlugs {
