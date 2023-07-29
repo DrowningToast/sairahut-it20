@@ -12,19 +12,34 @@ export const thisThatRouter = createRouter({
 				.max(11)
 		)
 		.mutation(async ({ ctx, input }) => {
-			await prisma.user.update({
-				data: {
-					sophomoreDetails: {
-						update: {
-							thisOrThat: input,
-							thisOrThatReady: true
+			const update = {
+				thisOrThat: input,
+				thisOrThatReady: true
+			}
+
+			if (ctx.user?.freshmenDetailsId != null) {
+				await prisma.user.update({
+					data: {
+						sophomoreDetails: {
+							update
 						}
+					},
+					where: {
+						email: ctx.user?.email as string
 					}
-				},
-				where: {
-					email: ctx.user?.email as string
-				}
-			});
+				});
+			} else if (ctx.user?.sophomoreDetailsId != null) {
+				await prisma.user.update({
+					data: {
+						freshmenDetails: {
+							update
+						}
+					},
+					where: {
+						email: ctx.user?.email as string
+					}
+				});
+			}
 
 			return 'OK';
 		})

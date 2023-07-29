@@ -54,10 +54,10 @@
 	});
 </script>
 
-<video class="rounded" bind:this={videoElement}>
-	<track kind="captions" />
-</video>
+<div class="flex flex-col justify-center items-center gap-8">
+	<video class="rounded w-4/5" bind:this={videoElement}>
+		<track kind="captions" />
+	</video>
 
-<SrhButton>
-	กลับสู่หน้าหลัก
-</SrhButton>
+	<SrhButton>กลับสู่หน้าหลัก</SrhButton>
+</div>
