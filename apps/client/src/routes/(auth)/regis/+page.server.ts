@@ -2,7 +2,7 @@ import { determineYear } from '$lib/middlewares/firstTimeMiddleware';
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
-export const load = (async ({ locals }) => {
+export const load: PageServerLoad = (async ({ locals }) => {
 	const { user } = locals;
 
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -14,4 +14,4 @@ export const load = (async ({ locals }) => {
 	}
 
 	return {};
-}) satisfies PageServerLoad;
+}) ;
