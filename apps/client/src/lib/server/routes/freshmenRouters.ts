@@ -5,8 +5,6 @@ import { prisma } from '$lib/serverUtils';
 import { TRPCError } from '@trpc/server';
 import { freshmenRegister } from '$lib/zod';
 import { AirtableController } from '$lib/airtable-api/controller';
-import type { Branch, NameTitle } from 'database';
-import { insertFreshmen } from '$lib/airtable-api/controller/participant21/mutates';
 
 export const freshmenRouters = createRouter({
 	regis: protectedProcedure.input(freshmenRegister).mutation(async ({ input, ctx }) => {
