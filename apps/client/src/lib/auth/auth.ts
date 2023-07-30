@@ -21,6 +21,11 @@ const checkForRegistration = async (email: string) => {
 			email.replace('@kmitl.ac.th', '')
 		);
 		return !!res;
+	} else if (gen < 20) {
+		const res = await AirtableController.participantSenior.getParticipantByStudentId(
+			email.replace('@kmitl.ac.th', '')
+		);
+		return !!res;
 	}
 
 	return true;

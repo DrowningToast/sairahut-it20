@@ -172,7 +172,7 @@ model FreshmenDetails {
   usedPasscodes PasscodeInstances[]
 
   // Public Personal Information
-  student_id String
+  student_id String    @unique
   title      NameTitle
   first_name String
   last_name  String
@@ -224,7 +224,7 @@ model SophomoreDetails {
   // title in airtable
   title          NameTitle
   // student id in airtable
-  student_id     String
+  student_id     String    @unique
   // nickname in airtable
   nickname       String
   // branch สาขา
