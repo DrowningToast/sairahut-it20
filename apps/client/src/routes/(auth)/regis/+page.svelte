@@ -20,10 +20,9 @@
 	$: isLoading = false;
 
 	const handleSubmit = async (payload: FreshmenRegister) => {
-		console.log(payload);
+		isLoading = true;
 
 		try {
-			isLoading = true;
 			await trpc.freshmens.regis.mutate(payload);
 			goto('/home');
 		} catch (e) {
