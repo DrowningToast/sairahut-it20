@@ -3,7 +3,7 @@ import { freshmenParticipant } from "./table"
 
 interface IInsertFreshmen {
     title: NameTitle,
-    student_id: string,
+    student_id: number,
     first_name: string,
     last_name: string,
     phone: string,

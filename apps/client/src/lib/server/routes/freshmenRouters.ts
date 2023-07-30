@@ -28,19 +28,19 @@ export const freshmenRouters = createRouter({
 
 		// insert information into airtable here
 		// Sun จัดการให้หน่อย
-		// const data = {
-		// 	student_id: '66050545',
-		// 	first_name: 'กัญญาภัค',
-		// 	last_name: 'บงพิศาลภพ',
-		// 	phone: '0968936153',
-		// 	nickname: 'อั้ม',
-		// 	branch: 'IT' as Branch,
-		// 	facebook_link: 'https://www.facebook.com/aaxmyz',
-		// 	instagram_link: 'https://www.instagram.com/aaxmyz',
-		// 	title: 'MRS' as NameTitle
-		// }
+		const data = {
+			student_id: parseInt(student_id),
+			first_name: input.first_name,
+			last_name: input.last_name,
+			phone: input.phone,
+			nickname: input.nickname,
+			branch: input.branch,
+			facebook_link: input.facebook_link as string,
+			instagram_link: input.instagram_link as string,
+			title: input.title
+		}
 
-		// await insertFreshmen(data)
+		await insertFreshmen(data)
 
 		// insert data into the db
 		await prisma.freshmenDetails.create({
@@ -93,22 +93,4 @@ export const freshmenRouters = createRouter({
 			message: 'OK'
 		};
 	}),
-
-	testYingAirtable: protectedProcedure.query(async () => {
-		const data = {
-			student_id: '66050545',
-			first_name: 'กัญญาภัค',
-			last_name: 'บงพิศาลภพ',
-			phone: '0968936153',
-			nickname: 'อั้ม',
-			branch: 'IT' as Branch,
-			facebook_link: 'https://www.facebook.com/aaxmyz',
-			instagram_link: 'https://www.instagram.com/aaxmyz',
-			title: 'MRS' as NameTitle
-		}
-
-		await insertFreshmen(data)
-
-		return 'OK'
-	})
 });
