@@ -171,6 +171,22 @@ model FreshmenDetails {
   // Passcodes that have been used
   usedPasscodes PasscodeInstances[]
 
+  // Public Personal Information
+  student_id String
+  title      NameTitle
+  first_name String
+  last_name  String
+  nickname   String
+  branch     Branch
+
+  // Optional Public Personal Information
+  facebook_link  String?
+  instagram_link String?
+
+  // Non public personal details
+  // เบอร์โทรศัพท์
+  phone String
+
   // QR Codes that have been scanned
   scannedQRs QRInstances[]
 }
