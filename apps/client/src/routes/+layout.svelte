@@ -16,7 +16,7 @@
 
 <QueryClientProvider client={queryClient}
 	><div
-		class="w-screen min-h-screen flex flex-col font-noto bg-gradient-to-b from-primary to-black"
+		class="w-screen min-h-screen flex flex-col font-noto bg-gradient-to-b from-primary to-black overflow-hidden"
 	>
 		<!-- <Header /> -->
 
