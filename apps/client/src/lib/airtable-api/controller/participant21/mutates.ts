@@ -1,4 +1,4 @@
-import type { Branch, FreshmenDetails, NameTitle } from "database"
+import type { Branch, NameTitle } from "database"
 import { freshmenParticipant } from "./table"
 
 interface IInsertFreshmen {

@@ -4,7 +4,7 @@ import { protectedProcedure } from '../procedure';
 import { prisma } from '$lib/serverUtils';
 import { TRPCError } from '@trpc/server';
 import { freshmenRegister } from '$lib/zod';
-import { insertFreshmen } from '$lib/airtable-api/controller/participant21/mutates';
+import { AirtableController } from '$lib/airtable-api/controller';
 
 export const freshmenRouters = createRouter({
 	regis: protectedProcedure.input(freshmenRegister).mutation(async ({ input, ctx }) => {
@@ -37,7 +37,7 @@ export const freshmenRouters = createRouter({
 			title: input.title
 		}
 
-		await insertFreshmen(data)
+		await AirtableController.participantIT21.insertFreshmen(data)
 
 		// insert data into the db
 		await prisma.freshmenDetails.create({
