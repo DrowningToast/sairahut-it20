@@ -16,9 +16,9 @@ export const load: LayoutServerLoad = async ({ locals }) => {
 	}
 
 	// check if the this or that is set?
-	if (!(user?.sophomoreDetails?.thisOrThatReady || user?.freshmenDetails?.thisOrThatReady)) {
-		throw redirect(307, '/this-or-that');
-	}
+	// if (!(user?.sophomoreDetails?.thisOrThatReady || user?.freshmenDetails?.thisOrThatReady)) {
+	// 	throw redirect(307, '/this-or-that');
+	// }
 
 	return {
 		session
