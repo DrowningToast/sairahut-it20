@@ -42,8 +42,6 @@ export const firstTimeMiddleware: Handle = async ({ event, resolve }) => {
 				throw new Error('Email not found');
 			}
 
-			console.log(res.many_fresh);
-
 			// populate the user details
 			await prisma.$transaction([
 				prisma.sophomoreDetails.create({
@@ -79,7 +77,14 @@ export const firstTimeMiddleware: Handle = async ({ event, resolve }) => {
 
 		// if the user IT21
 		if (gen == 21) {
-			null;
+			await prisma.user.update({
+				data: {
+					type: 'FRESHMEN'
+				},
+				where: {
+					email: user.email
+				}
+			});
 		}
 	}
 

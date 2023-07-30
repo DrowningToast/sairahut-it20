@@ -2,6 +2,7 @@
 	import { page } from '$app/stores';
 	import DynamicLoginButton from '$components/svelte/DynamicLoginButton.svelte';
 	import LandingFooter from '$components/svelte/LandingFooter.svelte';
+	import SrhHeading from '$components/svelte/SRHHeading.svelte';
 	import { AuthController } from '$lib/auth/AuthController';
 	import { trpc } from '$lib/trpc';
 
@@ -10,17 +11,19 @@
 	$: console.log($page.data.session);
 </script>
 
-<div class="">
+<div class="bg-gradient-to-b from-primary to-black">
 	<div class="px-3 py-16 md:px-16 md:py-24 flex flex-col gap-y-4">
 		<div class="text-center relative">
 			<img src="./konnok.png" alt="" class="  h-full absolute bottom-1 -right-4" />
-			<h1 class="text-5xl font-krub font-bold text-accent drop-shadow-[0px_0px_10px_#FFD130]">
-				Sairahut IT20
-			</h1>
+			<SrhHeading>Sairahut IT220</SrhHeading>
 			<p class="text-sm text-accent drop-shadow-[0px_0px_10px_#FFD130] font-Pridi">
 				กิจกรรมสานสัมพันธ์รุ่นคณะเทคโนโลยีสารสนเทศ
 			</p>
-			<img src="./konnok.png" alt="" class=" h-full absolute bottom-1 -left-0 transform -scale-x-100" />
+			<img
+				src="./konnok.png"
+				alt=""
+				class=" h-full absolute bottom-1 -left-0 transform -scale-x-100"
+			/>
 		</div>
 		<div class=" relative">
 			<img src="./star.png" class="absolute top-0 left-0 transform -scale-x-100" alt="" />
