@@ -1,16 +1,13 @@
 import { z } from 'zod';
 import { createRouter } from '../context';
-import { protectedProcedure, publicProcedure } from '../procedure';
+import { protectedProcedure } from '../procedure';
 import { prisma } from '$lib/serverUtils';
 import { TRPCError } from '@trpc/server';
 import { freshmenRegister } from '$lib/zod';
 import { insertFreshmen } from '$lib/airtable-api/controller/participant21/mutates';
-import type { Branch, NameTitle } from 'database';
 
 export const freshmenRouters = createRouter({
 	regis: protectedProcedure.input(freshmenRegister).mutation(async ({ input, ctx }) => {
-		const { user } = ctx;
-
 		const student_id = ctx.user?.email?.substring(0, 8);
 		if (!student_id)
 			throw new TRPCError({
