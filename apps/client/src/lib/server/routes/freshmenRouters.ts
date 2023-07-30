@@ -100,23 +100,5 @@ export const freshmenRouters = createRouter({
 			success: 1,
 			message: 'OK'
 		};
-	}),
-
-	testYingAirtable: protectedProcedure.query(async () => {
-		const data = {
-			student_id: '66050545',
-			first_name: 'กัญญาภัค',
-			last_name: 'บงพิศาลภพ',
-			phone: '0968936153',
-			nickname: 'อั้ม',
-			branch: 'IT' as Branch,
-			facebook_link: 'https://www.facebook.com/aaxmyz',
-			instagram_link: 'https://www.instagram.com/aaxmyz',
-			title: 'MRS' as NameTitle
-		};
-
-		await insertFreshmen(data);
-
-		return 'OK';
 	})
 });
