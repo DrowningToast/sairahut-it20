@@ -1,4 +1,4 @@
-import { sophomoreParticipant } from './base';
+import { sophomoreParticipant } from './table';
 
 export const getParticipantByStudentId = async (studentId: string) => {
 	const query = await sophomoreParticipant

@@ -1,16 +1,22 @@
 <script>
 	import CardButtonMenu from '$components/svelte/CardButtonMenu.svelte';
 	import LogoutButton from '$components/svelte/LogoutButton.svelte';
+	import { trpc } from '$lib/trpc';
 
 	let isQrCodeActive = true;
 	let isHintActive = false;
 	let isPasswordActive = false;
 	let isProfileActive = false;
+
+	const hitAirtable = async () => {
+		await trpc.freshmens.testYingAirtable.query();
+	};
 </script>
 
 <div>
 	<div class=" relative">
 		<p class="absolute right-0 text-white">Sprit Shards: 999</p>
+		<button on:click={hitAirtable} class="text-white">Test me</button>
 	</div>
 	<div class="grid grid-cols-2 grid-rows-2 gap-x-3 gap-y-14 mt-10">
 		<CardButtonMenu
