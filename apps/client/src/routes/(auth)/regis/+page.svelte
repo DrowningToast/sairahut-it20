@@ -1,25 +1,42 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import Dropdown from '$components/svelte/Dropdown.svelte';
 	import SrhButton from '$components/svelte/SRHButton.svelte';
 	import SrhHeading from '$components/svelte/SRHHeading.svelte';
+	import Alert from '$components/ui/alert/Alert.svelte';
+	import AlertTitle from '$components/ui/alert/AlertTitle.svelte';
+	import { Dialog } from '$components/ui/dialog';
 
 	import Input from '$components/ui/input/Input.svelte';
+	import { trpc } from '$lib/trpc';
 	import { freshmenRegister, type FreshmenRegister } from '$lib/zod';
 
 	const payload: Partial<FreshmenRegister> = {};
 
-	$: console.log(payload);
-	$: console.log(readyToSubmit);
-
 	$: readyToSubmit =
-		freshmenRegister.safeParse({ ...payload }).success &&
+		freshmenRegister.safeParse(payload).success &&
 		!!(payload.facebook_link || payload.instagram_link);
+
+	$: isLoading = false;
+
+	const handleSubmit = async (payload: FreshmenRegister) => {
+		console.log(payload);
+
+		try {
+			isLoading = true;
+			await trpc.freshmens.regis.mutate(payload);
+			goto('/home');
+		} catch (e) {
+			isLoading = false;
+			alert('ได้มีข้อผิดพลาดเกิดขึ้นกรุณาลองใหม่ หากยังไม่สามารถแก้ไขได้กรุณาติดต่อสตาฟ');
+		}
+	};
 </script>
 
-<div class="text-white flex flex-col gap-y-7 font-extralight font-krub mt-3">
+<div class="text-white flex flex-col gap-y-7 font-extralight font-krub mt-3 relative">
 	<SrhHeading>ลงทะเบียน</SrhHeading>
 	<form
-		on:submit|preventDefault|stopPropagation={(data) => console.log(data)}
+		on:submit|preventDefault|stopPropagation={() => handleSubmit(freshmenRegister.parse(payload))}
 		class="flex flex-col gap-y-4"
 	>
 		<div class="flex flex-col gap-y-1">
@@ -61,29 +78,18 @@
 		</div>
 		<div class="flex flex-col gap-y-1">
 			<p>Instagram Link</p>
-			<Input
-				type="url"
-				required
-				class=" text-white bg-blue-400/25"
-				bind:value={payload['instagram_link']}
-			/>
+			<Input type="url" class=" text-white bg-blue-400/25" bind:value={payload['instagram_link']} />
 		</div>
 		<div class="flex flex-col gap-y-1">
 			<p>Facebook Link</p>
-			<Input
-				type="url"
-				required
-				class=" text-white bg-blue-400/25"
-				bind:value={payload['facebook_link']}
-			/>
+			<Input type="url" class=" text-white bg-blue-400/25" bind:value={payload['facebook_link']} />
+		</div>
+		<div class="flex justify-between mt-2">
+			<div class="w-full flex justify-end">
+				<SrhButton {isLoading} type="submit" disabled={!readyToSubmit} class="w-7/12 mx-auto"
+					>ACCEPT</SrhButton
+				>
+			</div>
 		</div>
 	</form>
-	<div class="flex justify-between mt-2">
-		<!-- <div class="w-full flex justify-start">
-			<SrhButton class="w-10/12" on:click={onReset}>รีเซ็ต</SrhButton>
-		</div> -->
-		<div class="w-full flex justify-end">
-			<SrhButton isDisabled={readyToSubmit} class="w-7/12 mx-auto">ACCEPT</SrhButton>
-		</div>
-	</div>
 </div>

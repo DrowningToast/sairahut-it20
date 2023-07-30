@@ -1019,7 +1019,8 @@ export const FreshmenDetailsOrderByWithRelationInputSchema: z.ZodType<Prisma.Fre
 }).strict();
 
 export const FreshmenDetailsWhereUniqueInputSchema: z.ZodType<Prisma.FreshmenDetailsWhereUniqueInput> = z.object({
-  id: z.string().cuid().optional()
+  id: z.string().cuid().optional(),
+  student_id: z.string().optional()
 }).strict();
 
 export const FreshmenDetailsOrderByWithAggregationInputSchema: z.ZodType<Prisma.FreshmenDetailsOrderByWithAggregationInput> = z.object({
@@ -1188,7 +1189,8 @@ export const SophomoreDetailsOrderByWithRelationInputSchema: z.ZodType<Prisma.So
 }).strict();
 
 export const SophomoreDetailsWhereUniqueInputSchema: z.ZodType<Prisma.SophomoreDetailsWhereUniqueInput> = z.object({
-  id: z.string().cuid().optional()
+  id: z.string().cuid().optional(),
+  student_id: z.string().optional()
 }).strict();
 
 export const SophomoreDetailsOrderByWithAggregationInputSchema: z.ZodType<Prisma.SophomoreDetailsOrderByWithAggregationInput> = z.object({

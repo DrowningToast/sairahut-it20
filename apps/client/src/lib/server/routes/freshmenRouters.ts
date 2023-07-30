@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { createRouter } from '../context';
-import { protectedProcedure, publicProcedure } from '../procedure';
+import { protectedProcedure } from '../procedure';
 import { prisma } from '$lib/serverUtils';
 import { TRPCError } from '@trpc/server';
 import { freshmenRegister } from '$lib/zod';
@@ -53,9 +53,16 @@ export const freshmenRouters = createRouter({
 				title: input.title,
 				phone: input.phone,
 				facebook_link: input.facebook_link,
-				instagram_link: input.instagram_link
+				instagram_link: input.instagram_link,
+				User: {
+					connect: {
+						id: user?.id
+					}
+				}
 			}
 		});
+
+		return 'OK';
 	}),
 
 	submitScannedQR: protectedProcedure.input(z.string()).query(async ({ ctx, input }) => {
@@ -105,10 +112,10 @@ export const freshmenRouters = createRouter({
 			facebook_link: 'https://www.facebook.com/aaxmyz',
 			instagram_link: 'https://www.instagram.com/aaxmyz',
 			title: 'MRS' as NameTitle
-		}
+		};
 
-		await insertFreshmen(data)
+		await insertFreshmen(data);
 
-		return 'OK'
+		return 'OK';
 	})
 });
