@@ -26,7 +26,7 @@ export const insertHintsByStudentId = async (studentId: number, data: IInsertHin
             fields: {
                 hints: JSON.stringify(payload),
             },
-            id: sophomore?.airtableId as string
+            id: sophomore?.airtableId as string,
         }
     ]);
 
