@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { buttonVariants } from '$components/ui/button';
 
-	export let isLoading: boolean;
+	export let isLoading: boolean = false;
 	$: isLoading = false;
 	export let disabled: boolean = false;
 
@@ -17,7 +17,6 @@
 		buttonVariants({ className }),
 		'bg-neutral-900 drop-shadow-[0px_0px_5px_#FFFADD] active:bg-neutral-900 focus:bg-neutral-900 '
 	)}
-	{...$$restProps}
 	disabled={disabled || isLoading}
 	on:click
 	on:change
@@ -25,6 +24,7 @@
 	on:keyup
 	on:mouseenter
 	on:mouseleave
+	{...$$restProps}
 >
 	<div class="flex items-center justify-center text-accent">
 		{#if isLoading}

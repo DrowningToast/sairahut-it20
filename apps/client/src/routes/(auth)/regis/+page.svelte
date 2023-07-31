@@ -4,12 +4,14 @@
 	import FormErrorText from '$components/svelte/FormErrorText.svelte';
 	import SrhButton from '$components/svelte/SRHButton.svelte';
 	import SrhHeading from '$components/svelte/SRHHeading.svelte';
+	import { Dialog, DialogTrigger } from '$components/ui/dialog';
+	import DialogContent from '$components/ui/dialog/DialogContent.svelte';
+	import DialogFooter from '$components/ui/dialog/DialogFooter.svelte';
+	import DialogHeader from '$components/ui/dialog/DialogHeader.svelte';
 
 	import Input from '$components/ui/input/Input.svelte';
 	import { trpc } from '$lib/trpc';
 	import { freshmenRegister, type FreshmenRegister } from '$lib/zod';
-	import type { FreshmenDetails } from 'database';
-	import type { SafeParseError, SafeParseSuccess, ZodError } from 'zod';
 
 	const payload: Partial<FreshmenRegister> = {};
 
@@ -21,6 +23,8 @@
 
 	const handleSubmit = async (payload: FreshmenRegister) => {
 		isLoading = true;
+
+		console.log('lmao');
 
 		try {
 			await trpc.freshmens.regis.mutate(payload);
@@ -34,10 +38,7 @@
 
 <div class="text-white flex flex-col gap-y-7 font-extralight font-krub mt-3 relative">
 	<SrhHeading>ลงทะเบียน</SrhHeading>
-	<form
-		on:submit|preventDefault|stopPropagation={() => handleSubmit(freshmenRegister.parse(payload))}
-		class="flex flex-col gap-y-4"
-	>
+	<div class="flex flex-col gap-y-4">
 		<div class="flex flex-col gap-y-1">
 			<p>คำนำหน้า*</p>
 			<Dropdown bind:value={payload['title']} required class="bg-blue-400/25">
@@ -83,11 +84,26 @@
 			<Input type="url" class=" text-white bg-blue-400/25" bind:value={payload['facebook_link']} />
 		</div>
 		<div class="flex justify-between mt-2">
-			<div class="w-full flex justify-end">
-				<SrhButton {isLoading} type="submit" disabled={!readyToSubmit} class="w-7/12 mx-auto"
-					>ACCEPT</SrhButton
-				>
+			<div class="w-full flex justify-center">
+				<Dialog>
+					<SrhButton type="button" disabled={!readyToSubmit}
+						><DialogTrigger>ลงทะเบียน</DialogTrigger></SrhButton
+					>
+					<DialogContent class="absolute top-16 inset-x-10 w-auto">
+						<DialogHeader>แน่ใจนะ?</DialogHeader>
+						หากยืนยันข้อมูลในหน้านี้ จะไม่สามารถแก้ไขข้อมูลส่วนตัวได้อีก หากไม่แน่ใจ น้องๆ ควรตรวจทานอีกทีหนึ่ง
+						<DialogFooter>
+							<SrhButton
+								on:click={() => handleSubmit(freshmenRegister.parse(payload))}
+								{isLoading}
+								type="submit"
+								disabled={!readyToSubmit}
+								class="w-7/12 mx-auto">ACCEPT</SrhButton
+							>
+						</DialogFooter>
+					</DialogContent>
+				</Dialog>
 			</div>
 		</div>
-	</form>
+	</div>
 </div>
