@@ -76,7 +76,7 @@
 
 <div class="text-center mt-12 text-accent flex flex-col gap-y-1 mb-2 font-Pridi font-extralight">
 	<p>
-		อย่าลืมแคปรูปนี้แล้วแท๊กลง IG: <a
+		อย่าลืมแคปรูปนี้แล้วแท็กลง IG: <a
 			href="https://www.instagram.com/sairahut_itkmitl/"
 			target="_blank">@sairahut_itkmitl</a
 		>
