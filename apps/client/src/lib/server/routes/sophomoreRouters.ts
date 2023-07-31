@@ -4,6 +4,7 @@ import { oldProcedure } from '../procedure';
 import { AirtableController } from '$lib/airtable-api/controller';
 import { prisma } from '$lib/serverUtils';
 import { databaseController } from '../controllers';
+import { TRPCError } from '@trpc/server';
 
 export const sophomoreRouters = createRouter({
 	getAirtableParticipantByStudentId: oldProcedure
@@ -61,7 +62,15 @@ export const sophomoreRouters = createRouter({
 				hintSlugId: hintSlugId[index]
 			}));
 
-			await AirtableController.participantIT20.insertHintsByStudentId(parseInt(studentId), processData)
+			const res = await AirtableController.participantIT20.insertHintsByStudentId(parseInt(studentId), processData)
+
+			if (!res.success) {
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					cause: res.message
+				});
+			}
+
 			await databaseController.hints.submitHintSlugs(sophomoreDetailsId, processData);
 		}),
 	getHintSlugs: oldProcedure.query(async ({ ctx }) => {
