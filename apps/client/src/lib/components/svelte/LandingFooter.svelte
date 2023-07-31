@@ -17,20 +17,22 @@
 			rel="noreferrer noopener"
 			class="text-blue-500 hover:underline underline-offset-4 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-black"
 		>
-		<p class="text-yellow-200 inline underline">IT20 Technical Team</p>
+			<p class="text-yellow-200 inline underline">IT20 Technical Team</p>
 		</HoverCardTrigger>
 		<HoverCardContent class="w-auto">
-			<div class="flex justify-between gap-x-4">
-				<Avatar>
-					<AvatarImage src="https://avatars.githubusercontent.com/u/58824744?v=4" />
-					<AvatarFallback>SK</AvatarFallback>
-				</Avatar>
-				<div class="gap-y-1">
-					<h4 class="text-sm font-semibold">Supratouch Suwatno</h4>
-					<p class="text-sm">Full stack developer (React, Svelte).</p>
-					<div class="flex items-center pt-2">
-						<Heart class="mr-2 h-4 w-4 opacity-70" />{' '}
-						<span class="text-xs text-muted-foreground">Available for hiring!</span>
+			<div class="flex flex-col gap-y-1">
+				<div class="flex justify-between gap-x-4">
+					<Avatar>
+						<AvatarImage src="https://avatars.githubusercontent.com/u/58824744?v=4" />
+						<AvatarFallback>SK</AvatarFallback>
+					</Avatar>
+					<div class="gap-y-1">
+						<h4 class="text-sm font-semibold">Supratouch Suwatno</h4>
+						<p class="text-sm">Full stack developer (React, Svelte).</p>
+						<div class="flex items-center pt-2">
+							<Heart class="mr-2 h-4 w-4 opacity-70" />{' '}
+							<span class="text-xs text-muted-foreground">Available for hiring!</span>
+						</div>
 					</div>
 				</div>
 			</div>
