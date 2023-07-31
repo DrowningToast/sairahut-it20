@@ -7,8 +7,6 @@
 
 <a href={redirect}
 	><Button class="bg-neutral-900 drop-shadow-[0px_0px_3px_#FFFADD]"
-		><div class="flex items-center justify-center text-accent">
-			Enter the website
-		</div></Button
+		><div class="flex items-center justify-center text-accent">เข้าสู่เว็ปไซต์หลัก</div></Button
 	></a
 >

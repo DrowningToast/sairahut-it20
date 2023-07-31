@@ -10,7 +10,7 @@ export const AuthController = (page: Page<Record<string, string>, string | null>
 	const isSignedIn = !!session?.user?.email;
 	const email = session?.user?.email;
 	const name = session?.user?.name;
-	const user = session?.user
+	const user = session?.user;
 
 	return { isSignedIn, email, name, user };
 };
