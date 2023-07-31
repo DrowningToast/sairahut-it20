@@ -3,6 +3,8 @@ import { createRouter } from '../context';
 import { oldProcedure } from '../procedure';
 import { AirtableController } from '$lib/airtable-api/controller';
 import { prisma } from '$lib/serverUtils';
+import { databaseController } from '../controllers';
+import { TRPCError } from '@trpc/server';
 
 export const sophomoreRouters = createRouter({
 	getAirtableParticipantByStudentId: oldProcedure
@@ -52,29 +54,29 @@ export const sophomoreRouters = createRouter({
 
 			const { user } = ctx;
 			const sophomoreDetailsId = user?.sophomoreDetailsId as string;
+			const studentId = user?.email?.replace('@kmitl.ac.th', '') as string
+
 			const processData = input.map((value, index) => ({
 				sophomoreId: sophomoreDetailsId,
 				content: value,
 				hintSlugId: hintSlugId[index]
 			}));
 
-			const hints = await prisma.hints.createMany({
-				data: processData
-			});
+			await AirtableController.participantIT20.insertHintsByStudentId(parseInt(studentId), processData)
 
-			await prisma.sophomoreDetails.update({
-				data: {
-					hintsReady: true
-				},
-				where: {
-					id: sophomoreDetailsId
-				}
-			});
+			const hintsExist = await databaseController.hints.checkHints(sophomoreDetailsId)
 
-			return 'OK';
+			if (hintsExist) {
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message: `Student with student_id: ${studentId} already done hints.`
+				});
+
+			}
+
+			await databaseController.hints.submitHintSlugs(sophomoreDetailsId, processData);
 		}),
 	getHintSlugs: oldProcedure.query(async ({ ctx }) => {
-		const response = await prisma.hintSlugs.findMany({});
-		return response;
+		return await databaseController.hints.getHintSlugs();
 	})
 });

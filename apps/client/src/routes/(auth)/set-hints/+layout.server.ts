@@ -4,8 +4,8 @@ import type { LayoutServerLoad } from '../$types';
 export const load: LayoutServerLoad = async ({ locals }) => {
 	const { user, session } = locals;
 
-	// if user is already done this or that
-	if (user?.sophomoreDetails?.thisOrThatReady || user?.freshmenDetails?.thisOrThatReady) {
+	// if user is already done hints
+	if (user?.sophomoreDetails?.hintsReady) {
 		throw redirect(307, '/home');
 	}
 

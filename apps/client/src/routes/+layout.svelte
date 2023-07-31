@@ -1,15 +1,27 @@
 <script>
-	import Header from '$components/svelte/Header.svelte';
+	import { browser } from '$app/environment';
+	import Header from '$components/svelte/Navbar.svelte';
 	import LandingFooter from '$components/svelte/LandingFooter.svelte';
 	import '../app.postcss';
+	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
+
+	const queryClient = new QueryClient({
+		defaultOptions: {
+			queries: {
+				enabled: browser
+			}
+		}
+	});
 </script>
 
-<div class="w-screen min-h-screen flex flex-col font-noto bg-gradient-to-b from-primary to-black">
-	<!-- <Header /> -->
+<QueryClientProvider client={queryClient}
+	><div class="w-screen min-h-screen flex flex-col font-noto">
+		<!-- <Header /> -->
 
-	<main>
-		<slot />
-	</main>
+		<main>
+			<slot />
+		</main>
 
-	<!-- <LandingFooter /> -->
-</div>
+		<!-- <LandingFooter /> -->
+	</div>
+</QueryClientProvider>

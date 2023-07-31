@@ -24,6 +24,9 @@
     "pg:force-push": {
       "cache": false
     },
+    "pg:force-reset": {
+      "cache": false
+    },
     "pg:generate": {
       "cache": false
     },

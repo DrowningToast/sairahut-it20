@@ -15,6 +15,11 @@ export const load: LayoutServerLoad = async ({ locals }) => {
 		throw redirect(307, '/set-hints');
 	}
 
+	// check if the user is freshmen and still haven't registered
+	if (user?.type === 'FRESHMEN' && !user.freshmenDetails) {
+		throw redirect(307, '/regis');
+	}
+
 	// check if the this or that is set?
 	// if (!(user?.sophomoreDetails?.thisOrThatReady || user?.freshmenDetails?.thisOrThatReady)) {
 	// 	throw redirect(307, '/this-or-that');

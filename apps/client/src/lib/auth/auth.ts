@@ -21,6 +21,11 @@ const checkForRegistration = async (email: string) => {
 			email.replace('@kmitl.ac.th', '')
 		);
 		return !!res;
+	} else if (gen < 20) {
+		const res = await AirtableController.participantSenior.getParticipantByStudentId(
+			email.replace('@kmitl.ac.th', '')
+		);
+		return !!res;
 	}
 
 	return true;
@@ -38,16 +43,18 @@ export const AuthHook = SvelteKitAuth({
 	secret: AUTH_SECRET,
 	callbacks: {
 		signIn: async ({ user, account, profile }) => {
-			const checkKMITLDomain = profile?.email?.includes('@kmitl.ac.th');
-
 			// The user doesn't have an email will result in error
 			if (!profile?.email) {
 				return false;
 			}
 
-			const checkUnregis = checkForRegistration(profile?.email);
+			const checkKMITLDomain = profile?.email?.includes('@kmitl.ac.th');
+			// check that user is School of IT Student
+			const checkITStudent = profile?.email?.slice(2, 4) === '07'
 
-			return !!checkKMITLDomain && checkUnregis;
+			const checkUnregis = await checkForRegistration(profile?.email);
+
+			return !!checkKMITLDomain && checkITStudent && checkUnregis;
 		}
 	},
 	pages: {

@@ -13,6 +13,7 @@
         "pg:push": "dotenv -e ../../.env -- prisma db push",
         "pg:force-push": "dotenv -e ../../.env -- prisma db push --accept-data-loss",
         "pg:generate": " dotenv -e ../../.env -- prisma generate",
+        "pg:force-reset": "dotenv -e ../../.env -- prisma db push --force-reset",
         "db:studio": "dotenv -e ../../.env -- prisma studio"
     },
     "devDependencies": {
