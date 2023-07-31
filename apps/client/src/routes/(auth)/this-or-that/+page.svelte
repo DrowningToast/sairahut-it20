@@ -49,17 +49,16 @@
 </script>
 
 <div class=" drop-shadow-[0px_0px_7.5px_#FFAEBD] leading-10 text-white font-krub">
-	<h1 class="text-5xl font-bold">This or That</h1>
-	<p>อันนี้ หรือ อันนี้ดี</p>
+	<h1 class="text-5xl font-bold">Mystic Choices</h1>
+	<p>ตัวเลือกแห่งความพิศวง</p>
 </div>
 <div class="text-white">
-	<p class="font-bold font-krub">อะไรคือ This or That</p>
+	<h2 class="font-bold font-krub">Mystic Choices คือ</h2>
 	<p class=" font-Pridi font-thin text-sm">
-		ผู้เล่นกิจกรรมสายรหัสทุกคนจะต้องทำการกรอกความชอบ ของตนเองเพื่อใช้สำหรับ algorithm ของการจับคู่
-		พี่และน้อง
+		จอมเวทย์ฝึกหัดเอ๋ย เจ้าจงทำแบบทดสอบก่อนที่เจ้าต้องเข้า ดินแดนแห่งจอมเวทย์และภูตอันลับแล
 	</p>
 </div>
-<div class="flex flex-col text-white relative gap-y-10 mt-10 overflow-visible">
+<div class="flex flex-col text-white relative gap-y-10 mt-8 overflow-visible">
 	{#each choices as choice, index}
 		<QuesThisOrThat
 			leftText={choice.left}
