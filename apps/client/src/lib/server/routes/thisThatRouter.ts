@@ -16,27 +16,20 @@ export const thisThatRouter = createRouter({
 			const update = {
 				thisOrThat: input,
 				thisOrThatReady: true
-			}
+			};
 
-
-			if (ctx.user?.freshmenDetailsId != null) {
-				await hintController.submitHints(
-					ctx.user?.email as string,
-					{
-						freshmenDetails: {
-							update
-						}
+			if (ctx.user?.freshmenDetails?.id != null) {
+				await hintController.submitHints(ctx.user?.email as string, {
+					freshmenDetails: {
+						update
 					}
-				)
-			} else if (ctx.user?.sophomoreDetailsId != null) {
-				await hintController.submitHints(
-					ctx.user?.email as string,
-					{
-						sophomoreDetails: {
-							update
-						}
+				});
+			} else if (ctx.user?.sophomoreDetails?.id != null) {
+				await hintController.submitHints(ctx.user?.email as string, {
+					sophomoreDetails: {
+						update
 					}
-				)
+				});
 			}
 
 			return 'OK';

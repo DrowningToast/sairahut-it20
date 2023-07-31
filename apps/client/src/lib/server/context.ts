@@ -3,7 +3,6 @@ import { initTRPC } from '@trpc/server';
 import type { inferAsyncReturnType } from '@trpc/server';
 import type { FetchCreateContextFnOptions } from '@trpc/server/adapters/fetch';
 import { PrismaClient } from 'database';
-import type { User } from 'database';
 
 function getCookie(cookiesString: string, name: string) {
 	const match = cookiesString.match(new RegExp('(^| )' + name + '=([^;]+)'));
@@ -14,14 +13,12 @@ export const createSvelteKitContext =
 	(locals: App.Locals) => async (opts: FetchCreateContextFnOptions) => {
 		const cookies = opts.req.headers.get('Cookie');
 		let sessionTokenCookie: string | undefined;
-		let user: User | undefined;
 
+		// If authenticated request
 		if (cookies !== null) {
 			sessionTokenCookie = getCookie(cookies, 'next-auth.session-token');
-		}
 
-		if (sessionTokenCookie) {
-			user = (
+			const user = (
 				await prisma.session.findUnique({
 					where: {
 						sessionToken: sessionTokenCookie
@@ -37,12 +34,17 @@ export const createSvelteKitContext =
 					}
 				})
 			)?.user;
+
+			return {
+				...locals,
+				prisma: PrismaClient,
+				user
+			};
 		}
 
 		return {
 			...locals,
-			prisma: PrismaClient,
-			user
+			prisma: PrismaClient
 		};
 	};
 
