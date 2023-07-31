@@ -62,13 +62,16 @@ export const sophomoreRouters = createRouter({
 				hintSlugId: hintSlugId[index]
 			}));
 
-			const res = await AirtableController.participantIT20.insertHintsByStudentId(parseInt(studentId), processData)
+			await AirtableController.participantIT20.insertHintsByStudentId(parseInt(studentId), processData)
 
-			if (!res.success) {
+			const hintsExist = await databaseController.hints.checkHints(sophomoreDetailsId)
+
+			if (hintsExist) {
 				throw new TRPCError({
 					code: 'BAD_REQUEST',
-					cause: res.message
+					message: `Student with student_id: ${studentId} already done hints.`
 				});
+
 			}
 
 			await databaseController.hints.submitHintSlugs(sophomoreDetailsId, processData);

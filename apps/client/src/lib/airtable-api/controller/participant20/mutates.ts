@@ -1,3 +1,4 @@
+import { TRPCError } from '@trpc/server';
 import { getParticipantByStudentId } from './queries';
 import { sophomoreParticipant } from './table';
 
@@ -11,10 +12,10 @@ export const insertHintsByStudentId = async (studentId: number, data: IInsertHin
     const sophomore = await getParticipantByStudentId(studentId + '')
 
     if (sophomore?.hints) {
-        return {
-            success: false,
+        throw new TRPCError({
+            code: 'BAD_REQUEST',
             message: `Student with student_id: ${studentId} already done hints.`
-        };
+        });
     }
 
     const payload = data.map((value) => ({

@@ -27,6 +27,17 @@ export const submitHintSlugs = async (
 	return 'OK';
 };
 
+// Check that hints is exist
+export const checkHints = async (sophomoreDetailsId: string) => {
+	const res = await prisma.sophomoreDetails.findUnique({
+		where: {
+			id: sophomoreDetailsId
+		}
+	})
+
+	return res?.hintsReady;
+}
+
 export const submitHints = async (email: string, details: any) => {
 	await prisma.user.update({
 		data: details,
@@ -39,5 +50,6 @@ export const submitHints = async (email: string, details: any) => {
 export const hintController = {
 	getHintSlugs,
 	submitHintSlugs,
-	submitHints
+	submitHints,
+	checkHints
 };
