@@ -6,6 +6,9 @@
 	import Input from '$lib/components/ui/input/Input.svelte';
 	import { goto } from '$app/navigation';
 	import { Loader2 } from 'lucide-svelte';
+	import ConfirmDialog from '$components/svelte/ConfirmDialog.svelte';
+	import DialogFooter from '$components/ui/dialog/DialogFooter.svelte';
+	import DialogHeader from '$components/ui/dialog/DialogHeader.svelte';
 
 	let isLoading = false;
 
@@ -41,7 +44,6 @@
 		try {
 			const payload = hints.map((value) => value.content) as string[];
 			const res = await trpc.sophomores.submitHints.mutate(payload);
-			console.log(res);
 			goto('/this-or-that');
 		} catch (err) {
 			console.error(err);
@@ -79,10 +81,23 @@
 		<!-- <div class="w-full flex justify-start">
 			<SrhButton class="w-10/12" on:click={onReset}>รีเซ็ต</SrhButton>
 		</div> -->
-		<div class="w-full flex justify-end">
-			<SRHButton class="w-7/12 mx-auto" on:click={onSubmit} disabled={!readyToSubmit}
-				>บันทึก</SRHButton
-			>
+		<div class="w-full flex justify-center">
+			<ConfirmDialog {isLoading} disabled={!readyToSubmit} triggerText="ยืนยัน">
+				<DialogHeader class="text-xl">แน่ใจนะ?</DialogHeader>
+				<p class="text-sm">
+					คำใบ้ของพี่ๆ นั้นจะถูกแสดงให้รุ่นน้องเมื่อน้องได้เล่นเกมไปจนถึงจุดๆ นึง น้องๆ
+					อาจจะไม่ได้เห็นคำใบ้ทุกคำจนกระทั้งตอนจบ
+					เพราะฉะนั้นแน่ใจแล้วใช่ไหมว่าจะใช้คำใบ้พวกนี้กับรุ่นนี้
+				</p>
+				<DialogFooter>
+					<SRHButton
+						class="w-7/12 mx-auto"
+						on:click={onSubmit}
+						disabled={!readyToSubmit}
+						{isLoading}>บันทึก</SRHButton
+					>
+				</DialogFooter>
+			</ConfirmDialog>
 		</div>
 	</div>
 </div>

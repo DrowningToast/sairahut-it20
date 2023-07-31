@@ -24,8 +24,6 @@
 		{ left: 'ไปเที่ยว', right: 'อยู่บ้าน' }
 	];
 
-	$: console.log(choices);
-
 	$: readyToSubmit =
 		selecteds.filter((selected) => {
 			return !!selected;
@@ -43,13 +41,13 @@
 		} catch (e) {
 			alert('An error has occured');
 			isLoading = false;
-			console.log(e);
+			console.error(e);
 		}
 	};
 </script>
 
 <div class=" drop-shadow-[0px_0px_7.5px_#FFAEBD] leading-10 text-white font-krub">
-	<h1 class="text-5xl font-bold">Mystic Choices</h1>
+	<h1 class="text-4xl font-bold">Mystic Choices</h1>
 	<p>ตัวเลือกแห่งความพิศวง</p>
 </div>
 <div class="text-white">
