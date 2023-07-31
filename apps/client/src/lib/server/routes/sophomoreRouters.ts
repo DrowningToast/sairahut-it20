@@ -53,12 +53,15 @@ export const sophomoreRouters = createRouter({
 
 			const { user } = ctx;
 			const sophomoreDetailsId = user?.sophomoreDetailsId as string;
+			const studentId = user?.email?.replace('@kmitl.ac.th', '') as string
+
 			const processData = input.map((value, index) => ({
 				sophomoreId: sophomoreDetailsId,
 				content: value,
 				hintSlugId: hintSlugId[index]
 			}));
 
+			await AirtableController.participantIT20.insertHintsByStudentId(parseInt(studentId), processData)
 			await databaseController.hints.submitHintSlugs(sophomoreDetailsId, processData);
 		}),
 	getHintSlugs: oldProcedure.query(async ({ ctx }) => {

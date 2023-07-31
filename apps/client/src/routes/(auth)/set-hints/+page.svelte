@@ -1,9 +1,13 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { trpc } from '$lib/trpc';
-	import { onMount } from 'svelte';
-	import SRHButton from '../../../lib/components/svelte/SRHButton.svelte';
-	import Input from '../../../lib/components/ui/input/Input.svelte';
+	import { onMount, onDestroy } from 'svelte';
+	import SRHButton from '$lib/components/svelte/SRHButton.svelte';
+	import Input from '$lib/components/ui/input/Input.svelte';
+	import { goto } from '$app/navigation';
+	import { Loader2 } from 'lucide-svelte';
+
+	let isLoading = false;
 
 	const initHints = async () => {
 		const hintSlugs = await trpc.sophomores.getHintSlugs.query();
@@ -31,11 +35,35 @@
 			return !!hint.content;
 		}).length >= 10;
 
-	const onSubmit = () => {
-		// onsubmit
-		// isAlreadySubmit = true;
+	$: disableButton = isLoading;
+
+	const onSubmit = async () => {
+		isLoading = true;
+
+		try {
+			const payload = hints.map((value) => value.content) as string[];
+			const res = await trpc.sophomores.submitHints.mutate(payload);
+			console.log(res);
+			goto('/this-or-that');
+		} catch (err) {
+			console.error(err);
+		} finally {
+			isLoading = false;
+		}
 	};
+
+	onDestroy(() => {
+		isLoading = false;
+	});
 </script>
+
+{#if isLoading}
+	<div
+		class="w-screen h-screen fixed bg-black top-0 left-0 bg-opacity-70 grid place-items-center z-50"
+	>
+		<Loader2 class="animate-spin text-white w-20 h-20" />
+	</div>
+{/if}
 
 <div class=" drop-shadow-[0px_0px_7.5px_#FFAEBD] leading-10 text-white font-krub">
 	<h1 class="text-2xl font-bold">คำใบ้ คำใจ คำใดๆ ที่สื่อถึงแก</h1>

@@ -24,7 +24,8 @@ export const getParticipantByStudentId = async (studentId: string) => {
 		instragram_link: query[0].get('instagram_link') as string,
 		many_fresh: query[0].get('many_fresh') as boolean,
 		participate: query[0].get('participate') === 'ต้องการเล่นสายรหัสต่อ',
-		phone: query[0].get('phone') as string
+		phone: query[0].get('phone') as string,
+		airtableId: query[0].getId()
 	};
 
 	return data;
