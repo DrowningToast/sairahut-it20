@@ -3,7 +3,7 @@
 	import Header from '$components/svelte/Header.svelte';
 </script>
 
-<div class="min-h-screen overflow-x-hidden flex flex-col bg-gradient-to-b from-primary-alt to-black">
+<div class="min-h-screen overflow-x-hidden flex flex-col bg-gradient-to-b from-primary-alt from-0% to-black to-90%">
 	<Header />
 	<div class="flex flex-col mx-6 my-10 gap-y-3">
 		<slot />
