@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { buttonVariants } from '$components/ui/button';
 
-	export const isLoading: boolean = false;
+	export let isLoading: boolean;
+	$: isLoading = false;
 	export let disabled: boolean = false;
 
 	let className: string | undefined | null = undefined;
