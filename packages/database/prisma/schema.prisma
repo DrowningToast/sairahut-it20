@@ -74,7 +74,7 @@ model User {
   type PlayerType @default(NONE)
 
   // เมื่อ type == SOPHOMORE
-  fophomoreDetails SophomoreDetails?
+  sophomoreDetails SophomoreDetails?
 
   // เมื่อ type == FRESHMEN
   freshmenDetails FreshmenDetails?
