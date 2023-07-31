@@ -23,7 +23,7 @@ const enforcedAuth = t.middleware(({ ctx, next }) => {
  * Ensure the user has either sophomoreDetails or freshmenDetails fields already
  */
 const enforcedReady = t.middleware(({ ctx, next }) => {
-	if (!(ctx?.user?.freshmenDetailsId || ctx?.user?.sophomoreDetailsId)) {
+	if (!(ctx?.user?.freshmenDetails || ctx?.user?.sophomoreDetails)) {
 		throw new TRPCError({ code: 'UNAUTHORIZED' });
 	}
 
@@ -61,7 +61,7 @@ const enforcedSophomoreOrOlder = t.middleware(({ ctx, next }) => {
 
 	const gen = determineYear(ctx.user?.email);
 
-	if (gen < 20) {
+	if (gen >= 21) {
 		throw new TRPCError({ code: 'UNAUTHORIZED' });
 	}
 
