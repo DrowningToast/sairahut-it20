@@ -11,18 +11,18 @@
 	$: console.log($page.data.session);
 </script>
 
-<div class="bg-gradient-to-b from-primary to-black">
+<div class="bg-gradient-to-b from-primary to-black overflow-x-hidden">
 	<div class="px-3 py-16 md:px-16 md:py-24 flex flex-col gap-y-4">
 		<div class="text-center relative">
-			<img src="./konnok.png" alt="" class="  h-full absolute bottom-1 -right-4" />
-			<SrhHeading>Sairahut IT220</SrhHeading>
+			<img src="./konnok.png" alt="" class="scale-90 h-full absolute bottom-1 -right-2" />
+			<SrhHeading>Sairahut IT20</SrhHeading>
 			<p class="text-sm text-accent drop-shadow-[0px_0px_10px_#FFD130] font-Pridi">
 				กิจกรรมสานสัมพันธ์รุ่นคณะเทคโนโลยีสารสนเทศ
 			</p>
 			<img
 				src="./konnok.png"
 				alt=""
-				class=" h-full absolute bottom-1 -left-0 transform -scale-x-100"
+				class=" h-full scale-90 absolute bottom-1 -left-2 transform -scale-x-100"
 			/>
 		</div>
 		<div class=" relative">
