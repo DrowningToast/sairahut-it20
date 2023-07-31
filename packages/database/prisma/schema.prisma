@@ -74,10 +74,10 @@ model User {
   type PlayerType @default(NONE)
 
   // เมื่อ type == SOPHOMORE
-  SophomoreDetails SophomoreDetails?
+  fophomoreDetails SophomoreDetails?
 
   // เมื่อ type == FRESHMEN
-  FreshmenDetails FreshmenDetails?
+  freshmenDetails FreshmenDetails?
 
   balance   Int       @default(0)
   faction   Factions? @relation(fields: [factionId], references: [id])
