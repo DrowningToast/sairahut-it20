@@ -35,8 +35,6 @@
 			return !!hint.content;
 		}).length >= 10;
 
-	$: disableButton = isLoading;
-
 	const onSubmit = async () => {
 		isLoading = true;
 
