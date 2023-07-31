@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import ConfirmDialog from '$components/svelte/ConfirmDialog.svelte';
 	import Dropdown from '$components/svelte/Dropdown.svelte';
 	import FormErrorText from '$components/svelte/FormErrorText.svelte';
 	import SrhButton from '$components/svelte/SRHButton.svelte';
@@ -23,8 +24,6 @@
 
 	const handleSubmit = async (payload: FreshmenRegister) => {
 		isLoading = true;
-
-		console.log('lmao');
 
 		try {
 			await trpc.freshmens.regis.mutate(payload);
@@ -83,26 +82,32 @@
 			<p>Facebook Link</p>
 			<Input type="url" class=" text-white bg-blue-400/25" bind:value={payload['facebook_link']} />
 		</div>
+		<div class="my-4 flex flex-col gap-y-2">
+			<SrhHeading class="text-lg">เงื่อไขการให้บริการ</SrhHeading>
+			<p class="text-accent">
+				หากท่านได้กดปุ่ม ACCEPT ท่านได้ทราบและยินยอมให้เรา (ผู้พัฒนาและทีมจัดกิจกรรม)
+				ก็บข้อมูลส่วนตัวของท่านได้เป็นระยะเวลาทั้งหมด 1 ปีนับจากวันจบกิจกรรม
+				และท่านได้ทราบและยินยอมว่า
+				ข้อมูลส่วนตัวของท่านบางส่วนจะถูกเปิดเผยต่อผู้เล่นอื่นระหว่างกิจกรรม
+			</p>
+		</div>
 		<div class="flex justify-between mt-2">
 			<div class="w-full flex justify-center">
-				<Dialog>
-					<SrhButton type="button" disabled={!readyToSubmit}
-						><DialogTrigger>ลงทะเบียน</DialogTrigger></SrhButton
-					>
-					<DialogContent class="absolute top-16 inset-x-10 w-auto">
-						<DialogHeader>แน่ใจนะ?</DialogHeader>
-						หากยืนยันข้อมูลในหน้านี้ จะไม่สามารถแก้ไขข้อมูลส่วนตัวได้อีก หากไม่แน่ใจ น้องๆ ควรตรวจทานอีกทีหนึ่ง
-						<DialogFooter>
-							<SrhButton
-								on:click={() => handleSubmit(freshmenRegister.parse(payload))}
-								{isLoading}
-								type="submit"
-								disabled={!readyToSubmit}
-								class="w-7/12 mx-auto">ACCEPT</SrhButton
-							>
-						</DialogFooter>
-					</DialogContent>
-				</Dialog>
+				<ConfirmDialog {isLoading} disabled={!readyToSubmit} triggerText="ยืนยัน"
+					><DialogHeader class="text-xl">แน่ใจนะ?</DialogHeader>
+					<p class="text-sm">
+						หลังจากทำการลงทะเบียนแล้ว จะไม่สามารถกลับเข้ามาแก้ไขข้อมูลส่วนตัวได้อีก
+						หากน้องไม่แน่ใจว่าน้องได้กรอบข้อมูลถูกต้องและครบ พี่แนะนำให้กลับไปเช็คอีกครั้งหนึ่ง
+					</p>
+					<DialogFooter>
+						<SrhButton
+							{isLoading}
+							on:click={() => handleSubmit(freshmenRegister.parse(payload))}
+							disabled={!readyToSubmit}
+							class="px-4">ยืนยันคำตอบ</SrhButton
+						>
+					</DialogFooter></ConfirmDialog
+				>
 			</div>
 		</div>
 	</div>
