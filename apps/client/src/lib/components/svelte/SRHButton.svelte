@@ -2,6 +2,7 @@
 	import { buttonVariants } from '$components/ui/button';
 
 	export const isLoading: boolean = false;
+	export let disabled: boolean = false;
 
 	let className: string | undefined | null = undefined;
 	export { className as class };
@@ -16,6 +17,7 @@
 		'bg-neutral-900 drop-shadow-[0px_0px_5px_#FFFADD] active:bg-neutral-900 focus:bg-neutral-900 '
 	)}
 	{...$$restProps}
+	disabled={disabled || isLoading}
 	on:click
 	on:change
 	on:keydown
