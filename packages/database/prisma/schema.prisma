@@ -74,12 +74,10 @@ model User {
   type PlayerType @default(NONE)
 
   // เมื่อ type == SOPHOMORE
-  sophomoreDetails   SophomoreDetails? @relation(fields: [sophomoreDetailsId], references: [id], onDelete: Cascade)
-  sophomoreDetailsId String?           @unique
+  sophomoreDetails SophomoreDetails?
 
   // เมื่อ type == FRESHMEN
-  freshmenDetails   FreshmenDetails? @relation(fields: [freshmenDetailsId], references: [id], onDelete: Cascade)
-  freshmenDetailsId String?          @unique
+  freshmenDetails FreshmenDetails?
 
   balance   Int       @default(0)
   faction   Factions? @relation(fields: [factionId], references: [id])
@@ -162,8 +160,10 @@ model FreshmenDetails {
   create_at DateTime @default(now())
   update_at DateTime @updatedAt
 
-  id   String @id @unique @default(cuid())
-  User User?
+  id String @id @unique @default(cuid())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique
 
   thisOrThat      ThisOrThat[]
   thisOrThatReady Boolean      @default(false)
@@ -218,6 +218,9 @@ model SophomoreDetails {
   hints           Hints[]
   hintsReady      Boolean      @default(false)
 
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique
+
   id             String    @id @unique @default(cuid())
   // name - surname in airtable
   fullname       String
@@ -238,8 +241,6 @@ model SophomoreDetails {
   instagram_link String
   // เบอร์โทรศัพท์
   phone          String
-
-  User User?
 
   // QR instances that have been created
   QRInstances       QRInstances[]
