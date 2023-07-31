@@ -87,7 +87,7 @@
 <ConfirmDialog {isLoading} disabled={!readyToSubmit} triggerText="ยืนยัน"
 	><DialogHeader class="text-xl">แน่ใจนะ?</DialogHeader>
 	<p class="text-sm">
-		ตัวเลือกที่เจ้าได้เลือกมานั้นมีความสำคัญต่อสิ่งที่จะเกิดขึ้นในอนาคตมีหลายปี เจ้าแน่ใจจริงๆ
+		ตัวเลือกที่เจ้าได้เลือกมานั้นมีความสำคัญต่อสิ่งที่จะเกิดขึ้นในอนาคตอีกหลายปี เจ้าแน่ใจจริงๆ
 		นะว่านี่คือตัวตนของเจ้า
 	</p>
 	<DialogFooter>
