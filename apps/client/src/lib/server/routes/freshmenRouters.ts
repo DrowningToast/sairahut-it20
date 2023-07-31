@@ -53,7 +53,7 @@ export const freshmenRouters = createRouter({
 				phone: input.phone,
 				facebook_link: input.facebook_link,
 				instagram_link: input.instagram_link,
-				User: {
+				user: {
 					connect: {
 						id: user?.id
 					}
@@ -90,7 +90,7 @@ export const freshmenRouters = createRouter({
 				id: input
 			},
 			data: {
-				scannedById: user?.freshmenDetailsId
+				scannedById: user?.freshmenDetails?.id
 			}
 		});
 
