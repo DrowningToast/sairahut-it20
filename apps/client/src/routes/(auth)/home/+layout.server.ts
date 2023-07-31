@@ -4,10 +4,6 @@ import type { LayoutServerLoad } from './$types';
 export const load: LayoutServerLoad = async ({ locals }) => {
 	const { user, session } = locals;
 
-	console.log('hello world');
-	console.log(user);
-	console.log(session);
-
 	// commented for testing reasons
 
 	// Check if the hints are ready?

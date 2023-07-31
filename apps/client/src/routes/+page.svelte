@@ -7,11 +7,10 @@
 	import { trpc } from '$lib/trpc';
 
 	const { isSignedIn } = AuthController($page);
-
-	$: console.log($page.data.session);
 </script>
 
-<div class="bg-gradient-to-b from-primary to-black overflow-x-hidden">
+<div class="bg-gradient-to-b from-primary to-black overflow-x-hidden relative">
+	<img src="./hero.png" class="absolute inset-y-0 inset-x-0 overflow-x-visible w-auto" alt="" />
 	<div class="px-3 py-16 md:px-16 md:py-24 flex flex-col gap-y-4">
 		<div class="text-center relative">
 			<img src="./konnok.png" alt="" class="scale-90 h-full absolute bottom-1 -right-2" />
@@ -25,8 +24,7 @@
 				class=" h-full scale-90 absolute bottom-1 -left-2 transform -scale-x-100"
 			/>
 		</div>
-		<div class=" relative">
-			<img src="./art_landing.png" class="w-full h-full py-7" alt="" />
+		<div class=" relative overflow-x-visible w-auto h-72">
 			<img src="./star.png" class="absolute top-0 left-0 transform -scale-x-100" alt="" />
 			<img src="./star.png" class="absolute bottom-0 right-0 transform -scale-x-100" alt="" />
 			<img src="./star.png" class="absolute bottom-3 right-6 transform" alt="" />

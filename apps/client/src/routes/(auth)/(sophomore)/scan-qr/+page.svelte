@@ -15,8 +15,6 @@
 	const submitData = async (id: string) => {
 		const data = await trpc.freshmens.submitScannedQR.query(id);
 
-		console.log(data);
-
 		if (data.success === 0) {
 			qrScanner.start();
 		} else {
@@ -28,8 +26,6 @@
 		qrScanner = new QrScanner(
 			videoElement,
 			async ({ data }) => {
-				console.log(data);
-
 				submitData(data);
 
 				qrScanner.stop();
