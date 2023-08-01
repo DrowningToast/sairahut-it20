@@ -2,7 +2,18 @@
 	import { page } from '$app/stores';
 	import CardButtonMenu from '$components/svelte/CardButtonMenu.svelte';
 	import LogoutButton from '$components/svelte/LogoutButton.svelte';
+	import SrhButton from '$components/svelte/SRHButton.svelte';
+	import { Separator } from '$components/ui/separator';
+	import { signOut } from '@auth/sveltekit/client';
 	import type { PageData } from './$types';
+	import { AlertDialog, AlertDialogTrigger } from '$components/ui/alert-dialog';
+	import AlertDialogContent from '$components/ui/alert-dialog/AlertDialogContent.svelte';
+	import AlertDialogHeader from '$components/ui/alert-dialog/AlertDialogHeader.svelte';
+	import AlertDialogTitle from '$components/ui/alert-dialog/AlertDialogTitle.svelte';
+	import AlertDialogDescription from '$components/ui/alert-dialog/AlertDialogDescription.svelte';
+	import AlertDialogFooter from '$components/ui/alert-dialog/AlertDialogFooter.svelte';
+	import AlertDialogCancel from '$components/ui/alert-dialog/AlertDialogCancel.svelte';
+	import AlertDialogAction from '$components/ui/alert-dialog/AlertDialogAction.svelte';
 
 	const { session, homePageState, user } = $page.data as PageData;
 
@@ -49,7 +60,35 @@
 			link={homePageState.profile.href}
 		/>
 	</div>
-	<div class="flex justify-center mt-7">
-		<LogoutButton />
+	<Separator class="mt-12 bg-accent" />
+
+	<div class="flex flex-col gap-y-2 mt-4">
+		<h5 class="text-accent text-lg font-semibold mb-4 text-center">เมนูอื่นๆ</h5>
+		<div class="flex justify-center mt-4">
+			<a class="w-full" href="/players"
+				><SrhButton class="w-full">รายชื่อนักเวทย์และภูตทั้งหมด</SrhButton></a
+			>
+		</div>
+		<div class="flex justify-center mt-4">
+			<AlertDialog>
+				<AlertDialogTrigger><SrhButton>ออกจากระบบ</SrhButton></AlertDialogTrigger>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>เจ้าแน่ใจนะ?</AlertDialogTitle>
+						<AlertDialogDescription>
+							หากเจ้าออกจากระบบเจ้าจะต้องทำการ Sign in อีกครั้งหนึ่งจึงจะกลับเข้ามาในนี้ได้ <b
+								>โดยการออกระบบนั้นรายชื่อของเจ้าจะยังคงอยู่ในกิจกรรมและได้รับการจับคู่สายรหัส</b
+							>
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogCancel class="text-white bg-neutral-900">ฉันเปลี่ยนใจ</AlertDialogCancel>
+						<AlertDialogAction class="text-red-400 bg-neutral-900/20"
+							>ยืนยันออกจากระบบ</AlertDialogAction
+						>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
+		</div>
 	</div>
 </div>

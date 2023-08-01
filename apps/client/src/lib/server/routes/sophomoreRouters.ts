@@ -7,6 +7,20 @@ import { databaseController } from '../controllers';
 import { TRPCError } from '@trpc/server';
 import type { SophomoreDetails } from 'database';
 
+interface SearchQuery {
+	where: {
+		nickname?: {
+			contains: string | undefined;
+		};
+		student_id?: {
+			contains: string | undefined;
+		};
+		fullname?: {
+			contains: string | undefined;
+		};
+	};
+}
+
 export const generateRandomString = (length: number) => {
 	let result = '';
 	const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -142,46 +156,54 @@ export const sophomoreRouters = createRouter({
 			})
 		)
 		.query(async ({ input }) => {
-			const total = await prisma.sophomoreDetails.count();
+			let searchQuery: SearchQuery | undefined;
 
 			const { q, queryBy, first, last } = input;
 
 			let data: SophomoreDetails[] = [];
 
 			if (queryBy === 'FIRSTNAME') {
-				data = await prisma.sophomoreDetails.findMany({
+				searchQuery = {
 					where: {
 						fullname: {
 							contains: q
 						}
-					},
+					}
+				};
+				data = await prisma.sophomoreDetails.findMany({
+					...searchQuery,
 					skip: first,
 					take: last
 				});
 			} else if (queryBy === 'NICKNAME') {
-				data = await prisma.sophomoreDetails.findMany({
+				searchQuery = {
 					where: {
 						nickname: {
 							contains: q
 						}
-					},
+					}
+				};
+				data = await prisma.sophomoreDetails.findMany({
+					...searchQuery,
 					skip: first,
 					take: last
 				});
 			} else if (queryBy === 'STUDENT_ID') {
-				data = await prisma.sophomoreDetails.findMany({
+				searchQuery = {
 					where: {
 						student_id: {
-							equals: q
+							contains: q
 						}
-					},
+					}
+				};
+				data = await prisma.sophomoreDetails.findMany({
+					...searchQuery,
 					skip: first,
 					take: last
 				});
 			}
 
 			return {
-				count: total,
 				data
 			};
 		})

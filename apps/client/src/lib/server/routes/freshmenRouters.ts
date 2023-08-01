@@ -7,6 +7,20 @@ import { freshmenRegister } from '$lib/zod';
 import { AirtableController } from '$lib/airtable-api/controller';
 import type { FreshmenDetails, User } from 'database';
 
+interface SearchQuery {
+	where: {
+		first_name?: {
+			contains: string | undefined;
+		};
+		nickname?: {
+			contains: string | undefined;
+		};
+		student_id?: {
+			contains: string | undefined;
+		};
+	};
+}
+
 export const checkIfAlreadyScanThisSophomore = async (freshmen: User, secret: string) => {
 	const alreadyScanned = await prisma.qRInstances.findMany({
 		where: {
@@ -216,46 +230,54 @@ export const freshmenRouters = createRouter({
 			})
 		)
 		.query(async ({ input }) => {
-			const total = await prisma.freshmenDetails.count();
+			let searchQuery: SearchQuery | undefined;
 
 			const { q, queryBy, first, last } = input;
 
 			let data: FreshmenDetails[] = [];
 
 			if (queryBy === 'FIRSTNAME') {
-				data = await prisma.freshmenDetails.findMany({
+				searchQuery = {
 					where: {
 						first_name: {
 							contains: q
 						}
-					},
+					}
+				};
+				data = await prisma.freshmenDetails.findMany({
+					...searchQuery,
 					skip: first,
 					take: last
 				});
 			} else if (queryBy === 'NICKNAME') {
-				data = await prisma.freshmenDetails.findMany({
+				searchQuery = {
 					where: {
 						nickname: {
 							contains: q
 						}
-					},
+					}
+				};
+				data = await prisma.freshmenDetails.findMany({
+					...searchQuery,
 					skip: first,
 					take: last
 				});
 			} else if (queryBy === 'STUDENT_ID') {
-				data = await prisma.freshmenDetails.findMany({
+				searchQuery = {
 					where: {
 						student_id: {
-							equals: q
+							contains: q
 						}
-					},
+					}
+				};
+				data = await prisma.freshmenDetails.findMany({
+					...searchQuery,
 					skip: first,
 					take: last
 				});
 			}
 
 			return {
-				count: total,
 				data
 			};
 		})

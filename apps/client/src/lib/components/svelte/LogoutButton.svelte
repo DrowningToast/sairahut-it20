@@ -9,7 +9,5 @@
 <Button
 	class="px-2 py-2 inline-block justify-center gap-x-2 w-auto bg-neutral-900 drop-shadow-[0px_0px_3px_#FFFADD]"
 	on:click={() => signOut({ callbackUrl: redirect })}
-	><div class="flex items-center justify-center text-accent">
-		Signout
-	</div></Button
+	><div class="flex items-center justify-center text-accent">ออกจากระบบ</div></Button
 >
