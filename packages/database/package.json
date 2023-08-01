@@ -10,6 +10,7 @@
     },
     "scripts": {
         "init": "prisma init",
+        "build": "prisma generate",
         "pg:push": "dotenv -e ../../.env -- prisma db push",
         "pg:force-push": "dotenv -e ../../.env -- prisma db push --accept-data-loss",
         "pg:generate": " dotenv -e ../../.env -- prisma generate",
