@@ -1,10 +1,11 @@
 import { z } from 'zod';
 import { createRouter } from '../context';
-import { oldProcedure } from '../procedure';
+import { oldProcedure, protectedProcedure } from '../procedure';
 import { AirtableController } from '$lib/airtable-api/controller';
 import { prisma } from '$lib/serverUtils';
 import { databaseController } from '../controllers';
 import { TRPCError } from '@trpc/server';
+import type { SophomoreDetails } from 'database';
 
 export const sophomoreRouters = createRouter({
 	getAirtableParticipantByStudentId: oldProcedure
@@ -71,5 +72,58 @@ export const sophomoreRouters = createRouter({
 		}),
 	getHintSlugs: oldProcedure.query(async ({ ctx }) => {
 		return await databaseController.hints.getHintSlugs();
-	})
+	}),
+	getAllSophomores: protectedProcedure
+		.input(
+			z.object({
+				queryBy: z.enum(['STUDENT_ID', 'FIRSTNAME', 'NICKNAME']),
+				q: z.string().optional(),
+				first: z.number(),
+				last: z.number()
+			})
+		)
+		.query(async ({ input }) => {
+			const total = await prisma.sophomoreDetails.count()
+	
+			const { q, queryBy, first, last } = input;
+
+			let data: SophomoreDetails[] = [];
+
+			if (queryBy === 'FIRSTNAME') {
+				data = await prisma.sophomoreDetails.findMany({
+					where: {
+						fullname: {
+							contains: q,
+						}
+					},
+					skip: first,
+					take: last,
+				})
+			} else if (queryBy === 'NICKNAME') {
+				data = await prisma.sophomoreDetails.findMany({
+					where: {
+						nickname: {
+							contains: q,
+						}
+					},
+					skip: first,
+					take: last,
+				})
+			} else if (queryBy === 'STUDENT_ID') {
+				data = await prisma.sophomoreDetails.findMany({
+					where: {
+						student_id: {
+							equals: q
+						}
+					},
+					skip: first,
+					take: last,
+				})
+			}
+
+			return {
+				count: total,
+				data,
+			}
+		})
 });
