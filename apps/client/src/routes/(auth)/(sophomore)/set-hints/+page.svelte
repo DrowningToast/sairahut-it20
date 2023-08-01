@@ -9,8 +9,11 @@
 	import ConfirmDialog from '$components/svelte/ConfirmDialog.svelte';
 	import DialogFooter from '$components/ui/dialog/DialogFooter.svelte';
 	import DialogHeader from '$components/ui/dialog/DialogHeader.svelte';
+	import type { PageData } from './$types';
 
 	let isLoading = false;
+
+	export let data: PageData
 
 	const initHints = async () => {
 		const hintSlugs = await trpc.sophomores.getHintSlugs.query();
