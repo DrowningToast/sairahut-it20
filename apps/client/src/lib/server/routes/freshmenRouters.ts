@@ -98,5 +98,49 @@ export const freshmenRouters = createRouter({
 			success: 1,
 			message: 'OK'
 		};
-	})
-});
+	}),
+	getAllFreshmens: protectedProcedure
+		.input(
+			z.object({
+				queryBy: z.enum(['STUDENT_ID', 'FIRSTNAME', 'NICKNAME']),
+				q: z.string().optional(),
+				first: z.number(),
+				last: z.number()
+			})
+		)
+		.query(async ({ input }) => {
+			const { q, queryBy, first, last } = input;
+
+			if (queryBy === 'FIRSTNAME') {
+				return await prisma.sophomoreDetails.findMany({
+					where: {
+						fullname: {
+							contains: q,
+						}
+					},
+					skip: first,
+					take: last,
+				})
+			} else if (queryBy === 'NICKNAME') {
+				return await prisma.sophomoreDetails.findMany({
+					where: {
+						nickname: {
+							contains: q,
+						}
+					},
+					skip: first,
+					take: last,
+				})
+			} else if (queryBy === 'STUDENT_ID') {
+				return await prisma.sophomoreDetails.findMany({
+					where: {
+						student_id: {
+							equals: q
+						}
+					},
+					skip: first,
+					take: last,
+				})
+			}
+		})
+})

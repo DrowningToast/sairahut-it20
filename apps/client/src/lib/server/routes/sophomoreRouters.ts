@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { createRouter } from '../context';
-import { oldProcedure } from '../procedure';
+import { oldProcedure, protectedProcedure } from '../procedure';
 import { AirtableController } from '$lib/airtable-api/controller';
 import { prisma } from '$lib/serverUtils';
 import { databaseController } from '../controllers';
@@ -80,5 +80,49 @@ export const sophomoreRouters = createRouter({
 		}),
 	getHintSlugs: oldProcedure.query(async ({ ctx }) => {
 		return await databaseController.hints.getHintSlugs();
-	})
+	}),
+	getAllSophomores: protectedProcedure
+		.input(
+			z.object({
+				queryBy: z.enum(['STUDENT_ID', 'FIRSTNAME', 'NICKNAME']),
+				q: z.string().optional(),
+				first: z.number(),
+				last: z.number()
+			})
+		)
+		.query(async ({ input }) => {
+			const { q, queryBy, first, last } = input;
+
+			if (queryBy === 'FIRSTNAME') {
+				return await prisma.sophomoreDetails.findMany({
+					where: {
+						fullname: {
+							contains: q,
+						}
+					},
+					skip: first,
+					take: last,
+				})
+			} else if (queryBy === 'NICKNAME') {
+				return await prisma.sophomoreDetails.findMany({
+					where: {
+						nickname: {
+							contains: q,
+						}
+					},
+					skip: first,
+					take: last,
+				})
+			} else if (queryBy === 'STUDENT_ID') {
+				return await prisma.sophomoreDetails.findMany({
+					where: {
+						student_id: {
+							equals: q
+						}
+					},
+					skip: first,
+					take: last,
+				})
+			}
+		})
 });
