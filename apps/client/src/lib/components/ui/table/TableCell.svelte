@@ -6,7 +6,7 @@
 </script>
 
 <td
-	class={cn("p-4 align-middle [&:has([role=checkbox])]:pr-0", className)}
+	class={cn("p-4 align-middle [&:has([role=checkbox])]:pr-0 text-white text-xs font-krub", className)}
 	{...$$restProps}
 >
 	<slot />
