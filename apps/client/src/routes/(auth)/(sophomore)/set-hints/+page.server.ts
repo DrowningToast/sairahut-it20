@@ -1,20 +1,19 @@
 import { databaseController } from '$lib/server/controllers';
 import { prisma } from '$lib/serverUtils';
-import { trpc } from '$lib/trpc';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
     const { user } = locals
+
+    if (!user?.sophomoreDetails?.hintsReady) {
+        return { result: [] }
+    }
 
     const data = await prisma.hints.findMany({
         where: {
             sophomoreId: user?.sophomoreDetails?.id
         }
     })
-
-    if (data.length === 0) {
-        return { result: [] }
-    }
 
     const hintSlugId = [
         'appearance',
