@@ -15,7 +15,7 @@
 	import AlertDialogCancel from '$components/ui/alert-dialog/AlertDialogCancel.svelte';
 	import AlertDialogAction from '$components/ui/alert-dialog/AlertDialogAction.svelte';
 
-	const { session, homePageState, user , playerType} = $page.data as PageData;
+	const { session, homePageState, user, playerType } = $page.data as PageData;
 
 	let isQrCodeActive = new Date() >= homePageState.qrCode.activateDate;
 	let isHintActive = new Date().getTime() >= homePageState.hints.activateDate.getTime();
@@ -28,7 +28,10 @@
 		<p class="text-lg font-Pridi text-white">
 			ยินดีต้อนรับ {session?.user?.name?.split(' ')[0]} เข้าสู่โลกเวทย์มนตร์
 		</p>
-		<p class="font-Pridi text-gray-200 text-sm">ตอนนี้คุณมีอยู่ {user.balance} {playerType === 'FRESHMEN' ? "hards" }</p>
+		<p class="font-Pridi text-gray-200 text-sm">
+			ตอนนี้คุณมีอยู่ {user.balance}
+			{playerType === 'FRESHMEN' ? 'Spirit Shards' : 'Humanity'}
+		</p>
 	</div>
 	<div class="grid grid-cols-2 grid-rows-2 gap-x-3 gap-y-14 mt-10">
 		<CardButtonMenu
