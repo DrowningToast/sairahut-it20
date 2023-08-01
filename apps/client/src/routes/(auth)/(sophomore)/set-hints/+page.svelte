@@ -11,11 +11,22 @@
 	import DialogHeader from '$components/ui/dialog/DialogHeader.svelte';
 	import type { PageData } from './$types';
 	import type { Hints } from 'database';
+	import { AlertDialog, AlertDialogTrigger } from '$components/ui/alert-dialog';
+	import SrhButton from '$lib/components/svelte/SRHButton.svelte';
+	import AlertDialogContent from '$components/ui/alert-dialog/AlertDialogContent.svelte';
+	import AlertDialogHeader from '$components/ui/alert-dialog/AlertDialogHeader.svelte';
+	import AlertDialogTitle from '$components/ui/alert-dialog/AlertDialogTitle.svelte';
+	import AlertDialogDescription from '$components/ui/alert-dialog/AlertDialogDescription.svelte';
+	import AlertDialogFooter from '$components/ui/alert-dialog/AlertDialogFooter.svelte';
+	import AlertDialogCancel from '$components/ui/alert-dialog/AlertDialogCancel.svelte';
+	import AlertDialogAction from '$components/ui/alert-dialog/AlertDialogAction.svelte';
 
 	let isLoading = false;
 
 	export let data: PageData;
 	$: alreadySetHints = data.result.length !== 0;
+
+	$: hidePassword = alreadySetHints;
 
 	const initHints = async () => {
 		const hintSlugId = [
@@ -104,6 +115,7 @@
 		<div class="flex flex-col gap-y-2">
 			<p>{hint.displayName}</p>
 			<Input
+				type={hidePassword ? 'password' : 'text'}
 				isDisabled={alreadySetHints}
 				class=" text-white bg-blue-400/25"
 				bind:value={hints[index].content}
@@ -115,22 +127,51 @@
 			<SrhButton class="w-10/12" on:click={onReset}>รีเซ็ต</SrhButton>
 		</div> -->
 		<div class="w-full flex justify-center">
-			<ConfirmDialog {isLoading} disabled={!readyToSubmit || alreadySetHints} triggerText="ยืนยัน">
-				<DialogHeader class="text-xl">แน่ใจนะ?</DialogHeader>
-				<p class="text-sm">
-					คำใบ้ของพี่ๆ นั้นจะถูกแสดงให้รุ่นน้องเมื่อน้องได้เล่นเกมไปจนถึงจุดๆ นึง น้องๆ
-					อาจจะไม่ได้เห็นคำใบ้ทุกคำจนกระทั้งตอนจบ
-					เพราะฉะนั้นแน่ใจแล้วใช่ไหมว่าจะใช้คำใบ้พวกนี้กับรุ่นนี้
-				</p>
-				<DialogFooter>
-					<SRHButton
-						class="w-7/12 mx-auto"
-						on:click={onSubmit}
-						disabled={!readyToSubmit}
-						{isLoading}>บันทึก</SRHButton
-					>
-				</DialogFooter>
-			</ConfirmDialog>
+			{#if !alreadySetHints}
+				<ConfirmDialog
+					{isLoading}
+					disabled={!readyToSubmit || alreadySetHints}
+					triggerText="ยืนยัน"
+				>
+					<DialogHeader class="text-xl">แน่ใจนะ?</DialogHeader>
+					<p class="text-sm">
+						คำใบ้ของพี่ๆ นั้นจะถูกแสดงให้รุ่นน้องเมื่อน้องได้เล่นเกมไปจนถึงจุดๆ นึง น้องๆ
+						อาจจะไม่ได้เห็นคำใบ้ทุกคำจนกระทั้งตอนจบ
+						เพราะฉะนั้นแน่ใจแล้วใช่ไหมว่าจะใช้คำใบ้พวกนี้กับรุ่นนี้
+					</p>
+					<DialogFooter>
+						<SRHButton
+							class="w-7/12 mx-auto"
+							on:click={onSubmit}
+							disabled={!readyToSubmit}
+							{isLoading}>บันทึก</SRHButton
+						>
+					</DialogFooter>
+				</ConfirmDialog>
+			{:else if alreadySetHints && hidePassword}
+				<AlertDialog>
+					<AlertDialogTrigger><SrhButton>แสดงคำใบ้</SrhButton></AlertDialogTrigger>
+					<AlertDialogContent>
+						<AlertDialogHeader>
+							<AlertDialogTitle>เจ้าแน่ใจนะ?</AlertDialogTitle>
+							<AlertDialogDescription>
+								คำใบ้ของภูตนั้นถือว่าเป็นความลับ และจะถูกเผยให้เหล่าจอมเวทย์เมื่อถึงเวลาเท่านั้น
+								คำใบ้ที่กรอกไปนั้นไม่สามารถถูกแก้ไขได้<b
+									>หากเจ้าต้องการตรวจสอบคำใบ้ของตนเองแล้วมีผู้อื่นมาเห็นเข้า ข้าจะไม่รับผิดชอบใดๆ
+									ทั้งนั้น</b
+								>
+							</AlertDialogDescription>
+						</AlertDialogHeader>
+						<AlertDialogFooter>
+							<AlertDialogCancel class="text-white bg-neutral-900">ฉันเปลี่ยนใจ</AlertDialogCancel>
+							<AlertDialogAction class="text-red-400 bg-neutral-900/20"
+								><button on:click={() => (hidePassword = false)}>ยืนยันแสดงคำใบ้</button
+								></AlertDialogAction
+							>
+						</AlertDialogFooter>
+					</AlertDialogContent>
+				</AlertDialog>
+			{/if}
 		</div>
 	</div>
 </div>
