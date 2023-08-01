@@ -5,6 +5,7 @@ import { AirtableController } from '$lib/airtable-api/controller';
 import { prisma } from '$lib/serverUtils';
 import { databaseController } from '../controllers';
 import { TRPCError } from '@trpc/server';
+import type { SophomoreDetails } from 'database';
 
 export const sophomoreRouters = createRouter({
 	getAirtableParticipantByStudentId: oldProcedure
@@ -82,10 +83,14 @@ export const sophomoreRouters = createRouter({
 			})
 		)
 		.query(async ({ input }) => {
+			const total = await prisma.sophomoreDetails.count()
+	
 			const { q, queryBy, first, last } = input;
 
+			let data: SophomoreDetails[] = [];
+
 			if (queryBy === 'FIRSTNAME') {
-				return await prisma.sophomoreDetails.findMany({
+				data = await prisma.sophomoreDetails.findMany({
 					where: {
 						fullname: {
 							contains: q,
@@ -95,7 +100,7 @@ export const sophomoreRouters = createRouter({
 					take: last,
 				})
 			} else if (queryBy === 'NICKNAME') {
-				return await prisma.sophomoreDetails.findMany({
+				data = await prisma.sophomoreDetails.findMany({
 					where: {
 						nickname: {
 							contains: q,
@@ -105,7 +110,7 @@ export const sophomoreRouters = createRouter({
 					take: last,
 				})
 			} else if (queryBy === 'STUDENT_ID') {
-				return await prisma.sophomoreDetails.findMany({
+				data = await prisma.sophomoreDetails.findMany({
 					where: {
 						student_id: {
 							equals: q
@@ -114,6 +119,11 @@ export const sophomoreRouters = createRouter({
 					skip: first,
 					take: last,
 				})
+			}
+
+			return {
+				count: total,
+				data,
 			}
 		})
 });
