@@ -151,6 +151,6 @@
 		</video>
 	</div>
 	<p class="text-sm font-Pridi text-accent font-extralight mt-5">
-		ตามหา QR Code เพื่อรับ Spirit Shards
+		ตามหา QR Code จากเหล่าภูตเพื่อรับ Spirit Shards
 	</p>
 </div>
