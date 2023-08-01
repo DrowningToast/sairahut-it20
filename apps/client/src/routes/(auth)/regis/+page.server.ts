@@ -1,6 +1,6 @@
-import { determineYear } from '$lib/middlewares/firstTimeMiddleware';
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
+import { determineYear } from '$lib/utils';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const { user } = locals;

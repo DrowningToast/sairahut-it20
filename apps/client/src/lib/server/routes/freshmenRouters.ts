@@ -5,7 +5,21 @@ import { prisma } from '$lib/serverUtils';
 import { TRPCError } from '@trpc/server';
 import { freshmenRegister } from '$lib/zod';
 import { AirtableController } from '$lib/airtable-api/controller';
-import type { FreshmenDetails } from 'database';
+import type { FreshmenDetails, User } from 'database';
+
+export const checkIfAlreadyScanThisSophomore = async (freshmen: User, secret: string) => {
+	const alreadyScanned = await prisma.qRInstances.findMany({
+		where: {
+			scannedBy: {
+				some: {
+					userId: freshmen.id
+				}
+			}
+		}
+	});
+
+	return !!alreadyScanned.find((scanned) => scanned.secret === secret);
+};
 
 export const freshmenRouters = createRouter({
 	regis: protectedProcedure.input(freshmenRegister).mutation(async ({ input, ctx }) => {
@@ -65,7 +79,22 @@ export const freshmenRouters = createRouter({
 		return 'OK';
 	}),
 	// Get the owner information of this qr code
-	// getQRInfo: freshmenProcedure.input(z.string().length(6)).query(async ({ ctx, input }) => {}),
+	getQRInfo: freshmenProcedure.input(z.string().length(6)).query(async ({ ctx, input }) => {
+		const data = await prisma.qRInstances.findUnique({
+			where: {
+				secret: input
+			},
+			include: {
+				owner: true,
+				scannedBy: true
+			}
+		});
+
+		// Check if scanning the same person or not
+		const already = await checkIfAlreadyScanThisSophomore(ctx.user!, input);
+
+		return { ...data, already };
+	}),
 	submitScannedQR: freshmenProcedure.input(z.string()).query(async ({ ctx, input }) => {
 		const { user } = ctx;
 
@@ -82,20 +111,24 @@ export const freshmenRouters = createRouter({
 			},
 			select: {
 				scannedBy: true,
-				quota: true
+				quota: true,
+				id: true
 			}
 		});
 
+		// qr code not found
 		if (!data) {
 			return {
 				success: 0,
 				message: `QR Instance with ID: ${input} not found.`
 			};
+			// the qr is out of quota
 		} else if (data.quota <= 0) {
 			throw new TRPCError({
 				code: 'BAD_REQUEST',
 				message: 'QR Code has expired'
 			});
+			// Scanning the same qr code
 		} else if (data.scannedBy.map((scanned) => scanned.id).includes(user.id)) {
 			throw new TRPCError({
 				code: 'BAD_REQUEST',
@@ -103,21 +136,69 @@ export const freshmenRouters = createRouter({
 			});
 		}
 
-		await prisma.qRInstances.update({
-			where: {
-				secret: input
-			},
-			data: {
-				scannedBy: {
-					connect: {
-						userId: user?.id
-					}
+		// Check if scanning the same person or not
+		const already = await checkIfAlreadyScanThisSophomore(ctx.user!, input);
+		if (already) {
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'Already scanned this sophomore'
+			});
+		}
+
+		// If everything is fine
+		// Decrease the quota of the qr instance
+		// Increase the amount of spirit shard the freshmen has
+		// Also increase the amount of humanity the sophomore has
+
+		await prisma.$transaction([
+			prisma.qRInstances.update({
+				where: {
+					secret: input
 				},
-				quota: {
-					decrement: 1
+				data: {
+					scannedBy: {
+						connect: {
+							userId: user?.id
+						}
+					},
+					quota: {
+						decrement: 1
+					}
 				}
-			}
-		});
+			}),
+			prisma.freshmenDetails.update({
+				where: {
+					userId: user.id
+				},
+				data: {
+					user: {
+						update: {
+							balance: {
+								increment: 1
+							}
+						}
+					}
+				}
+			}),
+			prisma.qRInstances.update({
+				where: {
+					id: data.id
+				},
+				data: {
+					owner: {
+						update: {
+							user: {
+								update: {
+									balance: {
+										increment: 1
+									}
+								}
+							}
+						}
+					}
+				}
+			})
+		]);
 
 		return {
 			success: 1,

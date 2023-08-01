@@ -52,7 +52,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 					},
 					hints: {
 						activateDate: seeHintsDate,
-						title: 'ดูคำใบ้ ตามหาภูติของตัวเอง!',
+						title: 'ดูคำใบ้ ตามหาภูตของตัวเอง!',
 						href: '/hints'
 					},
 					passcode: {
