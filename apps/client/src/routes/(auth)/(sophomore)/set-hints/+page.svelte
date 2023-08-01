@@ -9,14 +9,36 @@
 	import ConfirmDialog from '$components/svelte/ConfirmDialog.svelte';
 	import DialogFooter from '$components/ui/dialog/DialogFooter.svelte';
 	import DialogHeader from '$components/ui/dialog/DialogHeader.svelte';
+	import type { PageData } from './$types';
+	import type { Hints } from 'database';
 
 	let isLoading = false;
 
+	export let data: PageData;
+	$: alreadySetHints = data.result.length !== 0;
+
 	const initHints = async () => {
+		const hintSlugId = [
+			'appearance',
+			'height',
+			'personality',
+			'sex',
+			'food',
+			'hobby',
+			'quote',
+			'place',
+			'fashion',
+			'name_hint'
+		];
+
 		const hintSlugs = await trpc.sophomores.getHintSlugs.query();
-		hints = hintSlugs.map((hint) => {
+
+		hints = hintSlugId.map((hint) => {
+			const result = hintSlugs.find((value) => value.slug === hint);
+
 			return {
-				...hint,
+				slug: hint,
+				displayName: result?.displayName as string,
 				content: undefined
 			};
 		});
@@ -30,7 +52,11 @@
 	let hints: Hint[] = [];
 
 	onMount(async () => {
-		await initHints();
+		if (data.result.length === 0) {
+			await initHints();
+		} else {
+			hints = data.result;
+		}
 	});
 
 	$: readyToSubmit =
@@ -42,8 +68,11 @@
 		isLoading = true;
 
 		try {
-			const payload = hints.map((value) => value.content) as string[];
-			const res = await trpc.sophomores.submitHints.mutate(payload);
+			const payload = hints.map((value) => ({
+				...value,
+				content: value.content as string
+			}));
+			await trpc.sophomores.submitHints.mutate(payload);
 			goto('/this-or-that');
 		} catch (err) {
 			console.error(err);
@@ -74,7 +103,11 @@
 	{#each hints as hint, index}
 		<div class="flex flex-col gap-y-2">
 			<p>{hint.displayName}</p>
-			<Input class=" text-white bg-blue-400/25" bind:value={hints[index].content} />
+			<Input
+				isDisabled={alreadySetHints}
+				class=" text-white bg-blue-400/25"
+				bind:value={hints[index].content}
+			/>
 		</div>
 	{/each}
 	<div class="flex justify-between mt-2">
@@ -82,7 +115,7 @@
 			<SrhButton class="w-10/12" on:click={onReset}>รีเซ็ต</SrhButton>
 		</div> -->
 		<div class="w-full flex justify-center">
-			<ConfirmDialog {isLoading} disabled={!readyToSubmit} triggerText="ยืนยัน">
+			<ConfirmDialog {isLoading} disabled={!readyToSubmit || alreadySetHints} triggerText="ยืนยัน">
 				<DialogHeader class="text-xl">แน่ใจนะ?</DialogHeader>
 				<p class="text-sm">
 					คำใบ้ของพี่ๆ นั้นจะถูกแสดงให้รุ่นน้องเมื่อน้องได้เล่นเกมไปจนถึงจุดๆ นึง น้องๆ
