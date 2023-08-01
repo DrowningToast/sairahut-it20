@@ -37,35 +37,21 @@ export const sophomoreRouters = createRouter({
 			return query;
 		}),
 	submitHints: oldProcedure
-		.input(z.array(z.string()).min(10).max(10))
+		.input(z.array(z.object({
+			content: z.string(),
+			slug: z.string(),
+			displayName: z.string()
+		})).min(10).max(10))
 		.mutation(async ({ ctx, input }) => {
-			const hintSlugId = [
-				'appearance',
-				'height',
-				'personality',
-				'sex',
-				'food',
-				'hobby',
-				'quote',
-				'place',
-				'fashion',
-				'name_hint'
-			];
-
 			const { user } = ctx;
 			const sophomoreDetailsId = user?.sophomoreDetails?.id as string;
 			const studentId = user?.email?.replace('@kmitl.ac.th', '') as string;
 
-			const processData = input.map((value, index) => ({
+			const processData = input.map((value) => ({
 				sophomoreId: sophomoreDetailsId,
-				content: value,
-				hintSlugId: hintSlugId[index]
+				content: value.content,
+				hintSlugId: value.slug
 			}));
-
-			await AirtableController.participantIT20.insertHintsByStudentId(
-				parseInt(studentId),
-				processData
-			);
 
 			const hintsExist = await databaseController.hints.checkHints(sophomoreDetailsId);
 
@@ -75,6 +61,11 @@ export const sophomoreRouters = createRouter({
 					message: `Student with student_id: ${studentId} already done hints.`
 				});
 			}
+
+			await AirtableController.participantIT20.insertHintsByStudentId(
+				parseInt(studentId),
+				processData
+			);
 
 			await databaseController.hints.submitHintSlugs(sophomoreDetailsId, processData);
 		}),
