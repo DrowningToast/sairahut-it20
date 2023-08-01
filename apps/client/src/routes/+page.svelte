@@ -10,7 +10,9 @@
 </script>
 
 <div class="bg-gradient-to-b from-primary to-black overflow-x-hidden relative">
-	<img src="./hero.png" class="absolute inset-y-0 inset-x-0 overflow-x-visible w-auto" alt="" />
+	<div class="absolute inset-x-0 flex justify-center items-center overflow-hidden">
+		<img src="./hero.png" class="flex-shrink-0 min-h-full min-w-full" alt="" />
+	</div>
 	<div class="px-3 py-16 md:px-16 md:py-24 flex flex-col gap-y-4">
 		<div class="text-center relative">
 			<img src="./konnok.png" alt="" class="scale-90 h-full absolute bottom-1 -right-2" />
