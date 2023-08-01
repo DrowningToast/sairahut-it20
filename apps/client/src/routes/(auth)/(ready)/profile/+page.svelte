@@ -7,8 +7,8 @@
 	const user = $page.data as PageServerData;
 
 	const data = [
-		{ title: 'ชื่อจริง', value: user.first_name },
-		{ title: 'นามสกุล', value: user.last_name },
+		{ title: 'ชื่อจริง', value: user.first_name ?? user.fullname?.split(' ')[0] },
+		{ title: 'นามสกุล', value: user.last_name ?? user.fullname?.split(' ')[1] },
 		{ title: 'ชื่อเล่น', value: user.nickname },
 		{ title: 'สาขา', value: user.branch }
 	];
