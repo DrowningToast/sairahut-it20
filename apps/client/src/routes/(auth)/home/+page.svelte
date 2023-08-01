@@ -1,11 +1,15 @@
-<script>
+<script lang="ts">
+	import { page } from '$app/stores';
 	import CardButtonMenu from '$components/svelte/CardButtonMenu.svelte';
 	import LogoutButton from '$components/svelte/LogoutButton.svelte';
+	import type { PageData } from './$types';
 
-	let isQrCodeActive = true;
-	let isHintActive = false;
-	let isPasswordActive = false;
-	let isProfileActive = false;
+	const { homePageState, session } = $page.data as PageData;
+
+	let isQrCodeActive = new Date() >= homePageState.qrCode.activateDate;
+	let isHintActive = new Date().getTime() >= homePageState.hints.activateDate.getTime();
+	let isPasswordActive = new Date() >= homePageState.passcode.activateDate;
+	let isProfileActive = new Date() >= homePageState.profile.activateDate;
 </script>
 
 <div>
@@ -17,29 +21,29 @@
 			isActived={isQrCodeActive}
 			img_active={'../qrCode-active.png'}
 			img_inactive={'../qrCode-inactive.png'}
-			text={'สแกน QR code เพื่อรับSpirit Shards'}
-			link={'#'}
+			text={homePageState.qrCode.title}
+			link={homePageState.qrCode.href}
 		/>
 		<CardButtonMenu
 			isActived={isHintActive}
 			img_active={'../hint-active.png'}
 			img_inactive={'../hint-inactive.png'}
-			text={'ดูคำใบ้ ตามหาภูติของตัวเอง!'}
-			link={'#'}
+			text={homePageState.hints.title}
+			link={homePageState.hints.href}
 		/>
 		<CardButtonMenu
 			isActived={isPasswordActive}
 			img_active={'../password-active.png'}
 			img_inactive={'../password-inactive.png'}
-			text={'กรอกรหัสเพื่อรับคำใบ้'}
-			link={'#'}
+			text={homePageState.passcode.title}
+			link={homePageState.passcode.href}
 		/>
 		<CardButtonMenu
 			isActived={isProfileActive}
 			img_active={'../profile-active.png'}
 			img_inactive={'../profile-inactive.png'}
-			text={'บัตรประจำตัว'}
-			link={'#'}
+			text={homePageState.profile.title}
+			link={homePageState.profile.href}
 		/>
 	</div>
 	<div class="flex justify-center mt-7">

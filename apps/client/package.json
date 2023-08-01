@@ -52,6 +52,7 @@
 		"qr-scanner": "^1.4.2",
 		"radix-svelte": "^0.8.0",
 		"superjson": "^1.12.4",
+		"svelte-qrcode": "^1.0.0",
 		"tailwind-merge": "^1.13.2",
 		"tailwindcss-animate": "^1.0.6",
 		"zod": "^3.21.4"

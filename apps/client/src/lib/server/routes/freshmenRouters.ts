@@ -64,12 +64,12 @@ export const freshmenRouters = createRouter({
 		return 'OK';
 	}),
 
-	submitScannedQR: protectedProcedure.input(z.string()).query(async ({ ctx, input }) => {
+	submitScannedQR: protectedProcedure.input(z.string().length(6)).query(async ({ ctx, input }) => {
 		const { user } = ctx;
 
 		const data = await prisma.qRInstances.findUnique({
 			where: {
-				id: input
+				secret: input
 			}
 		});
 
@@ -78,19 +78,26 @@ export const freshmenRouters = createRouter({
 				success: 0,
 				message: `QR Instance with ID: ${input} not found.`
 			};
-		} else if (data.scannedById) {
-			return {
-				success: 0,
-				message: `QR Instance with ID: ${input} already scanned.`
-			};
+		} else if (data.quota <= 0) {
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'QR Code has expired'
+			});
 		}
 
 		await prisma.qRInstances.update({
 			where: {
-				id: input
+				secret: input
 			},
 			data: {
-				scannedById: user?.freshmenDetails?.id
+				scannedBy: {
+					connect: {
+						userId: user?.id
+					}
+				},
+				quota: {
+					decrement: 1
+				}
 			}
 		});
 

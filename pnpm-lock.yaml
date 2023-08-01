@@ -77,6 +77,9 @@ importers:
       superjson:
         specifier: ^1.12.4
         version: 1.12.4
+      svelte-qrcode:
+        specifier: ^1.0.0
+        version: 1.0.0
       tailwind-merge:
         specifier: ^1.13.2
         version: 1.13.2
@@ -4337,6 +4340,10 @@ packages:
       svelte: 3.59.2
       typescript: 5.0.4
     dev: true
+
+  /svelte-qrcode@1.0.0:
+    resolution: {integrity: sha512-WrOvyyxtUzu32gVIDxcFMy0A7uUpbl/8yHaTNOsUaI8W5V4wa7AmReCjffhNY2aS42CqCLJ6qdwUoj/KxmeZzA==}
+    dev: false
 
   /svelte@3.59.2:
     resolution: {integrity: sha512-vzSyuGr3eEoAtT/A6bmajosJZIUWySzY2CzB3w2pgPvnkUjGqlDnsNnA0PMO+mMAhuyMul6C2uuZzY6ELSkzyA==}
