@@ -5,6 +5,7 @@ import { prisma } from '$lib/serverUtils';
 import { TRPCError } from '@trpc/server';
 import { freshmenRegister } from '$lib/zod';
 import { AirtableController } from '$lib/airtable-api/controller';
+import type { FreshmenDetails } from 'database';
 
 export const freshmenRouters = createRouter({
 	regis: protectedProcedure.input(freshmenRegister).mutation(async ({ input, ctx }) => {
@@ -105,5 +106,58 @@ export const freshmenRouters = createRouter({
 			success: 1,
 			message: 'OK'
 		};
-	})
-});
+	}),
+	getAllFreshmens: protectedProcedure
+		.input(
+			z.object({
+				queryBy: z.enum(['STUDENT_ID', 'FIRSTNAME', 'NICKNAME']),
+				q: z.string().optional(),
+				first: z.number(),
+				last: z.number()
+			})
+		)
+		.query(async ({ input }) => {
+			const total = await prisma.freshmenDetails.count()
+	
+			const { q, queryBy, first, last } = input;
+
+			let data: FreshmenDetails[] = [];
+		
+			if (queryBy === 'FIRSTNAME') {
+				data = await prisma.freshmenDetails.findMany({
+					where: {
+						first_name: {
+							contains: q,
+						}
+					},
+					skip: first,
+					take: last,
+				})
+			} else if (queryBy === 'NICKNAME') {
+				data = await prisma.freshmenDetails.findMany({
+					where: {
+						nickname: {
+							contains: q,
+						}
+					},
+					skip: first,
+					take: last,
+				})
+			} else if (queryBy === 'STUDENT_ID') {
+				data = await prisma.freshmenDetails.findMany({
+					where: {
+						student_id: {
+							equals: q
+						}
+					},
+					skip: first,
+					take: last,
+				})
+			}
+
+			return {
+				count: total,
+				data,
+			}
+		})
+})
