@@ -73,7 +73,7 @@ model QRInstances {
   ownerId         String
   quota           Int               @default(1)
   secret          String            @unique
-  owner           SophomoreDetails  @relation(fields: [ownerId], references: [id])
+  owner           SophomoreDetails  @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   FreshmenDetails FreshmenDetails[]
 }
 
