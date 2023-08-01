@@ -86,8 +86,8 @@
 					</AlertDialogHeader>
 					<AlertDialogFooter>
 						<AlertDialogCancel class="text-white bg-neutral-900">ฉันเปลี่ยนใจ</AlertDialogCancel>
-						<AlertDialogAction class="text-red-400 bg-neutral-900/20"
-							>ยืนยันออกจากระบบ</AlertDialogAction
+						<AlertDialogAction class="relative px-0"
+							><LogoutButton>ยืนยันออกจากระบบ</LogoutButton></AlertDialogAction
 						>
 					</AlertDialogFooter>
 				</AlertDialogContent>
