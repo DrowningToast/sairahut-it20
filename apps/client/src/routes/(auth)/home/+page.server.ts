@@ -92,6 +92,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 	return {
 		homePageState,
 		playerType: type,
-		session
+		session,
+		user
 	};
 };

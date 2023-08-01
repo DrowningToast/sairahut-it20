@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { createRouter } from '../context';
-import { protectedProcedure } from '../procedure';
+import { freshmenProcedure, protectedProcedure } from '../procedure';
 import { prisma } from '$lib/serverUtils';
 import { TRPCError } from '@trpc/server';
 import { freshmenRegister } from '$lib/zod';
@@ -64,13 +64,25 @@ export const freshmenRouters = createRouter({
 
 		return 'OK';
 	}),
-
-	submitScannedQR: protectedProcedure.input(z.string().length(6)).query(async ({ ctx, input }) => {
+	// Get the owner information of this qr code
+	// getQRInfo: freshmenProcedure.input(z.string().length(6)).query(async ({ ctx, input }) => {}),
+	submitScannedQR: freshmenProcedure.input(z.string()).query(async ({ ctx, input }) => {
 		const { user } = ctx;
+
+		if (!user?.id) {
+			throw new TRPCError({
+				code: 'UNAUTHORIZED',
+				message: 'User id not found'
+			});
+		}
 
 		const data = await prisma.qRInstances.findUnique({
 			where: {
 				secret: input
+			},
+			select: {
+				scannedBy: true,
+				quota: true
 			}
 		});
 
@@ -83,6 +95,11 @@ export const freshmenRouters = createRouter({
 			throw new TRPCError({
 				code: 'BAD_REQUEST',
 				message: 'QR Code has expired'
+			});
+		} else if (data.scannedBy.map((scanned) => scanned.id).includes(user.id)) {
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'QR Code already scanned'
 			});
 		}
 
@@ -107,6 +124,7 @@ export const freshmenRouters = createRouter({
 			message: 'OK'
 		};
 	}),
+
 	getAllFreshmens: protectedProcedure
 		.input(
 			z.object({
@@ -117,32 +135,32 @@ export const freshmenRouters = createRouter({
 			})
 		)
 		.query(async ({ input }) => {
-			const total = await prisma.freshmenDetails.count()
-	
+			const total = await prisma.freshmenDetails.count();
+
 			const { q, queryBy, first, last } = input;
 
 			let data: FreshmenDetails[] = [];
-		
+
 			if (queryBy === 'FIRSTNAME') {
 				data = await prisma.freshmenDetails.findMany({
 					where: {
 						first_name: {
-							contains: q,
+							contains: q
 						}
 					},
 					skip: first,
-					take: last,
-				})
+					take: last
+				});
 			} else if (queryBy === 'NICKNAME') {
 				data = await prisma.freshmenDetails.findMany({
 					where: {
 						nickname: {
-							contains: q,
+							contains: q
 						}
 					},
 					skip: first,
-					take: last,
-				})
+					take: last
+				});
 			} else if (queryBy === 'STUDENT_ID') {
 				data = await prisma.freshmenDetails.findMany({
 					where: {
@@ -151,13 +169,13 @@ export const freshmenRouters = createRouter({
 						}
 					},
 					skip: first,
-					take: last,
-				})
+					take: last
+				});
 			}
 
 			return {
 				count: total,
-				data,
-			}
+				data
+			};
 		})
-})
+});

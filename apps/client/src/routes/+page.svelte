@@ -4,15 +4,14 @@
 	import LandingFooter from '$components/svelte/LandingFooter.svelte';
 	import SrhHeading from '$components/svelte/SRHHeading.svelte';
 	import { AuthController } from '$lib/auth/AuthController';
-	import { trpc } from '$lib/trpc';
-
-	const { isSignedIn } = AuthController($page);
 </script>
 
 <div class="bg-gradient-to-b from-primary to-black overflow-x-hidden relative">
-	<div class="absolute inset-x-0 flex justify-center items-center overflow-hidden">
-		<img src="./hero.png" class="flex-shrink-0 min-h-full min-w-full" alt="" />
-	</div>
+	<img
+		src="./hero.png"
+		class="absolute w-full inset-x-0 overflow-x-visible w-auto object-cover"
+		alt=""
+	/>
 	<div class="px-3 py-16 md:px-16 md:py-24 flex flex-col gap-y-4">
 		<div class="text-center relative">
 			<img src="./konnok.png" alt="" class="scale-90 h-full absolute bottom-1 -right-2" />
@@ -43,7 +42,7 @@
 				<p class="text-white text-sm border-accent-alt border py-10 px-3 font-thin font-Pridi">
 					กิจกรรมสายรหัสครั้งที่ 8 จัดขึ้นเพื่อสร้างความสัมพันธ์อันดี ระหว่างรุ่นพี่
 					และรุ่นน้องมุ่งเน้นให้นักศึกษาได้รู้จักกันให้มากขึ้น ช่วยเหลือซึ่งกันและกัน
-					โดยจะเริ่มวันที่ xx สิงหาคม พ.ศ. 2566 จนถึง xx สิงหาคม พ.ศ. 2566 ที่ @คณะเทคโนโลยีสารสนเทศ
+					โดยจะเริ่มวันที่ 7 สิงหาคม พ.ศ. 2566 จนถึง 19 สิงหาคม พ.ศ. 2566 ที่ @คณะเทคโนโลยีสารสนเทศ
 					สจล.
 				</p>
 			</div>

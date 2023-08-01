@@ -4,7 +4,7 @@
 	import LogoutButton from '$components/svelte/LogoutButton.svelte';
 	import type { PageData } from './$types';
 
-	const { homePageState, session } = $page.data as PageData;
+	const { session, homePageState, user } = $page.data as PageData;
 
 	let isQrCodeActive = new Date() >= homePageState.qrCode.activateDate;
 	let isHintActive = new Date().getTime() >= homePageState.hints.activateDate.getTime();
@@ -13,8 +13,11 @@
 </script>
 
 <div>
-	<div class=" relative">
-		<p class="absolute right-0 text-white">Sprit Shards: 999</p>
+	<div class="relative flex flex-col gap-y-2">
+		<p class="text-lg font-Pridi text-white">
+			ยินดีต้อนรับ {session?.user?.name?.split(' ')[0]} เข้าสู่โลกเวทย์มนตร์
+		</p>
+		<p class="font-Pridi text-gray-200 text-sm">ตอนนี้คุณมีอยู่ {user.balance} Sprit Shards</p>
 	</div>
 	<div class="grid grid-cols-2 grid-rows-2 gap-x-3 gap-y-14 mt-10">
 		<CardButtonMenu
