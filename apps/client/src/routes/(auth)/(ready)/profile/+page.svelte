@@ -35,7 +35,7 @@
 				</p>
 			</div>
 		{/each}
-		{#if facebookva.value}
+		{#if facebook.value}
 			<div class="flex flex-col gap-y-1">
 				<p class="text-sm font-krub font-thin text-white">{facebook.title}</p>
 				<a
