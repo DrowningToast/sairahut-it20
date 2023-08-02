@@ -6,7 +6,11 @@
 	import { AuthController } from '$lib/auth/AuthController';
 </script>
 
-<div class="bg-gradient-to-b from-primary to-black overflow-x-hidden relative">
+<div class="bg-gradient-to-b from-primary to-black hidden md:block min-h-screen relative">
+	<h1 class="text-center text-accent font-extralight font-Pridi text-3xl absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">มึงจะไปเล่นในโทรศัพท์<br>หรือจะให้กูร่ายเวทใส่หัวพ่อมึง</h1>
+</div>
+
+<div class="bg-gradient-to-b from-primary to-black overflow-x-hidden relative md:hidden">
 	<img
 		src="./hero.png"
 		class="absolute w-full inset-x-0 overflow-x-visible w-auto object-cover"
