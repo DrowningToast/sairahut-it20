@@ -35,7 +35,7 @@
 				</p>
 			</div>
 		{/each}
-		{#if facebook}
+		{#if facebook.value}
 			<div class="flex flex-col gap-y-1">
 				<p class="text-sm font-krub font-thin text-white">{facebook.title}</p>
 				<a
@@ -47,7 +47,7 @@
 				</a>
 			</div>
 		{/if}
-		{#if instagram}
+		{#if instagram.value}
 			<div class="flex flex-col gap-y-1">
 				<p class="text-sm font-krub font-thin text-white">{instagram.title}</p>
 				<a

@@ -73,7 +73,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 						href: '/qrgen'
 					},
 					hints: {
-						activateDate: new Date(),
+						activateDate: new Date(1970),
 						title: 'ดูคำใบ้ที่ตัวเองกรอก',
 						href: '/set-hints'
 					},
