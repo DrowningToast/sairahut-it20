@@ -9,8 +9,8 @@
 </script>
 
 <Dialog>
-	<SrhButton class="relative" type="button" {disabled} {isLoading}
-		><DialogTrigger class="absolute inset-0">{triggerText}</DialogTrigger></SrhButton
+	<SrhButton class="relative px-12" type="button" {disabled} {isLoading}
+		><DialogTrigger>{triggerText}</DialogTrigger></SrhButton
 	>
 	<DialogContent class="absolute top-16 inset-x-10 w-auto">
 		<slot />

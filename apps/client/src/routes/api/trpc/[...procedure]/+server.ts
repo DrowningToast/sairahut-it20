@@ -1,4 +1,3 @@
-// src/routes/api/trpc/[...procedure]/+server.ts
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 import { appRouter } from '$lib/server/router';
 import { createSvelteKitContext } from '$lib/server/context';

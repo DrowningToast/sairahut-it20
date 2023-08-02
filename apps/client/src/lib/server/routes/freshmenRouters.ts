@@ -1,11 +1,39 @@
 import { z } from 'zod';
 import { createRouter } from '../context';
-import { protectedProcedure } from '../procedure';
+import { freshmenProcedure, protectedProcedure } from '../procedure';
 import { prisma } from '$lib/serverUtils';
 import { TRPCError } from '@trpc/server';
 import { freshmenRegister } from '$lib/zod';
 import { AirtableController } from '$lib/airtable-api/controller';
-import type { FreshmenDetails } from 'database';
+import type { FreshmenDetails, User } from 'database';
+
+interface SearchQuery {
+	where: {
+		first_name?: {
+			contains: string | undefined;
+		};
+		nickname?: {
+			contains: string | undefined;
+		};
+		student_id?: {
+			contains: string | undefined;
+		};
+	};
+}
+
+export const checkIfAlreadyScanThisSophomore = async (freshmen: User, secret: string) => {
+	const alreadyScanned = await prisma.qRInstances.findMany({
+		where: {
+			scannedBy: {
+				some: {
+					userId: freshmen.id
+				}
+			}
+		}
+	});
+
+	return !!alreadyScanned.find((scanned) => scanned.secret === secret);
+};
 
 export const freshmenRouters = createRouter({
 	regis: protectedProcedure.input(freshmenRegister).mutation(async ({ input, ctx }) => {
@@ -64,42 +92,134 @@ export const freshmenRouters = createRouter({
 
 		return 'OK';
 	}),
-
-	submitScannedQR: protectedProcedure.input(z.string()).query(async ({ ctx, input }) => {
-		const { user } = ctx;
-
+	// Get the owner information of this qr code
+	getQRInfo: freshmenProcedure.input(z.string().length(6)).query(async ({ ctx, input }) => {
 		const data = await prisma.qRInstances.findUnique({
 			where: {
-				id: input
+				secret: input
+			},
+			include: {
+				owner: true,
+				scannedBy: true
 			}
 		});
 
+		// Check if scanning the same person or not
+		const already = await checkIfAlreadyScanThisSophomore(ctx.user!, input);
+
+		return { ...data, already };
+	}),
+	submitScannedQR: freshmenProcedure.input(z.string()).query(async ({ ctx, input }) => {
+		const { user } = ctx;
+
+		if (!user?.id) {
+			throw new TRPCError({
+				code: 'UNAUTHORIZED',
+				message: 'User id not found'
+			});
+		}
+
+		const data = await prisma.qRInstances.findUnique({
+			where: {
+				secret: input
+			},
+			select: {
+				scannedBy: true,
+				quota: true,
+				id: true
+			}
+		});
+
+		// qr code not found
 		if (!data) {
 			return {
 				success: 0,
 				message: `QR Instance with ID: ${input} not found.`
 			};
-		} else if (data.scannedById) {
-			return {
-				success: 0,
-				message: `QR Instance with ID: ${input} already scanned.`
-			};
+			// the qr is out of quota
+		} else if (data.quota <= 0) {
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'QR Code has expired'
+			});
+			// Scanning the same qr code
+		} else if (data.scannedBy.map((scanned) => scanned.id).includes(user.id)) {
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'QR Code already scanned'
+			});
 		}
 
-		await prisma.qRInstances.update({
-			where: {
-				id: input
-			},
-			data: {
-				scannedById: user?.freshmenDetails?.id
-			}
-		});
+		// Check if scanning the same person or not
+		const already = await checkIfAlreadyScanThisSophomore(ctx.user!, input);
+		if (already) {
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'Already scanned this sophomore'
+			});
+		}
+
+		// If everything is fine
+		// Decrease the quota of the qr instance
+		// Increase the amount of spirit shard the freshmen has
+		// Also increase the amount of humanity the sophomore has
+
+		await prisma.$transaction([
+			prisma.qRInstances.update({
+				where: {
+					secret: input
+				},
+				data: {
+					scannedBy: {
+						connect: {
+							userId: user?.id
+						}
+					},
+					quota: {
+						decrement: 1
+					}
+				}
+			}),
+			prisma.freshmenDetails.update({
+				where: {
+					userId: user.id
+				},
+				data: {
+					user: {
+						update: {
+							balance: {
+								increment: 1
+							}
+						}
+					}
+				}
+			}),
+			prisma.qRInstances.update({
+				where: {
+					id: data.id
+				},
+				data: {
+					owner: {
+						update: {
+							user: {
+								update: {
+									balance: {
+										increment: 1
+									}
+								}
+							}
+						}
+					}
+				}
+			})
+		]);
 
 		return {
 			success: 1,
 			message: 'OK'
 		};
 	}),
+
 	getAllFreshmens: protectedProcedure
 		.input(
 			z.object({
@@ -110,47 +230,55 @@ export const freshmenRouters = createRouter({
 			})
 		)
 		.query(async ({ input }) => {
-			const total = await prisma.freshmenDetails.count()
-	
+			let searchQuery: SearchQuery | undefined;
+
 			const { q, queryBy, first, last } = input;
 
 			let data: FreshmenDetails[] = [];
-		
+
 			if (queryBy === 'FIRSTNAME') {
-				data = await prisma.freshmenDetails.findMany({
+				searchQuery = {
 					where: {
 						first_name: {
-							contains: q,
+							contains: q
 						}
-					},
-					skip: first,
-					take: last,
-				})
-			} else if (queryBy === 'NICKNAME') {
+					}
+				};
 				data = await prisma.freshmenDetails.findMany({
+					...searchQuery,
+					skip: first,
+					take: last
+				});
+			} else if (queryBy === 'NICKNAME') {
+				searchQuery = {
 					where: {
 						nickname: {
-							contains: q,
+							contains: q
 						}
-					},
-					skip: first,
-					take: last,
-				})
-			} else if (queryBy === 'STUDENT_ID') {
+					}
+				};
 				data = await prisma.freshmenDetails.findMany({
+					...searchQuery,
+					skip: first,
+					take: last
+				});
+			} else if (queryBy === 'STUDENT_ID') {
+				searchQuery = {
 					where: {
 						student_id: {
-							equals: q
+							contains: q
 						}
-					},
+					}
+				};
+				data = await prisma.freshmenDetails.findMany({
+					...searchQuery,
 					skip: first,
-					take: last,
-				})
+					take: last
+				});
 			}
 
 			return {
-				count: total,
-				data,
-			}
+				data
+			};
 		})
-})
+});

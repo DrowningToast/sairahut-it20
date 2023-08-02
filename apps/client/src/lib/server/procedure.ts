@@ -1,6 +1,6 @@
 import { TRPCError } from '@trpc/server';
 import { t } from './context';
-import { determineYear } from '$lib/middlewares/firstTimeMiddleware';
+import { determineYear } from '$lib/utils';
 
 export const publicProcedure = t.procedure;
 

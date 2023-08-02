@@ -1,24 +1,68 @@
 <script lang="ts">
-	// https://github.com/t0ngk/sairahut/blob/main/src/routes/scanner/%2Bpage.svelte
+	interface FoundTarget {
+		fullname: string;
+		nickname: string;
+		gen: number;
+		quota: number;
+		secret: string;
+		scanned: boolean;
+	}
 
 	import { trpc } from '$lib/trpc';
 
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import QrScanner from 'qr-scanner';
-	import { page } from '$app/stores';
-	import { AuthController } from '$lib/auth/AuthController';
 	import SrhButton from '$components/svelte/SRHButton.svelte';
+	import { determineYear } from '$lib/utils';
+	import Alert from '$components/ui/alert/Alert.svelte';
+	import AlertTitle from '$components/ui/alert/AlertTitle.svelte';
+	import AlertDescription from '$components/ui/alert/AlertDescription.svelte';
 
 	let videoElement: HTMLVideoElement;
 	let qrScanner: QrScanner;
+	let found: FoundTarget | undefined;
 
-	const submitData = async (id: string) => {
-		const data = await trpc.freshmens.submitScannedQR.query(id);
+	$: found = undefined;
+	$: isLoading = false;
+	$: success = false;
 
-		if (data.success === 0) {
+	const handleScan = async (secret: string) => {
+		qrScanner.stop();
+		found = undefined;
+
+		const res = await trpc.freshmens.getQRInfo.query(secret);
+
+		if (!res?.owner?.fullname) {
 			qrScanner.start();
-		} else {
-			qrScanner.stop();
+			return alert('Invalid QR Code');
+		}
+
+		found = {
+			fullname: res?.owner!.fullname!,
+			nickname: res?.owner!.nickname!,
+			gen: determineYear(res?.owner!.student_id!),
+			quota: res?.quota!,
+			secret: res?.secret!,
+			scanned: res?.already
+		};
+	};
+
+	const handleSubmit = async (secret: string) => {
+		isLoading = true;
+
+		try {
+			const data = await trpc.freshmens.submitScannedQR.query(secret);
+
+			success = true;
+			qrScanner.start();
+			setTimeout(() => {
+				found = undefined;
+				success = false;
+			}, 5000);
+		} catch (e) {
+			alert('An error has occured while trying to submit');
+			found = undefined;
+			isLoading = false;
 		}
 	};
 
@@ -26,9 +70,7 @@
 		qrScanner = new QrScanner(
 			videoElement,
 			async ({ data }) => {
-				submitData(data);
-
-				qrScanner.stop();
+				handleScan(data);
 			},
 			{
 				highlightScanRegion: true,
@@ -41,34 +83,74 @@
 	};
 
 	const destroyScanner = () => {
-		qrScanner.stop();
-		qrScanner.destroy();
+		qrScanner?.stop();
+		qrScanner?.destroy();
 	};
 
 	onMount(() => {
 		setScanner();
 	});
+
+	onDestroy(() => {
+		destroyScanner();
+	});
 </script>
+
+{#if found && !success}
+	<div class="absolute inset-0 grid place-items-center z-20">
+		<div class="absolute inset-0 bg-gray-50/25" />
+		<div class="bg-neutral-900 mx-12 p-8 flex flex-col gap-y-2 z-10 rounded-lg">
+			<h1 class="text-accent text-lg font-semibold">เจอภูตแล้ว!</h1>
+			<p class="text-accent whitespace-pre-wrap text-left">
+				ภูตตัวนี้นั้นมีชื่อว่า {found.nickname} รุ่นที่ {found.gen}
+			</p>
+			<p class="text-accent text-center">
+				({found.fullname})
+			</p>
+			<p class="text-accent text-left">
+				และดูเหมือนว่าเจ้านั้น{found.quota >= 1
+					? 'จะยังไม่ได้จับ!'
+					: found.scanned
+					? 'เคยจับได้แล้ว!'
+					: 'มาช้าเกินไปจนถูกคนอื่นจับไปแล้ว... ถ้าเป็นไปได้ลองให้เค้า refresh QR Code ดูได้ไหม?'}
+			</p>
+			<div class="mt-12 flex flex-col gap-y-4">
+				<SrhButton
+					on:click={() => {
+						if (!found?.secret) return;
+						handleSubmit(found?.secret);
+						qrScanner.start();
+					}}
+					disabled={found.quota < 1}
+					{isLoading}>จับเลย!</SrhButton
+				>
+				<SrhButton
+					{isLoading}
+					on:click={() => {
+						qrScanner.start();
+						found = undefined;
+					}}>ยกเลิก</SrhButton
+				>
+			</div>
+		</div>
+	</div>
+{/if}
+
+{#if success && found?.nickname}
+	<Alert class="bg-neutral-900/25 text-accent border-accent">
+		<AlertTitle>สำเร็จ!</AlertTitle>
+		<AlertDescription>คุณได้จับภูต {found?.nickname} เรียบร้อยแล้ว!</AlertDescription>
+	</Alert>
+{/if}
 
 <div class="flex flex-col justify-center items-center gap-8">
 	<p class="text-sm font-Pridi text-accent font-extralight mt-8">SCANNING...</p>
-	<div class="relative w-full">
-		<svg xmlns="http://www.w3.org/2000/svg" width="84" height="75" viewBox="0 0 84 75" fill="none" class="absolute top-0 left-0">
-			<path d="M1 74.5L1 33.5C0.999993 19 5.86439 1.96762 34.5 1H83.7088" stroke="white" stroke-width="2"/>
-		</svg>
-		<svg xmlns="http://www.w3.org/2000/svg" width="84" height="75" viewBox="0 0 84 75" fill="none" class="absolute top-0 right-0">
-			<path d="M82.7087 74.5L82.7087 33.5C82.7087 19 77.8443 1.96762 49.2087 1H-6.86646e-05" stroke="white" stroke-width="2"/>
-		</svg>
-		<svg xmlns="http://www.w3.org/2000/svg" width="84" height="75" viewBox="0 0 84 75" fill="none" class="absolute bottom-0 left-0">
-			<path d="M1 0L1 41C0.999993 55.5 5.86439 72.5324 34.5 73.5H83.7088" stroke="white" stroke-width="2"/>
-		</svg>
-		<svg xmlns="http://www.w3.org/2000/svg" width="84" height="75" viewBox="0 0 84 75" fill="none" class="absolute bottom-0 right-0">
-			<path d="M82.7087 0L82.7087 41C82.7087 55.5 77.8443 72.5324 49.2087 73.5H-6.86646e-05" stroke="white" stroke-width="2"/>
-		</svg>
-		<video class=" rounded-3xl my-5 w-full h-96 " bind:this={videoElement}>
+	<div class="relative w-full bg-neutral-900/25 p-8 rounded-3xl aspect-square">
+		<video class="object-cover rounded-xl w-full h-full" bind:this={videoElement}>
 			<track kind="captions" />
 		</video>
 	</div>
-	<p class="text-sm font-Pridi text-accent font-extralight mt-5">แสกนQR code แล้วรับคำใบ้กันเลย!!</p>
-	<SrhButton>กลับสู่หน้าหลัก</SrhButton>
+	<p class="text-sm font-Pridi text-accent font-extralight mt-5">
+		ตามหา QR Code จากเหล่าภูตเพื่อรับ Spirit Shards
+	</p>
 </div>

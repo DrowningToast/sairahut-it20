@@ -1,7 +1,5 @@
 <script>
 	import { browser } from '$app/environment';
-	import Header from '$components/svelte/Navbar.svelte';
-	import LandingFooter from '$components/svelte/LandingFooter.svelte';
 	import '../app.postcss';
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
 

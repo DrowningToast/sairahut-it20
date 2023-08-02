@@ -5,12 +5,9 @@
 	export { className as class };
 </script>
 
-<tr
-	class={cn(
-		"border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
-		className
-	)}
+<div
+	class={cn("flex flex-col space-y-2 text-center sm:text-left", className)}
 	{...$$restProps}
 >
 	<slot />
-</tr>
+</div>

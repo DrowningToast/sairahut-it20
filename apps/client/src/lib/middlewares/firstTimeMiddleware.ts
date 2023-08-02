@@ -1,12 +1,8 @@
 import { AirtableController } from '$lib/airtable-api/controller';
 import { prisma } from '$lib/serverUtils';
+import { determineYear } from '$lib/utils';
 import type { Handle } from '@sveltejs/kit';
 import type { Branch } from 'database';
-
-export const determineYear = (email: string) => {
-	const year = parseInt(email[0] + email[1]);
-	return year - 45;
-};
 
 /**
  *

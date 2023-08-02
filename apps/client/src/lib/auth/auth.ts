@@ -4,7 +4,7 @@ import { SvelteKitAuth } from '@auth/sveltekit';
 import { client } from 'database/db';
 import Google from '@auth/core/providers/google';
 import { AirtableController } from '$lib/airtable-api/controller';
-import { determineYear } from '$lib/middlewares/firstTimeMiddleware';
+import { determineYear } from '$lib/utils';
 
 /**
  *
@@ -42,7 +42,7 @@ export const AuthHook = SvelteKitAuth({
 	adapter: PrismaAdapter(client),
 	secret: AUTH_SECRET,
 	callbacks: {
-		signIn: async ({ user, account, profile }) => {
+		signIn: async ({ profile }) => {
 			// The user doesn't have an email will result in error
 			if (!profile?.email) {
 				return false;
@@ -50,7 +50,7 @@ export const AuthHook = SvelteKitAuth({
 
 			const checkKMITLDomain = profile?.email?.includes('@kmitl.ac.th');
 			// check that user is School of IT Student
-			const checkITStudent = profile?.email?.slice(2, 4) === '07'
+			const checkITStudent = profile?.email?.slice(2, 4) === '07';
 
 			const checkUnregis = await checkForRegistration(profile?.email);
 

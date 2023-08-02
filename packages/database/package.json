@@ -10,10 +10,12 @@
     },
     "scripts": {
         "init": "prisma init",
+        "build": "prisma generate",
         "pg:push": "dotenv -e ../../.env -- prisma db push",
         "pg:force-push": "dotenv -e ../../.env -- prisma db push --accept-data-loss",
         "pg:generate": " dotenv -e ../../.env -- prisma generate",
         "pg:force-reset": "dotenv -e ../../.env -- prisma db push --force-reset",
+        "pg:pull": "dotenv -e ../../.env -- prisma db pull",
         "db:studio": "dotenv -e ../../.env -- prisma studio"
     },
     "devDependencies": {

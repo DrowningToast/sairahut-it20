@@ -1,15 +1,21 @@
-<script>
+<script lang="ts">
 	import Button from '$components/ui/button/Button.svelte';
+	import { cn } from '$lib/utils';
 	import { signOut } from '@auth/sveltekit/client';
 	import { LogOut } from 'lucide-svelte';
 
+	let className: string = '';
+
+	export { className as class };
 	export const redirect = '/';
 </script>
 
 <Button
-	class="px-2 py-2 inline-block justify-center gap-x-2 w-auto bg-neutral-900 drop-shadow-[0px_0px_3px_#FFFADD]"
+	class={cn(' bg-white relative w-full overflow-hidden', className)}
 	on:click={() => signOut({ callbackUrl: redirect })}
-	><div class="flex items-center justify-center text-accent">
-		Signout
+	><div
+		class="flex items-center justify-center text-accent bg-neutral-900/20 inset-0 absolute text-red-400"
+	>
+		ออกจากระบบ
 	</div></Button
 >

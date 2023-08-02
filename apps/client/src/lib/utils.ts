@@ -13,3 +13,8 @@ export function cn(...inputs: ClassValue[]) {
 // export const prisma = globalForPrisma.prisma || client;
 
 // if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+
+export const determineYear = (email: string) => {
+	const year = parseInt(email[0] + email[1]);
+	return year - 45;
+};

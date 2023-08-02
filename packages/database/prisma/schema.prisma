@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -21,15 +18,14 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -39,49 +35,27 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
+  create_at    DateTime @default(now())
+  update_at    DateTime @default(now()) @updatedAt
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  create_at DateTime @default(now())
-  update_at DateTime @default(now()) @updatedAt
-}
-
-enum PlayerType {
-  // default role - cannot access shits
-  NONE
-  // Guest probably will be unused, for special occasion
-  GUEST
-  // IT21
-  FRESHMEN
-  // IT20, Senior's player
-  SOPHOMORE
-  // < IT19
-  SENIOR
 }
 
 model User {
-  create_at DateTime @default(now())
-  update_at DateTime @default(now()) @updatedAt
-
-  id            String    @id @unique @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-
-  // First timer would be NONE
-  type PlayerType @default(NONE)
-
-  // เมื่อ type == SOPHOMORE
+  create_at        DateTime          @default(now())
+  update_at        DateTime          @default(now()) @updatedAt
+  id               String            @id @unique @default(cuid())
+  name             String?
+  email            String?           @unique
+  emailVerified    DateTime?
+  image            String?
+  type             PlayerType        @default(NONE)
+  balance          Int               @default(0)
+  factionId        String?
+  accounts         Account[]
+  freshmenDetails  FreshmenDetails?
+  sessions         Session[]
   sophomoreDetails SophomoreDetails?
-
-  // เมื่อ type == FRESHMEN
-  freshmenDetails FreshmenDetails?
-
-  balance   Int       @default(0)
-  faction   Factions? @relation(fields: [factionId], references: [id])
-  factionId String?
+  faction          Factions?         @relation(fields: [factionId], references: [id])
 }
 
 model VerificationToken {
@@ -90,6 +64,103 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model QRInstances {
+  id              String            @id @unique @default(cuid())
+  create_at       DateTime          @default(now())
+  update_at       DateTime          @default(now()) @updatedAt
+  ownerId         String
+  quota           Int               @default(1)
+  secret          String            @unique
+  owner           SophomoreDetails  @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  FreshmenDetails FreshmenDetails[]
+}
+
+model PasscodeInstances {
+  id        String           @id @unique @default(uuid())
+  create_at DateTime         @default(now())
+  update_at DateTime         @default(now()) @updatedAt
+  usedById  String?
+  ownerId   String
+  owner     SophomoreDetails @relation(fields: [ownerId], references: [id])
+  usedBy    FreshmenDetails? @relation(fields: [usedById], references: [id])
+}
+
+model Factions {
+  id      String @id @unique @default(cuid())
+  name    String
+  handler String
+  users   User[]
+}
+
+model FreshmenDetails {
+  create_at       DateTime            @default(now())
+  update_at       DateTime            @updatedAt
+  id              String              @id @unique @default(cuid())
+  userId          String              @unique
+  thisOrThat      ThisOrThat[]
+  thisOrThatReady Boolean             @default(false)
+  student_id      String              @unique
+  title           NameTitle
+  first_name      String
+  last_name       String
+  nickname        String
+  branch          Branch
+  facebook_link   String?
+  instagram_link  String?
+  phone           String
+  user            User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  usedPasscodes   PasscodeInstances[]
+  QRInstances     QRInstances[]
+}
+
+model HintSlugs {
+  slug        String  @id @unique
+  displayName String
+  Hints       Hints[]
+}
+
+model Hints {
+  hintSlugId  String
+  content     String
+  sophomoreId String
+  slug        HintSlugs        @relation(fields: [hintSlugId], references: [slug])
+  sophomore   SophomoreDetails @relation(fields: [sophomoreId], references: [id], onDelete: Cascade)
+
+  @@id([hintSlugId, sophomoreId])
+}
+
+model SophomoreDetails {
+  create_at         DateTime            @default(now())
+  update_at         DateTime            @updatedAt
+  thisOrThat        ThisOrThat[]
+  thisOrThatReady   Boolean             @default(false)
+  hintsReady        Boolean             @default(false)
+  userId            String              @unique
+  id                String              @id @unique @default(cuid())
+  fullname          String
+  title             NameTitle
+  student_id        String              @unique
+  nickname          String
+  branch            Branch
+  participate       Boolean
+  many_fresh        Boolean
+  facebook_link     String
+  instagram_link    String
+  phone             String
+  hints             Hints[]
+  PasscodeInstances PasscodeInstances[]
+  QRInstances       QRInstances[]
+  user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum PlayerType {
+  NONE
+  GUEST
+  FRESHMEN
+  SOPHOMORE
+  SENIOR
 }
 
 enum NameTitle {
@@ -105,145 +176,6 @@ enum Branch {
 }
 
 enum ThisOrThat {
-  // LEFT - Left side of choices (this)
   LEFT
-  // RIGHT - Right side of choices (that)
   RIGHT
-}
-
-// One instance per one freshmen 
-model QRInstances {
-  id String @id @unique @default(cuid())
-
-  create_at DateTime @default(now())
-  update_at DateTime @default(now()) @updatedAt
-
-  // Freshmen use this QR Code
-  scannedBy   FreshmenDetails? @relation(fields: [scannedById], references: [id])
-  scannedById String?
-
-  // Who is the owner of this QR Code
-  owner   SophomoreDetails @relation(fields: [ownerId], references: [id])
-  ownerId String
-
-  // จำนวนที่ QR Code ตัวนี้สามารถสแกนได้
-  quota Int @default(1)
-}
-
-// One instance per one freshmen
-model PasscodeInstances {
-  id String @id @unique @default(uuid())
-
-  create_at DateTime @default(now())
-  update_at DateTime @default(now()) @updatedAt
-
-  // Freshmen use this passcode
-  usedBy   FreshmenDetails? @relation(fields: [usedById], references: [id])
-  usedById String?
-
-  // Who is the owner of this Passcode
-  owner   SophomoreDetails @relation(fields: [ownerId], references: [id])
-  ownerId String
-}
-
-model Factions {
-  id      String @id @unique @default(cuid())
-  // Display Name
-  name    String
-  // Short Name eg. HU, AL, GT
-  handler String
-
-  users User[]
-}
-
-model FreshmenDetails {
-  create_at DateTime @default(now())
-  update_at DateTime @updatedAt
-
-  id String @id @unique @default(cuid())
-
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String @unique
-
-  thisOrThat      ThisOrThat[]
-  thisOrThatReady Boolean      @default(false)
-
-  // Passcodes that have been used
-  usedPasscodes PasscodeInstances[]
-
-  // Public Personal Information
-  student_id String    @unique
-  title      NameTitle
-  first_name String
-  last_name  String
-  nickname   String
-  branch     Branch
-
-  // Optional Public Personal Information
-  facebook_link  String?
-  instagram_link String?
-
-  // Non public personal details
-  // เบอร์โทรศัพท์
-  phone String
-
-  // QR Codes that have been scanned
-  scannedQRs QRInstances[]
-}
-
-model HintSlugs {
-  slug        String @id @unique
-  displayName String
-
-  Hints Hints[]
-}
-
-model Hints {
-  slug       HintSlugs @relation(fields: [hintSlugId], references: [slug])
-  hintSlugId String
-  content    String
-
-  sophomore   SophomoreDetails @relation(fields: [sophomoreId], references: [id], onDelete: Cascade)
-  sophomoreId String
-
-  @@id([hintSlugId, sophomoreId])
-}
-
-model SophomoreDetails {
-  create_at DateTime @default(now())
-  update_at DateTime @updatedAt
-
-  thisOrThat      ThisOrThat[]
-  thisOrThatReady Boolean      @default(false)
-  hints           Hints[]
-  hintsReady      Boolean      @default(false)
-
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String @unique
-
-  id             String    @id @unique @default(cuid())
-  // name - surname in airtable
-  fullname       String
-  // title in airtable
-  title          NameTitle
-  // student id in airtable
-  student_id     String    @unique
-  // nickname in airtable
-  nickname       String
-  // branch สาขา
-  branch         Branch
-  // join event in airtable
-  // ดูว่ารุ่นพี่คนนั้นประสงค์ที่จะเข้าร่วมกิจกรรมหรือไม่
-  participate    Boolean
-  // อยากมีน้อง 2 คน in airtable
-  many_fresh     Boolean
-  facebook_link  String
-  instagram_link String
-  // เบอร์โทรศัพท์
-  phone          String
-
-  // QR instances that have been created
-  QRInstances       QRInstances[]
-  // Passcode instances that have been created
-  PasscodeInstances PasscodeInstances[]
 }
