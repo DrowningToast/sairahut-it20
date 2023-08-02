@@ -1,4 +1,6 @@
 // See https://kit.svelte.dev/docs/types#app
+/// <reference types="vite-plugin-pwa/client" />
+/// <reference types="vite-plugin-pwa/info" />
 
 import type { Session } from '@auth/core/types';
 import type {
