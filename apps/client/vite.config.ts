@@ -6,9 +6,25 @@ export default defineConfig({
 	plugins: [
 		sveltekit(),
 		SvelteKitPWA({
-			strategies: 'injectManifest',
+			strategies: 'generateSW',
 			srcDir: 'src',
-			filename: 'service-worker.ts',
+			manifest: {
+				"name": "IT Sairahut",
+				"short_name": "IT Sairahut",
+				"start_url": "/",
+				"scope": "/",
+				"icons": [
+					{
+						"src": "icons/icon-192.png",
+						"sizes": "192x192",
+						"type": "image/png"
+					}
+				],
+				"theme_color": "#1E3A8A",
+				"background_color": "#1E3A8A",
+				"display": "standalone",
+				"orientation": "portrait"
+			}
 			/* other pwa options */
 		})
 	]

@@ -14,9 +14,6 @@ const config = {
 			$components: 'src/lib/components',
 			'$components/*': 'src/lib/components/*'
 		},
-		files: {
-			serviceWorker: 'src/service-worker.ts',
-		}
 	},
 	shadcn: {
 		componentPath: './src/lib/components/ui'
