@@ -22,17 +22,26 @@ export const firstTimeMiddleware: Handle = async ({ event, resolve }) => {
 	if (user?.email && user.type === 'NONE') {
 		const gen = determineYear(user.email);
 
-		// if it's the senior
-		if (gen < 20) {
-			null;
-		}
+		// if it's the senior or IT20
+		if (gen <= 20) {
+			let res;
 
-		// if the user IT20
-		if (gen === 20) {
-			// fetch the IT20 airtable
-			const res = await AirtableController.participantIT20.getParticipantByStudentId(
-				user.email.replace('@kmitl.ac.th', '')
-			);
+			if (gen < 20) {
+				res = await AirtableController.participantSenior.getParticipantByStudentId(
+					user.email.replace('@kmitl.ac.th', '')
+				);
+
+				if (!res) {
+					throw new Error('Email not found');
+				}
+
+				res = { ...res, participate: true }
+			} else if (gen == 20) {
+				// fetch the IT20 airtable
+				res = await AirtableController.participantIT20.getParticipantByStudentId(
+					user.email.replace('@kmitl.ac.th', '')
+				);
+			}
 
 			if (!res) {
 				throw new Error('Email not found');
