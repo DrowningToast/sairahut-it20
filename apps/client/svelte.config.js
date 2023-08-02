@@ -13,6 +13,9 @@ const config = {
 		alias: {
 			$components: 'src/lib/components',
 			'$components/*': 'src/lib/components/*'
+		},
+		csrf: {
+			checkOrigin: false
 		}
 	},
 	shadcn: {
