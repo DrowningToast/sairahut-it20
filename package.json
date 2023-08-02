@@ -19,5 +19,8 @@
     "turbo": "latest"
   },
   "packageManager": "pnpm@7.15.0",
-  "name": "sairahut-it20"
+  "name": "sairahut-it20",
+  "dependencies": {
+    "kolorist": "^1.8.0"
+  }
 }
