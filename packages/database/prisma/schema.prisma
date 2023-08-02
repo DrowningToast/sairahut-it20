@@ -67,14 +67,14 @@ model VerificationToken {
 }
 
 model QRInstances {
-  id              String            @id @unique @default(cuid())
-  create_at       DateTime          @default(now())
-  update_at       DateTime          @default(now()) @updatedAt
-  ownerId         String
-  quota           Int               @default(1)
-  secret          String            @unique
-  owner           SophomoreDetails  @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  FreshmenDetails FreshmenDetails[]
+  id        String            @id @unique @default(cuid())
+  create_at DateTime          @default(now())
+  update_at DateTime          @default(now()) @updatedAt
+  ownerId   String
+  quota     Int               @default(1)
+  secret    String            @unique
+  owner     SophomoreDetails  @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  scannedBy FreshmenDetails[]
 }
 
 model PasscodeInstances {
@@ -112,7 +112,7 @@ model FreshmenDetails {
   phone           String
   user            User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   usedPasscodes   PasscodeInstances[]
-  QRInstances     QRInstances[]
+  scannedQrs      QRInstances[]
 }
 
 model HintSlugs {
