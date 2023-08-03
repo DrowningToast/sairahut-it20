@@ -99,7 +99,13 @@ export const freshmenRouters = createRouter({
 				secret: input
 			},
 			include: {
-				owner: true,
+				owner: {
+					select: {
+						nickname: true,
+						fullname: true,
+						student_id: true
+					}
+				},
 				scannedBy: true
 			}
 		});
@@ -220,6 +226,9 @@ export const freshmenRouters = createRouter({
 		};
 	}),
 
+	/**
+	 * Safe
+	 */
 	getAllFreshmens: protectedProcedure
 		.input(
 			z.object({
@@ -234,7 +243,7 @@ export const freshmenRouters = createRouter({
 
 			const { q, queryBy, first, last } = input;
 
-			let data: FreshmenDetails[] = [];
+			let data: Partial<FreshmenDetails>[] = [];
 
 			if (queryBy === 'FIRSTNAME') {
 				searchQuery = {
@@ -244,11 +253,6 @@ export const freshmenRouters = createRouter({
 						}
 					}
 				};
-				data = await prisma.freshmenDetails.findMany({
-					...searchQuery,
-					skip: first,
-					take: last
-				});
 			} else if (queryBy === 'NICKNAME') {
 				searchQuery = {
 					where: {
@@ -257,11 +261,6 @@ export const freshmenRouters = createRouter({
 						}
 					}
 				};
-				data = await prisma.freshmenDetails.findMany({
-					...searchQuery,
-					skip: first,
-					take: last
-				});
 			} else if (queryBy === 'STUDENT_ID') {
 				searchQuery = {
 					where: {
@@ -270,13 +269,19 @@ export const freshmenRouters = createRouter({
 						}
 					}
 				};
-				data = await prisma.freshmenDetails.findMany({
-					...searchQuery,
-					skip: first,
-					take: last
-				});
 			}
-
+			data = await prisma.freshmenDetails.findMany({
+				...searchQuery,
+				select: {
+					student_id: true,
+					first_name: true,
+					nickname: true,
+					facebook_link: true,
+					instagram_link: true
+				},
+				skip: first,
+				take: last
+			});
 			return {
 				data
 			};
