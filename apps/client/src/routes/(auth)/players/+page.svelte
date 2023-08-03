@@ -16,6 +16,7 @@
 		TableHeader
 	} from '$components/ui/table';
 	import { trpc } from '$lib/trpc';
+	import { determineYear } from '$lib/utils';
 	import { createQuery } from '@tanstack/svelte-query';
 	import { FacebookIcon, InstagramIcon } from 'lucide-svelte';
 
@@ -138,15 +139,17 @@
 	{:else}
 		<TableHeader>
 			<TableRow class="gap-x-6">
+				<TableHead>รุ่น</TableHead>
 				<TableHead>ชื่อจริง</TableHead>
 				<TableHead>ชื่อเล่น</TableHead>
-				<TableHead>SNS</TableHead>
+				<TableHead>Contact</TableHead>
 			</TableRow>
 		</TableHeader>
 		<TableBody class="text-white text-sm">
 			{#if $searchQuery.data && !$searchQuery.isLoading}
 				{#each $searchQuery.data as d}
 					<TableRow class="gap-x-1 h-6">
+						<TableCell>{determineYear(d.student_id.substring(0, 2))}</TableCell>
 						<TableCell>{d.fullname.split(' ')[0] ?? `${d.first_name}`}</TableCell>
 						<TableCell>{d.nickname}</TableCell>
 						<TableCell class="flex flex-row gap-1">
