@@ -1,6 +1,8 @@
 import { sophomoreParticipant } from './table';
 
 export const getParticipantByStudentId = async (studentId: string) => {
+	console.log('3.55');
+
 	const query = await sophomoreParticipant
 		.select({
 			filterByFormula: `student_id = ${studentId}`
