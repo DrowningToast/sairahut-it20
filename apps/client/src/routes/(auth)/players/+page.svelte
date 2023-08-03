@@ -149,8 +149,8 @@
 			{#if $searchQuery.data && !$searchQuery.isLoading}
 				{#each $searchQuery.data as d}
 					<TableRow class="gap-x-1 h-6">
-						<TableCell>{determineYear(d.student_id.substring(0, 2))}</TableCell>
-						<TableCell>{d.fullname.split(' ')[0] ?? `${d.first_name}`}</TableCell>
+						<TableCell>{determineYear(d.student_id)}</TableCell>
+						<TableCell>{d.fullname?.split(' ')[0] ?? `${d.first_name}`}</TableCell>
 						<TableCell>{d.nickname}</TableCell>
 						<TableCell class="flex flex-row gap-1">
 							{#if d.facebook_link}
