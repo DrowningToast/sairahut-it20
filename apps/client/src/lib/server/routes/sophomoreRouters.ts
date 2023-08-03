@@ -6,6 +6,7 @@ import { prisma } from '$lib/serverUtils';
 import { databaseController } from '../controllers';
 import { TRPCError } from '@trpc/server';
 import type { SophomoreDetails } from 'database';
+import { determineYear } from '$lib/utils';
 
 interface SearchQuery {
 	where: {
@@ -96,10 +97,19 @@ export const sophomoreRouters = createRouter({
 				});
 			}
 
-			await AirtableController.participantIT20.insertHintsByStudentId(
-				parseInt(studentId),
-				processData
-			);
+			if (determineYear(ctx.user?.email as string) < 20) {
+				await AirtableController.participantSenior.insertHintsByStudentId(
+					parseInt(studentId),
+					processData
+				);
+			} else {
+				await AirtableController.participantIT20.insertHintsByStudentId(
+					parseInt(studentId),
+					processData
+				);
+			}
+
+
 
 			await databaseController.hints.submitHintSlugs(sophomoreDetailsId, processData);
 		}),
