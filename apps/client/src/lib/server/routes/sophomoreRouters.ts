@@ -6,6 +6,8 @@ import { prisma } from '$lib/serverUtils';
 import { databaseController } from '../controllers';
 import { TRPCError } from '@trpc/server';
 import type { SophomoreDetails } from 'database';
+import { determineYear } from '$lib/utils';
+import { SophomoreDetailsController } from '../database/sophomore/controller';
 
 interface SearchQuery {
 	where: {
@@ -53,15 +55,9 @@ export const sophomoreRouters = createRouter({
 			})
 		)
 		.query(async ({ input: { email } }) => {
-			const query = await prisma.user.findUnique({
-				where: {
-					email
-				},
-				select: {
-					sophomoreDetails: true
-				}
-			});
-			return query;
+			const res = await SophomoreDetailsController(prisma).findUniqueUserWithFresh({ email });
+
+			return res;
 		}),
 	submitHints: oldProcedure
 		.input(
@@ -96,10 +92,17 @@ export const sophomoreRouters = createRouter({
 				});
 			}
 
-			await AirtableController.participantIT20.insertHintsByStudentId(
-				parseInt(studentId),
-				processData
-			);
+			if (determineYear(ctx.user?.email as string) < 20) {
+				await AirtableController.participantSenior.insertHintsByStudentId(
+					parseInt(studentId),
+					processData
+				);
+			} else {
+				await AirtableController.participantIT20.insertHintsByStudentId(
+					parseInt(studentId),
+					processData
+				);
+			}
 
 			await databaseController.hints.submitHintSlugs(sophomoreDetailsId, processData);
 		}),
@@ -146,6 +149,9 @@ export const sophomoreRouters = createRouter({
 			return newQR;
 		}
 	}),
+	/**
+	 * Safe
+	 */
 	getAllSophomores: protectedProcedure
 		.input(
 			z.object({
@@ -170,11 +176,6 @@ export const sophomoreRouters = createRouter({
 						}
 					}
 				};
-				data = await prisma.sophomoreDetails.findMany({
-					...searchQuery,
-					skip: first,
-					take: last
-				});
 			} else if (queryBy === 'NICKNAME') {
 				searchQuery = {
 					where: {
@@ -183,11 +184,6 @@ export const sophomoreRouters = createRouter({
 						}
 					}
 				};
-				data = await prisma.sophomoreDetails.findMany({
-					...searchQuery,
-					skip: first,
-					take: last
-				});
 			} else if (queryBy === 'STUDENT_ID') {
 				searchQuery = {
 					where: {
@@ -196,12 +192,19 @@ export const sophomoreRouters = createRouter({
 						}
 					}
 				};
-				data = await prisma.sophomoreDetails.findMany({
-					...searchQuery,
-					skip: first,
-					take: last
-				});
 			}
+			data = await SophomoreDetailsController(prisma).findMany({
+				...searchQuery,
+				select: {
+					nickname: true,
+					student_id: true,
+					facebook_link: true,
+					instagram_link: true,
+					fullname: true
+				},
+				skip: first,
+				take: last
+			});
 
 			return {
 				data

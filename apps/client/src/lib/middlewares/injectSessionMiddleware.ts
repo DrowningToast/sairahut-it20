@@ -24,6 +24,8 @@ export const injectSessionMiddleware: Handle = async ({ event, resolve }) => {
 			}
 		});
 
+		console.log(user);
+
 		event.locals.user = user;
 	}
 
