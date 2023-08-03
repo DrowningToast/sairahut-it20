@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { z } from 'zod';
+	import SrhButton from '$components/svelte/SRHButton.svelte';
+	import { validate_each_argument } from 'svelte/internal';
 	import type { PageServerData } from './$types';
 
 	const user = $page.data as PageServerData;
@@ -34,7 +35,7 @@
 				</p>
 			</div>
 		{/each}
-		{#if z.string().url().safeParse(facebook.value).success}
+		{#if facebook.value}
 			<div class="flex flex-col gap-y-1">
 				<p class="text-sm font-krub font-thin text-white">{facebook.title}</p>
 				<a
@@ -46,7 +47,7 @@
 				</a>
 			</div>
 		{/if}
-		{#if z.string().url().safeParse(instagram.value).success}
+		{#if instagram.value}
 			<div class="flex flex-col gap-y-1">
 				<p class="text-sm font-krub font-thin text-white">{instagram.title}</p>
 				<a

@@ -19,9 +19,7 @@ export const getParticipantByStudentId = async (studentId: string) => {
 		facebook_link: query[0].get('facebook') as string,
 		instragram_link: query[0].get('instagram') as string,
 		many_fresh: query[0].get('many_fresh') as boolean,
-		phone: query[0].get('phone') as string,
-		airtableId: query[0].getId(),
-		hints: query[0].get('hints') as string
+		phone: query[0].get('phone') as string
 	};
 
 	return data;

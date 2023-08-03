@@ -1,7 +1,5 @@
 import { prisma } from '$lib/serverUtils';
 import type { Prisma } from 'database';
-import { SophomoreDetailsController } from '../sophomore/controller';
-import { UserController } from '../user/controller';
 
 export const getHintSlugs = async () => {
 	const response = await prisma.hintSlugs.findMany({});
@@ -16,7 +14,7 @@ export const submitHintSlugs = async (
 		prisma.hints.createMany({
 			data
 		}),
-		SophomoreDetailsController(prisma).updateOne({
+		prisma.sophomoreDetails.update({
 			data: {
 				hintsReady: true
 			},
@@ -31,21 +29,23 @@ export const submitHintSlugs = async (
 
 // Check that hints is exist
 export const checkHints = async (sophomoreDetailsId: string) => {
-	const res = await SophomoreDetailsController(prisma).findUnique({
-		id: sophomoreDetailsId
-	});
+	const res = await prisma.sophomoreDetails.findUnique({
+		where: {
+			id: sophomoreDetailsId
+		}
+	})
 
 	return res?.hintsReady;
-};
+}
 
 export const submitHints = async (email: string, details: any) => {
-	return await UserController(prisma).updateOne({
+	await prisma.user.update({
 		data: details,
 		where: {
-			email
+			email,
 		}
 	});
-};
+}
 
 export const hintController = {
 	getHintSlugs,

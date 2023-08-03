@@ -39,7 +39,7 @@
 				<Loader color="white" size="64px" />
 			{/if}
 		</div>
-		<div class="text-accent font-Pridi font-thin text-center px-8">
+		<div class="text-accent font-Pridi font-thin text-center px-10">
 			<h5 class="font-semibold">คำอธิบาย</h5>
 			<p>จงแสดง QR code ให้เหล่านักเวทย์แสกน</p>
 			<br />

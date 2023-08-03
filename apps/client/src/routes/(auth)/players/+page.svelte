@@ -16,9 +16,7 @@
 		TableHeader
 	} from '$components/ui/table';
 	import { trpc } from '$lib/trpc';
-	import { determineYear } from '$lib/utils';
 	import { createQuery } from '@tanstack/svelte-query';
-	import { FacebookIcon, InstagramIcon } from 'lucide-svelte';
 
 	const PAGINATION_SIZE = 600;
 	let queryBy: 'STUDENT_ID' | 'FIRSTNAME' | 'NICKNAME';
@@ -139,31 +137,20 @@
 	{:else}
 		<TableHeader>
 			<TableRow class="gap-x-6">
-				<TableHead>รุ่น</TableHead>
-				<TableHead>ชื่อจริง</TableHead>
+				<TableHead>รหัสนักศึกษา</TableHead>
+				<TableHead>ชื่อ-นามสกุล</TableHead>
 				<TableHead>ชื่อเล่น</TableHead>
-				<TableHead>Contact</TableHead>
+				<TableHead>สาขา</TableHead>
 			</TableRow>
 		</TableHeader>
 		<TableBody class="text-white text-sm">
 			{#if $searchQuery.data && !$searchQuery.isLoading}
 				{#each $searchQuery.data as d}
 					<TableRow class="gap-x-1 h-6">
-						<TableCell>{determineYear(d.student_id)}</TableCell>
-						<TableCell>{d.fullname?.split(' ')[0] ?? `${d.first_name}`}</TableCell>
+						<TableCell class="p-0">{d.student_id}</TableCell>
+						<TableCell>{d.fullname ?? `${d.first_name} ${d.last_name}`}</TableCell>
 						<TableCell>{d.nickname}</TableCell>
-						<TableCell class="flex flex-row gap-1">
-							{#if d.facebook_link}
-								<a href={d.facebook_link} target="_blank" rel="noreferrer">
-									<FacebookIcon />
-								</a>
-							{/if}
-							{#if d.instagram_link}
-								<a href={d.instagram_link} target="_blank" rel="noreferrer">
-									<InstagramIcon />
-								</a>
-							{/if}
-						</TableCell>
+						<TableCell>{d.branch}</TableCell>
 					</TableRow>
 				{/each}
 			{:else if $searchQuery.isLoading}

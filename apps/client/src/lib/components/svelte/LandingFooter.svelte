@@ -5,9 +5,10 @@
 
 	import { HoverCard, HoverCardTrigger } from '$components/ui/hover-card';
 	import HoverCardContent from '$components/ui/hover-card/HoverCardContent.svelte';
+	import { Heart } from 'lucide-svelte';
 </script>
 
-<footer class="mt-auto text-sm py-4 text-center bg-zinc-700">
+<footer class="mt-auto py-4 text-center bg-zinc-700">
 	<HoverCard>
 		<p class="text-yellow-200 inline">Made with ♥ by</p>
 		<HoverCardTrigger
@@ -16,7 +17,7 @@
 			rel="noreferrer noopener"
 			class="text-blue-500 hover:underline underline-offset-4 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-black"
 		>
-			<p class="text-yellow-200 inline underline">ITx Imagineering Team</p>
+			<p class="text-yellow-200 inline underline">IT Experience Imagineering Team</p>
 		</HoverCardTrigger>
 		<HoverCardContent class="w-auto">
 			<div class="flex flex-col gap-y-1">
