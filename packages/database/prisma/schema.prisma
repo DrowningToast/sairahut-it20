@@ -94,6 +94,15 @@ model Factions {
   users   User[]
 }
 
+model Pair {
+  id        String           @id @unique @default(cuid())
+  freshmen  FreshmenDetails  @relation(fields: [freshmenDetailsId], references: [id])
+  sophomore SophomoreDetails @relation(fields: [sophomoreDetailsId], references: [id])
+
+  freshmenDetailsId  String @unique
+  sophomoreDetailsId String @unique
+}
+
 model FreshmenDetails {
   create_at       DateTime            @default(now())
   update_at       DateTime            @updatedAt
@@ -113,6 +122,7 @@ model FreshmenDetails {
   user            User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   usedPasscodes   PasscodeInstances[]
   scannedQrs      QRInstances[]
+  pair            Pair?
 }
 
 model HintSlugs {
@@ -153,6 +163,7 @@ model SophomoreDetails {
   PasscodeInstances PasscodeInstances[]
   QRInstances       QRInstances[]
   user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pair              Pair[]
 }
 
 enum PlayerType {
