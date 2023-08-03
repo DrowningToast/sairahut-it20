@@ -99,7 +99,13 @@ export const freshmenRouters = createRouter({
 				secret: input
 			},
 			include: {
-				owner: true,
+				owner: {
+					select: {
+						nickname: true,
+						fullname: true,
+						student_id: true
+					}
+				},
 				scannedBy: true
 			}
 		});
