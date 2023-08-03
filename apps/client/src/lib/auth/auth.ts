@@ -57,6 +57,17 @@ export const AuthHook = SvelteKitAuth({
 			return !!checkKMITLDomain && checkITStudent && checkUnregis;
 		}
 	},
+	cookies: {
+		pkceCodeVerifier: {
+			name: 'next-auth.pkce.code_verifier',
+			options: {
+				httpOnly: true,
+				sameSite: 'none',
+				path: '/',
+				secure: true
+			}
+		}
+	},
 	pages: {
 		error: '/unauthorized',
 		signIn: '/home'
