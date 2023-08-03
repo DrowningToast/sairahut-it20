@@ -10,6 +10,8 @@
 	import LoginButton from './LoginButton.svelte';
 
 	const { isSignedIn } = AuthController($page);
+
+	console.log($page.data);
 </script>
 
 {#if !isSignedIn}
