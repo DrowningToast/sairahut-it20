@@ -9,9 +9,6 @@ interface IInsertHints {
 }
 
 export const insertHintsByStudentId = async (studentId: number, data: IInsertHints[]) => {
-	console.log(
-		process.env.NODE_ENV === 'production' ? '20 - participant' : '20 - participant - dev'
-	);
 	const sophomore = await getParticipantByStudentId(studentId + '');
 
 	if (sophomore?.hints) {
@@ -26,8 +23,6 @@ export const insertHintsByStudentId = async (studentId: number, data: IInsertHin
 		slug: value.hintSlugId
 	}));
 
-	console.log('3.6');
-
 	await sophomoreParticipant.update([
 		{
 			fields: {
@@ -36,8 +31,6 @@ export const insertHintsByStudentId = async (studentId: number, data: IInsertHin
 			id: sophomore?.airtableId as string
 		}
 	]);
-
-	console.log('3.7');
 
 	return {
 		success: true,
