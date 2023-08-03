@@ -6,6 +6,7 @@ import { TRPCError } from '@trpc/server';
 import { freshmenRegister } from '$lib/zod';
 import { AirtableController } from '$lib/airtable-api/controller';
 import type { FreshmenDetails, User } from 'database';
+import { FreshmenDetailsController } from '../database/freshmen/controller';
 
 interface SearchQuery {
 	where: {
@@ -70,22 +71,20 @@ export const freshmenRouters = createRouter({
 
 		await AirtableController.participantIT21.insertFreshmen(data);
 
-		// insert data into the db
-		await prisma.freshmenDetails.create({
-			data: {
-				branch: input.branch,
-				first_name: input.first_name,
-				last_name: input.last_name,
-				student_id,
-				nickname: input.nickname,
-				title: input.title,
-				phone: input.phone,
-				facebook_link: input.facebook_link,
-				instagram_link: input.instagram_link,
-				user: {
-					connect: {
-						id: user?.id
-					}
+		// insert data into db
+		await FreshmenDetailsController(prisma).createFreshmenDetails({
+			branch: input.branch,
+			first_name: input.first_name,
+			last_name: input.last_name,
+			student_id,
+			nickname: input.nickname,
+			title: input.title,
+			phone: input.phone,
+			facebook_link: input.facebook_link,
+			instagram_link: input.instagram_link,
+			user: {
+				connect: {
+					id: user?.id
 				}
 			}
 		});
@@ -186,19 +185,8 @@ export const freshmenRouters = createRouter({
 					}
 				}
 			}),
-			prisma.freshmenDetails.update({
-				where: {
-					userId: user.id
-				},
-				data: {
-					user: {
-						update: {
-							balance: {
-								increment: 1
-							}
-						}
-					}
-				}
+			FreshmenDetailsController(prisma).incrementFreshmenBalance({
+				userId: user.id
 			}),
 			prisma.qRInstances.update({
 				where: {
@@ -226,6 +214,9 @@ export const freshmenRouters = createRouter({
 		};
 	}),
 
+	/**
+	 * Safe
+	 */
 	getAllFreshmens: protectedProcedure
 		.input(
 			z.object({
@@ -240,7 +231,7 @@ export const freshmenRouters = createRouter({
 
 			const { q, queryBy, first, last } = input;
 
-			let data: FreshmenDetails[] = [];
+			let data: Partial<FreshmenDetails>[] = [];
 
 			if (queryBy === 'FIRSTNAME') {
 				searchQuery = {
@@ -250,11 +241,6 @@ export const freshmenRouters = createRouter({
 						}
 					}
 				};
-				data = await prisma.freshmenDetails.findMany({
-					...searchQuery,
-					skip: first,
-					take: last
-				});
 			} else if (queryBy === 'NICKNAME') {
 				searchQuery = {
 					where: {
@@ -263,11 +249,6 @@ export const freshmenRouters = createRouter({
 						}
 					}
 				};
-				data = await prisma.freshmenDetails.findMany({
-					...searchQuery,
-					skip: first,
-					take: last
-				});
 			} else if (queryBy === 'STUDENT_ID') {
 				searchQuery = {
 					where: {
@@ -276,13 +257,19 @@ export const freshmenRouters = createRouter({
 						}
 					}
 				};
-				data = await prisma.freshmenDetails.findMany({
-					...searchQuery,
-					skip: first,
-					take: last
-				});
 			}
-
+			data = await prisma.freshmenDetails.findMany({
+				...searchQuery,
+				select: {
+					student_id: true,
+					first_name: true,
+					nickname: true,
+					facebook_link: true,
+					instagram_link: true
+				},
+				skip: first,
+				take: last
+			});
 			return {
 				data
 			};
