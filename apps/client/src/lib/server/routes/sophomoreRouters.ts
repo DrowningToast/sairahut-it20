@@ -87,11 +87,7 @@ export const sophomoreRouters = createRouter({
 				hintSlugId: value.slug
 			}));
 
-			console.log('pass 3');
-
 			const hintsExist = await databaseController.hints.checkHints(sophomoreDetailsId);
-
-			console.log('pass 3.5');
 
 			if (hintsExist) {
 				throw new TRPCError({
@@ -99,14 +95,11 @@ export const sophomoreRouters = createRouter({
 					message: `Student with student_id: ${studentId} already done hints.`
 				});
 			}
-			console.log('pass 4');
 
 			await AirtableController.participantIT20.insertHintsByStudentId(
 				parseInt(studentId),
 				processData
 			);
-
-			console.log('pass 5');
 
 			await databaseController.hints.submitHintSlugs(sophomoreDetailsId, processData);
 		}),

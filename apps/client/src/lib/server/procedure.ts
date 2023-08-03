@@ -27,8 +27,6 @@ const enforcedReady = t.middleware(({ ctx, next }) => {
 		throw new TRPCError({ code: 'UNAUTHORIZED' });
 	}
 
-	console.log('pass 2 ');
-
 	return next({
 		ctx
 	});
@@ -66,8 +64,6 @@ const enforcedSophomoreOrOlder = t.middleware(({ ctx, next }) => {
 	if (gen >= 21) {
 		throw new TRPCError({ code: 'UNAUTHORIZED' });
 	}
-
-	console.log('pass 1');
 
 	return next({
 		ctx
