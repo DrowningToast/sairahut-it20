@@ -48,16 +48,11 @@ export const AuthHook = SvelteKitAuth({
 				return false;
 			}
 
-			console.log(profile);
-
 			const checkKMITLDomain = profile?.email?.includes('@kmitl.ac.th');
 			// check that user is School of IT Student
 			const checkITStudent = profile?.email?.slice(2, 4) === '07';
 
 			const checkUnregis = await checkForRegistration(profile?.email);
-
-			console.log('yed hee');
-			console.log(!!checkKMITLDomain && checkITStudent && checkUnregis);
 
 			return !!checkKMITLDomain && checkITStudent && checkUnregis;
 		}

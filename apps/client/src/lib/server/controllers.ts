@@ -1,4 +1,4 @@
-import { getHintSlugs, hintController } from './database/hint/controller';
+import { getHintSlugs, hintController } from './controllers/hintController';
 
 export const databaseController = {
 	hints: hintController

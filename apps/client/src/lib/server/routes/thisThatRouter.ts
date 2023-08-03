@@ -1,6 +1,6 @@
 import { prisma } from '$lib/serverUtils';
 import { createRouter } from '../context';
-import { hintController } from '../database/hint/controller';
+import { hintController } from '../controllers/hintController';
 import { protectedProcedure } from '../procedure';
 import { z } from 'zod';
 

@@ -12,7 +12,5 @@ export const AuthController = (page: Page<Record<string, string>, string | null>
 	const name = session?.user?.name;
 	const user = session?.user;
 
-	console.log(isSignedIn);
-
 	return { isSignedIn, email, name, user };
 };
