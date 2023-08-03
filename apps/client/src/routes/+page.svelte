@@ -6,6 +6,17 @@
 	import { AuthController } from '$lib/auth/AuthController';
 </script>
 
+<svelte:head>
+	<title>Sairahut IT KMITL | สายรหัสคณะเทคโนโลยีสารสนเทศ</title>
+		<meta name="twitter:card" content="summary_large_image">
+		<meta property="twitter:domain" content="sairahut.iservkmitl.tech">
+		<meta property="twitter:url" content="https://sairahut.iservkmitl.tech%22%3E/">
+		<meta name="twitter:title" content="Sairahut IT KMITL | สายรหัสคณะเทคโนโลยีสารสนเทศ">
+		<meta name="twitter:description" content="เรื่องราวการผจญภัยระหว่างจอมเวทย์ฝึกหัดกับภูตวิเศษ กับการปราบจอมมาร">
+		<meta name="twitter:image" content="hero.png">
+
+</svelte:head>
+
 <div class="bg-gradient-to-b from-primary to-black hidden md:block min-h-screen relative">
 	<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-accent-alt border border-accent p-5 rounded-xl">
 		<h1 class=" font-Pridi text-2xl font-medium">เรียน : ท่านผู้เดินทางไปยังโลกเวทย์มนต์</h1>
