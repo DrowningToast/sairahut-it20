@@ -6,6 +6,7 @@ import { sophomoreRouters } from './routes/sophomoreRouters';
 import { freshmenRouters } from './routes/freshmenRouters';
 import { thisThatRouter } from './routes/thisThatRouter';
 import { profileRouter } from './routes/profileRouter';
+import { authRouter } from './routes/authRouter';
 
 export const appRouter = createRouter({
 	greet: publicProcedure
@@ -20,7 +21,8 @@ export const appRouter = createRouter({
 	sophomores: sophomoreRouters,
 	freshmens: freshmenRouters,
 	thisThat: thisThatRouter,
-	profile: profileRouter
+	profile: profileRouter,
+	auth: authRouter
 });
 
 export type AppRouter = typeof appRouter;
