@@ -116,9 +116,9 @@
 		<div class="flex flex-col gap-y-2">
 			<div class="flex gap-x-2 items-center">
 				{#if !hint?.shown}
-					<EyeOff opacity={0.75} />
+					<EyeOff opacity={0.75} size={20} />
 				{:else}
-					<Eye opacity={0.75} />
+					<Eye opacity={0.75} size={20} />
 				{/if}
 				<p>{hint.displayName}</p>
 			</div>
