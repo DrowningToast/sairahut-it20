@@ -298,9 +298,7 @@ export const freshmenRouters = createRouter({
 			const totalPasscodeFound = await controller
 				.getUsedPasscodeByFreshmenId(freshmenId)
 
-			let revealedHintsIn = totalPasscodeFound.length === 0
-				? 0
-				: totalPasscodeFound.length % 5 === 0;
+			let revealedHintsIn = 5 - totalPasscodeFound.length;
 
 			if (totalPasscodeFound.length > 0 && totalPasscodeFound.length % 5 === 0) {
 				await controller.createRevealedHint(freshmenId)
