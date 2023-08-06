@@ -8,9 +8,6 @@
 	export { data };
 
 	$: userType.set(data.userType !== 'FRESHMEN' ? 'SOPHOMORE' : 'FRESH');
-
-	$: console.log($userType);
-	$: console.log($userType === 'SOPHOMORE');
 </script>
 
 <div
