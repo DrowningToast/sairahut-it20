@@ -80,11 +80,15 @@ const config = {
 			},
 			scale: {
 				'-100': '-1',
+			},
+			gridTemplateColumns: {
+				// 'calendar' : '1fr 2fr'
+				'calendar' : '3fr 5fr'
 			}
 		}
 	},
 	plugins: [tailwindcssAnimate],
-	
+
 };
 
 export default config;

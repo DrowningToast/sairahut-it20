@@ -24,16 +24,24 @@
 </script>
 
 <div>
-	<div class="relative flex flex-col gap-y-2">
-		<p class="text-lg font-Pridi text-white">
+	<div>
+		<p class="text-lg font-Pridi text-white text-center">
 			ยินดีต้อนรับ {session?.user?.name?.split(' ')[0]} เข้าสู่โลกเวทย์มนตร์
 		</p>
+	</div>
+	<div class="relative flex gap-y-2 justify-between items-center px-2 mt-4">
+		<a href="/calendar">
+			<button
+				class="bg-neutral-900 text-accent font-Pridi px-5 py-2 rounded-full border border-accent-alt"
+				><p class="drop-shadow-[0px_0px_4px_#FFD130]">ปฏิทินบอกเหตุ</p></button
+			>
+		</a>
 		<p class="font-Pridi text-gray-200 text-sm">
 			ตอนนี้คุณมีอยู่ {user.balance}
 			{playerType === 'FRESHMEN' ? 'Spirit Shards' : 'Humanity'}
 		</p>
 	</div>
-	<div class="grid grid-cols-2 grid-rows-2 gap-x-3 gap-y-14 mt-10">
+	<div class="grid grid-cols-2 grid-rows-2 gap-x-3 gap-y-14 mt-8">
 		<CardButtonMenu
 			isActived={isQrCodeActive}
 			img_active={'../qrCode-active.png'}
@@ -49,7 +57,7 @@
 			link={homePageState.hints.href}
 		/>
 		<CardButtonMenu
-			isActived={isPasswordActive}
+			isActived={false}
 			img_active={'../password-active.png'}
 			img_inactive={'../password-inactive.png'}
 			text={homePageState.passcode.title}
