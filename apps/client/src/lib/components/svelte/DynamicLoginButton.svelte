@@ -4,14 +4,27 @@
 	 */
 	export const onSuccessRedirect = '/home';
 
-	import { page } from '$app/stores';
-	import { AuthController } from '$lib/auth/AuthController';
+	import { createQuery } from '@tanstack/svelte-query';
 	import GotoMainPageButton from './GotoMainPageButton.svelte';
 	import LoginButton from './LoginButton.svelte';
+	import { trpc } from '$lib/trpc';
 
-	const { isSignedIn } = AuthController($page);
+	const getUser = async () => {
+		try {
+			const user = await trpc.auth.getUser.query();
+			return user;
+		} catch (e) {
+			return null;
+		}
+	};
 
-	console.log($page.data);
+	$: userQuery = createQuery({
+		queryKey: ['userInfo', 'asd'],
+		queryFn: getUser,
+		enabled: true
+	});
+
+	$: isSignedIn = !!$userQuery?.data?.ctx;
 </script>
 
 {#if !isSignedIn}
