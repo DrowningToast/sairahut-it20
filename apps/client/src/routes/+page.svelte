@@ -18,18 +18,18 @@
 </svelte:head>
 
 <div class="bg-gradient-to-b from-primary to-black overflow-x-hidden relative md:hidden">
-	<img src="./hero.png" class="absolute w-full inset-x-0 overflow-x-visible object-cover" alt="" />
+	<img src="./hero.webp" class="absolute w-full inset-x-0 overflow-x-visible object-cover" alt="" />
 	<div class="px-3 py-16 md:px-16 md:py-24 flex flex-col gap-y-4">
 		<div class="text-center relative">
 			<img src="./konnok.png" alt="" class="scale-90 h-full absolute bottom-1 -right-2" />
-			<SrhHeading>Sairahut IT20</SrhHeading>
+			<SrhHeading class="text-5xl">Sairahut IT20</SrhHeading>
 			<p class="text-sm text-accent drop-shadow-[0px_0px_10px_#FFD130] font-Pridi">
 				กิจกรรมสานสัมพันธ์รุ่นคณะเทคโนโลยีสารสนเทศ
 			</p>
 			<img
 				src="./konnok.png"
 				alt=""
-				class=" h-full scale-90 absolute bottom-1 -left-2 transform -scale-x-100"
+				class=" h-full scale-90 absolute bottom-1 -left-3 transform -scale-x-100"
 			/>
 		</div>
 		<div class=" relative overflow-x-visible w-auto h-72">
