@@ -20,8 +20,8 @@ export default defineConfig({
 						"type": "image/png"
 					}
 				],
-				"theme_color": "#1E3A8A",
-				"background_color": "#1E3A8A",
+				"theme_color": "#86198F",
+				"background_color": "#86198F",
 				"display": "standalone",
 				"orientation": "portrait"
 			}
