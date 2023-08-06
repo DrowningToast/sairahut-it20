@@ -9,7 +9,8 @@
 		{ title: 'ชื่อจริง', value: user.first_name ?? user.fullname?.split(' ')[0] },
 		{ title: 'นามสกุล', value: user.last_name ?? user.fullname?.split(' ')[1] },
 		{ title: 'ชื่อเล่น', value: user.nickname },
-		{ title: 'สาขา', value: user.branch }
+		{ title: 'สาขา', value: user.branch },
+		{ title: 'เผ่าของภูต', value: user.faction?.name ?? '???' }
 	];
 
 	const facebook = { title: 'Facebook Profile', value: user.facebook_link ?? '-' };
