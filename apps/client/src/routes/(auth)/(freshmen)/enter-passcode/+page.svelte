@@ -4,7 +4,6 @@
 	import AlertTitle from '$components/ui/alert/AlertTitle.svelte';
 	import SRHButton from '$lib/components/svelte/SRHButton.svelte';
 	import { trpc } from '$lib/trpc';
-	import type { SophomoreDetails } from 'database';
 
 	interface IFoundTarget {
 		passcode: string;
