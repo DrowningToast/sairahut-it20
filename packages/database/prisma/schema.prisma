@@ -85,6 +85,8 @@ model PasscodeInstances {
   ownerId   String
   owner     SophomoreDetails @relation(fields: [ownerId], references: [id])
   usedBy    FreshmenDetails? @relation(fields: [usedById], references: [id])
+
+  content String
 }
 
 model Factions {
@@ -94,10 +96,22 @@ model Factions {
   users   User[]
 }
 
+model RevealedHintInstances {
+  hint             Hints  @relation(fields: [hintsHintSlugId, hintsSophomoreId], references: [hintSlugId, sophomoreId])
+  hintsHintSlugId  String
+  hintsSophomoreId String
+  pair             Pair   @relation(fields: [pairId], references: [id])
+  pairId           String
+
+  @@id([hintsHintSlugId, hintsSophomoreId, pairId])
+}
+
 model Pair {
   id        String           @id @unique @default(cuid())
   freshmen  FreshmenDetails  @relation(fields: [freshmenDetailsId], references: [id])
   sophomore SophomoreDetails @relation(fields: [sophomoreDetailsId], references: [id])
+
+  revealedHints RevealedHintInstances[]
 
   freshmenDetailsId  String @unique
   sophomoreDetailsId String @unique
@@ -132,11 +146,12 @@ model HintSlugs {
 }
 
 model Hints {
-  hintSlugId  String
-  content     String
-  sophomoreId String
-  slug        HintSlugs        @relation(fields: [hintSlugId], references: [slug])
-  sophomore   SophomoreDetails @relation(fields: [sophomoreId], references: [id], onDelete: Cascade)
+  hintSlugId            String
+  content               String
+  sophomoreId           String
+  slug                  HintSlugs               @relation(fields: [hintSlugId], references: [slug])
+  sophomore             SophomoreDetails        @relation(fields: [sophomoreId], references: [id], onDelete: Cascade)
+  revealedHintInstances RevealedHintInstances[]
 
   @@id([hintSlugId, sophomoreId])
 }
