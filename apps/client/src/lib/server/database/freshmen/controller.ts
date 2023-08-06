@@ -1,4 +1,5 @@
 import { hintSlugIds } from '$lib/hintSlugIds';
+import { TRPCError } from '@trpc/server';
 import type { Prisma, PrismaClient } from 'database';
 
 interface ISubmitPasscode {
@@ -91,6 +92,14 @@ export const FreshmenDetailsController = (prisma: PrismaClient) => {
 				id: true
 			}
 		})
+
+		if (query?.revealedHints.length === 10) {
+			throw new TRPCError({
+				message: 'No more hints can revealed',
+				code: 'BAD_REQUEST'
+			})
+		}
+
 		const hintIndex = query?.revealedHints.length || 0
 
 		await prisma.revealedHintInstances.create({
