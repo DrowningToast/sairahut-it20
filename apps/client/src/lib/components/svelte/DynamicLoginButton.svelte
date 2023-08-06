@@ -10,8 +10,12 @@
 	import { trpc } from '$lib/trpc';
 
 	const getUser = async () => {
-		const user = await trpc.auth.getUser.query();
-		return user;
+		try {
+			const user = await trpc.auth.getUser.query();
+			return user;
+		} catch (e) {
+			return null;
+		}
 	};
 
 	$: userQuery = createQuery({
