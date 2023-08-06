@@ -128,8 +128,8 @@ model Hints {
   slug        HintSlugs        @relation(fields: [hintSlugId], references: [slug])
   sophomore   SophomoreDetails @relation(fields: [sophomoreId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  craete_at DateTime @default(now())
+  update_at DateTime @default(now()) @updatedAt
 
   @@id([hintSlugId, sophomoreId])
 }
