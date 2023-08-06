@@ -17,27 +17,8 @@
 	<meta name="twitter:image" content="hero.png" />
 </svelte:head>
 
-<div class="bg-gradient-to-b from-primary to-black hidden md:block min-h-screen relative">
-	<div
-		class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-accent-alt border border-accent p-5 rounded-xl"
-	>
-		<h1 class=" font-Pridi text-2xl font-medium">เรียน : ท่านผู้เดินทางไปยังโลกเวทย์มนต์</h1>
-		<div class="ml-3 mt-3 font-light">
-			<p class="indent-6">
-				เนื่องด้วยประตูสู่โลกเวทย์มนต์ของเรานั้น ไม่สามารถเข้าไปด้วยหน้าจอคอมพิวเตอร์
-				หรือLaptopของท่านได้
-			</p>
-			<p class="indent-6 mt-2">ทางเราจึงขอแนะนำให้ท่าน เข้าสู่ประตูของเราด้วยสมาร์ทโฟนของท่าน</p>
-		</div>
-	</div>
-</div>
-
 <div class="bg-gradient-to-b from-primary to-black overflow-x-hidden relative md:hidden">
-	<img
-		src="./hero.png"
-		class="absolute w-full inset-x-0 overflow-x-visible w-auto object-cover"
-		alt=""
-	/>
+	<img src="./hero.png" class="absolute w-full inset-x-0 overflow-x-visible object-cover" alt="" />
 	<div class="px-3 py-16 md:px-16 md:py-24 flex flex-col gap-y-4">
 		<div class="text-center relative">
 			<img src="./konnok.png" alt="" class="scale-90 h-full absolute bottom-1 -right-2" />
