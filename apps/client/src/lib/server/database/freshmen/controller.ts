@@ -1,4 +1,10 @@
+import { hintSlugIds } from '$lib/hintSlugIds';
 import type { Prisma, PrismaClient } from 'database';
+
+interface ISubmitPasscode {
+	freshmenId: string
+	id: string
+}
 
 export const FreshmenDetailsController = (prisma: PrismaClient) => {
 	const createFreshmenDetails = (fresh: Prisma.FreshmenDetailsCreateInput) => {
@@ -26,8 +32,83 @@ export const FreshmenDetailsController = (prisma: PrismaClient) => {
 		});
 	};
 
+	const getPasscode = async (fresh: Prisma.PasscodeInstancesWhereUniqueInput) => {
+		return await prisma.passcodeInstances.findUnique({
+			where: fresh
+		})
+	}
+
+	const submitPasscode = async ({ freshmenId, id }: ISubmitPasscode) => {
+		return await prisma.passcodeInstances.update({
+			where: {
+				id,
+			},
+			data: {
+				usedById: freshmenId
+			}
+		})
+	}
+	
+	const getUsedPasscodeByFreshmenId = async (freshmenId: string) => {
+		return await prisma.passcodeInstances.findMany({
+			where: {
+				usedById: freshmenId,
+			}
+		})
+	}
+
+	const getRevealedHints = async (freshmenId: string) => {
+		return await prisma.pair.findUnique({
+			where: {
+				freshmenDetailsId: freshmenId
+			},
+			select: {
+				revealedHints: {
+					select: {
+						hint: {
+							select: {
+								hintSlugId: true,
+								content: true,
+								slug: true
+							}
+						}
+					}
+				},
+				freshmenDetailsId: true,
+			}
+		})
+	}
+
+	const createRevealedHint = async (freshmenId: string) => {
+		const query = await prisma.pair.findUnique({
+			where: {
+				freshmenDetailsId: freshmenId
+			},
+			select: {
+				revealedHints: true,
+				freshmenDetailsId: true,
+				sophomoreDetailsId: true,
+				id: true
+			}
+		})
+		const hintIndex = query?.revealedHints.length || 0
+
+		await prisma.revealedHintInstances.create({
+			data: {
+				hintsHintSlugId: hintSlugIds[hintIndex],
+				hintsSophomoreId: query?.sophomoreDetailsId as string,
+				pairId: query?.id as string
+			}
+		})
+	}
+
 	return {
 		createFreshmenDetails,
-		incrementFreshmenBalance
+		incrementFreshmenBalance,
+		getPasscode,
+		submitPasscode,
+		getUsedPasscodeByFreshmenId,
+		getRevealedHints,
+		createRevealedHint
 	};
 };

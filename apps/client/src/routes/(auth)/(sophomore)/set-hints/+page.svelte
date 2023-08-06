@@ -20,6 +20,7 @@
 	import AlertDialogFooter from '$components/ui/alert-dialog/AlertDialogFooter.svelte';
 	import AlertDialogCancel from '$components/ui/alert-dialog/AlertDialogCancel.svelte';
 	import AlertDialogAction from '$components/ui/alert-dialog/AlertDialogAction.svelte';
+	import { hintSlugIds } from '$lib/hintSlugIds';
 
 	let isLoading = false;
 
@@ -29,22 +30,9 @@
 	$: hidePassword = alreadySetHints;
 
 	const initHints = async () => {
-		const hintSlugId = [
-			'appearance',
-			'height',
-			'personality',
-			'sex',
-			'food',
-			'hobby',
-			'quote',
-			'place',
-			'fashion',
-			'name_hint'
-		];
-
 		const hintSlugs = await trpc.sophomores.getHintSlugs.query();
 
-		hints = hintSlugId.map((hint) => {
+		hints = hintSlugIds.map((hint) => {
 			const result = hintSlugs.find((value) => value.slug === hint);
 
 			return {

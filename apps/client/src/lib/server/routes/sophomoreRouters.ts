@@ -209,5 +209,5 @@ export const sophomoreRouters = createRouter({
 			return {
 				data
 			};
-		})
+		}),
 });

@@ -273,5 +273,42 @@ export const freshmenRouters = createRouter({
 			return {
 				data
 			};
-		})
+		}),
+	submitPasscode: freshmenProcedure.input(z.string())
+		.mutation(async ({ ctx, input }) => {
+			const freshmenId = ctx.user?.freshmenDetails?.id as string
+			const controller = FreshmenDetailsController(prisma)
+
+			const passcodeQuery = await controller.getPasscode({
+				content: input
+			})
+
+			if (!passcodeQuery || passcodeQuery.usedById) {
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message: 'Passcode already used or not found'
+				});
+			}
+
+			await controller.submitPasscode({
+				freshmenId,
+				id: passcodeQuery.id,
+			})
+
+			const totalPasscodeFound = await controller
+				.getUsedPasscodeByFreshmenId(freshmenId)
+
+			if (totalPasscodeFound.length > 0 && totalPasscodeFound.length % 5 == 0) {
+				await controller.createRevealedHint(freshmenId)
+			}
+
+			return {
+				success: true,
+				message: 'OK'
+			}
+		}),
+	getRevealedHints: freshmenProcedure.query(async ({ ctx }) => {
+		return await FreshmenDetailsController(prisma)
+			.getRevealedHints(ctx.user?.freshmenDetails?.id as string)
+	})
 });
