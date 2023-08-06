@@ -28,6 +28,13 @@
 		<p class="text-lg font-Pridi text-white">
 			ยินดีต้อนรับ {session?.user?.name?.split(' ')[0]} เข้าสู่โลกเวทย์มนตร์
 		</p>
+		-->
+		<a href="/calendar">
+			<button
+				class="bg-neutral-900 text-accent font-Pridi px-5 py-2 rounded-full border border-accent-alt"
+				><p class="drop-shadow-[0px_0px_4px_#FFD130]">ปฏิทินบอกเหตุ</p></button
+			>
+		</a>
 		<p class="font-Pridi text-gray-200 text-sm">
 			ตอนนี้คุณมีอยู่ {user.balance}
 			{playerType === 'FRESHMEN' ? 'Spirit Shards' : 'Humanity'}
