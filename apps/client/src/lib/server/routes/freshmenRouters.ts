@@ -7,6 +7,7 @@ import { freshmenRegister } from '$lib/zod';
 import { AirtableController } from '$lib/airtable-api/controller';
 import type { FreshmenDetails, User } from 'database';
 import { FreshmenDetailsController } from '../database/freshmen/controller';
+import { determineYear } from '$lib/utils';
 
 interface SearchQuery {
 	where: {
@@ -273,6 +274,30 @@ export const freshmenRouters = createRouter({
 			return {
 				data
 			};
+		}),
+	getPasscodeByPasscodeId: freshmenProcedure.input(z.string())
+		.query(async ({ input }) => {
+			const res = await FreshmenDetailsController(prisma).getPasscode({
+				content: input
+			})
+
+			if (!res) {
+				return {
+					success: false,
+					payload: `Passcode with passcode: "${input}" not found`,
+				}
+			} else {
+				return {
+					success: true,
+					payload: {
+						passcode: res?.content,
+						nickname: res?.owner.nickname,
+						fullname: res?.owner.fullname,
+						isUsed: res?.usedById !== null,
+						gen: determineYear(res?.owner.student_id as string)
+					}
+				}
+			}
 		}),
 	submitPasscode: freshmenProcedure.input(z.string())
 		.mutation(async ({ ctx, input }) => {

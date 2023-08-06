@@ -35,7 +35,10 @@ export const FreshmenDetailsController = (prisma: PrismaClient) => {
 
 	const getPasscode = async (fresh: Prisma.PasscodeInstancesWhereUniqueInput) => {
 		return await prisma.passcodeInstances.findUnique({
-			where: fresh
+			where: fresh,
+			include: {
+				owner: true
+			}
 		})
 	}
 
