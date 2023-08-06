@@ -24,13 +24,15 @@
 </script>
 
 <div>
-	<div class="relative flex flex-col gap-y-2">
-		<p class="text-lg font-Pridi text-white">
+	<div class="relative flex gap-y-2 justify-between items-center px-2">
+		<!-- <p class="text-lg font-Pridi text-white">
 			ยินดีต้อนรับ {session?.user?.name?.split(' ')[0]} เข้าสู่โลกเวทย์มนตร์
-		</p>
+		</p> -->
+		<a href="/calendar">
+			<SrhButton>ปฏิทินบอกเหตุ</SrhButton>
+		</a>
 		<p class="font-Pridi text-gray-200 text-sm">
-			ตอนนี้คุณมีอยู่ {user.balance}
-			{playerType === 'FRESHMEN' ? 'Spirit Shards' : 'Humanity'}
+			{playerType === 'FRESHMEN' ? 'Spirit Shards' : 'Humanity'} : {user.balance}
 		</p>
 	</div>
 	<div class="grid grid-cols-2 grid-rows-2 gap-x-3 gap-y-14 mt-10">
