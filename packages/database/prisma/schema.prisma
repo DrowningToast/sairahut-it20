@@ -153,6 +153,9 @@ model Hints {
   sophomore             SophomoreDetails        @relation(fields: [sophomoreId], references: [id], onDelete: Cascade)
   revealedHintInstances RevealedHintInstances[]
 
+  craete_at DateTime @default(now())
+  update_at DateTime @default(now()) @updatedAt
+
   @@id([hintSlugId, sophomoreId])
 }
 

@@ -8,49 +8,30 @@
 
 <svelte:head>
 	<title>Sairahut IT KMITL | สายรหัสคณะเทคโนโลยีสารสนเทศ</title>
-		<meta name="twitter:card" content="summary_large_image">
-		<meta property="twitter:domain" content="sairahut.iservkmitl.tech">
-		<meta property="twitter:url" content="https://sairahut.iservkmitl.tech%22%3E/">
-		<meta name="twitter:title" content="Sairahut IT KMITL | สายรหัสคณะเทคโนโลยีสารสนเทศ">
-		<meta name="twitter:description" content="เรื่องราวการผจญภัยระหว่างจอมเวทย์ฝึกหัดกับภูตวิเศษ กับการปราบจอมมาร">
-		<meta name="twitter:image" content="hero.png">
-
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta property="twitter:domain" content="sairahut.iservkmitl.tech" />
+	<meta property="twitter:url" content="https://sairahut.iservkmitl.tech%22%3E/" />
+	<meta name="twitter:title" content="Sairahut IT KMITL | สายรหัสคณะเทคโนโลยีสารสนเทศ" />
+	<meta
+		name="twitter:description"
+		content="เรื่องราวการผจญภัยระหว่างจอมเวทย์ฝึกหัดกับภูตวิเศษ กับการปราบจอมมาร"
+	/>
+	<meta name="twitter:image" content="hero.png" />
 </svelte:head>
 
-<div class="bg-gradient-to-b from-primary to-black hidden md:block min-h-screen relative">
-	<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-accent-alt border border-accent p-5 rounded-xl">
-		<h1 class="text-center font-Pridi text-3xl font-medium mb-5">ประกาศจากกระทรวงเวทมนตร์</h1>
-		<h1 class=" font-Pridi text-xl font-normal">เรียน : ผู้มาเยือนโลกแห่งเวทมนตร์ทุกท่าน</h1>
-		<div class="ml-3 mt-3 font-light">
-			<p class="indent-6">เนื่องจากการจุติของจอมมาร ทำให้ผู้ที่มาเยือนโลกใบนี้ด้วยอุปกรณ์เวทมนตร์ชนิดดังต่อไปนี้ไม่สามารถเข้าสู่โลกเวทมนตร์ได้</p>
-			<ul class="list-disc ml-10">
-				<li>คอมพิวเตอร์</li>
-				<li>Laptop</li>
-				<li>Tablet</li>
-				<li>อุปกรณ์อื่นๆที่มีจอแสดงผลขนาดใหญ่</li>
-			</ul>
-			<p class="indent-6 mt-2">ทางสภาเวทมนต์จึงขอแนะนำให้ผู้มาเยือนทุกท่าน มาเยือนโลกใบนี้อีกครั้งด้วยอุปกรณ์เวทมนต์ชนิดโทรศัพท์พกพา</p>
-		</div>
-	</div>
-</div>
-
 <div class="bg-gradient-to-b from-primary to-black overflow-x-hidden relative md:hidden">
-	<img
-		src="./hero.png"
-		class="absolute w-full inset-x-0 overflow-x-visible w-auto object-cover"
-		alt=""
-	/>
+	<img src="./hero.webp" class="absolute w-full inset-x-0 overflow-x-visible object-cover" alt="" />
 	<div class="px-3 py-16 md:px-16 md:py-24 flex flex-col gap-y-4">
 		<div class="text-center relative">
 			<img src="./konnok.png" alt="" class="scale-90 h-full absolute bottom-1 -right-2" />
-			<SrhHeading>Sairahut IT20</SrhHeading>
+			<SrhHeading class="text-5xl">Sairahut IT20</SrhHeading>
 			<p class="text-sm text-accent drop-shadow-[0px_0px_10px_#FFD130] font-Pridi">
 				กิจกรรมสานสัมพันธ์รุ่นคณะเทคโนโลยีสารสนเทศ
 			</p>
 			<img
 				src="./konnok.png"
 				alt=""
-				class=" h-full scale-90 absolute bottom-1 -left-2 transform -scale-x-100"
+				class=" h-full scale-90 absolute bottom-1 -left-3 transform -scale-x-100"
 			/>
 		</div>
 		<div class=" relative overflow-x-visible w-auto h-72">
@@ -84,7 +65,7 @@
 				</div>
 				<p class="text-white text-sm border-accent-alt border py-12 px-3 font-thin font-Pridi">
 					นักศึกษาคณะเทคโนโลยีสารสนเทศ สจล. รุ่นที่ 20 และ 21
-					จะสามารเข้าร่วมมาเป็นสายรหัสรุ่นพี่และเข้าร่วมกิจกรรมหลักได้ โดยรุ่นพี่
+					จะสามารถเข้าร่วมมาเป็นสายรหัสรุ่นพี่และเข้าร่วมกิจกรรมหลักได้ โดยรุ่นพี่
 					รุ่นอื่นสามารถเข้าร่วมกิจกรรมในส่วนอื่นๆ ได้เหมือนกัน
 				</p>
 			</div>
@@ -98,7 +79,7 @@
 				</div>
 				<p class="text-white text-sm border-accent-alt border py-10 px-3 font-thin font-Pridi">
 					นักศึกษาต้องกรอกข้อมูลส่วนตัวนิสัย ความชอบของตนเองหลังจากเข้าสู่ระบบแล้วจึง
-					จะนับได้ว่าได้เข้าร่วมกิจกรรมโดนสมบูรณ์
+					จะนับได้ว่าได้เข้าร่วมกิจกรรมโดยสมบูรณ์
 				</p>
 			</div>
 			<img src="./konnok-footer.png" alt="" class="w-full my-2" />
