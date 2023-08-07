@@ -11,17 +11,12 @@
 	import { trpc } from '$lib/trpc';
 
 	import { onDestroy, onMount } from 'svelte';
-	import type QrScanner from 'qr-scanner';
-	import { Html5Qrcode } from 'html5-qrcode';
-
+	import QrScanner from 'qr-scanner';
 	import SrhButton from '$components/svelte/SRHButton.svelte';
 	import { determineYear } from '$lib/utils';
 	import Alert from '$components/ui/alert/Alert.svelte';
 	import AlertTitle from '$components/ui/alert/AlertTitle.svelte';
 	import AlertDescription from '$components/ui/alert/AlertDescription.svelte';
-
-	let scanning = false;
-	let html5Qrcode: Html5Qrcode;
 
 	let videoElement: HTMLVideoElement;
 	let qrScanner: QrScanner;
@@ -32,27 +27,24 @@
 	$: success = false;
 
 	const handleScan = async (secret: string) => {
-		alert(`Code matched = ${secret}`);
-		console.log(secret);
-
-		html5Qrcode.stop();
+		qrScanner.stop();
 		found = undefined;
 
-		// const res = await trpc.freshmens.getQRInfo.query(secret);
+		const res = await trpc.freshmens.getQRInfo.query(secret);
 
-		// if (!res?.owner?.fullname) {
-		// 	qrScanner.start();
-		// 	return alert('Invalid QR Code');
-		// }
+		if (!res?.owner?.fullname) {
+			qrScanner.start();
+			return alert('Invalid QR Code');
+		}
 
-		// found = {
-		// 	fullname: res?.owner!.fullname!,
-		// 	nickname: res?.owner!.nickname!,
-		// 	gen: determineYear(res?.owner!.student_id!),
-		// 	quota: res?.quota!,
-		// 	secret: res?.secret!,
-		// 	scanned: res?.already
-		// };
+		found = {
+			fullname: res?.owner!.fullname!,
+			nickname: res?.owner!.nickname!,
+			gen: determineYear(res?.owner!.student_id!),
+			quota: res?.quota!,
+			secret: res?.secret!,
+			scanned: res?.already
+		};
 	};
 
 	const handleSubmit = async (secret: string) => {
@@ -74,50 +66,26 @@
 		}
 	};
 
-	// const setScanner = () => {
-	// 	qrScanner = new QrScanner(
-	// 		videoElement,
-	// 		async ({ data }) => {
-	// 			handleScan(data);
-	// 		},
-	// 		{
-	// 			highlightScanRegion: true,
-	// 			maxScansPerSecond: 1,
-	// 			onDecodeError() {}
-	// 		}
-	// 	);
-
-	// 	qrScanner.start();
-	// };
-
-	// const destroyScanner = () => {
-	// 	qrScanner?.stop();
-	// 	qrScanner?.destroy();
-	// };
-
-	function setScanner() {
-		html5Qrcode = new Html5Qrcode('reader');
-
-		html5Qrcode.start(
-			{ facingMode: 'environment' },
-			{
-				fps: 10,
-				qrbox: { width: 250, height: 250 }
+	const setScanner = () => {
+		qrScanner = new QrScanner(
+			videoElement,
+			async ({ data }) => {
+				handleScan(data);
 			},
-			handleScan,
-			onScanFailure
+			{
+				highlightScanRegion: true,
+				maxScansPerSecond: 1,
+				onDecodeError() {}
+			}
 		);
-		scanning = true;
-	}
 
-	async function destroyScanner() {
-		await html5Qrcode.stop();
-		scanning = false;
-	}
+		qrScanner.start();
+	};
 
-	function onScanFailure(error: any) {
-		console.warn(`Code scan error = ${error}`);
-	}
+	const destroyScanner = () => {
+		qrScanner?.stop();
+		qrScanner?.destroy();
+	};
 
 	onMount(() => {
 		setScanner();
@@ -178,17 +146,11 @@
 <div class="flex flex-col justify-center items-center gap-8">
 	<p class="text-sm font-Pridi text-accent font-extralight mt-8">SCANNING...</p>
 	<div class="relative w-full bg-neutral-900/25 p-8 rounded-3xl aspect-square">
-		<reader class="absolute inset-0" id="reader" />
+		<video class="object-cover rounded-xl w-full h-full" bind:this={videoElement}>
+			<track kind="captions" />
+		</video>
 	</div>
 	<p class="text-sm font-Pridi text-accent font-extralight mt-5">
 		ตามหา QR Code จากเหล่าภูตเพื่อรับ Spirit Shards
 	</p>
 </div>
-
-<style>
-	#reader {
-		width: 100%;
-		min-height: 500px;
-		background-color: black;
-	}
-</style>
