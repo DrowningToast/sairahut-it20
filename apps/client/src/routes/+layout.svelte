@@ -25,8 +25,6 @@
 	{@html webManifestLink}
 </svelte:head>
 
-<Analytics />
-
 <div
 	class={`bg-gradient-to-b ${
 		$userType === 'SOPHOMORE' ? 'from-primary' : 'from-primary-alt'
