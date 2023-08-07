@@ -50,6 +50,7 @@
 		"delay": "^6.0.0",
 		"dotenv-cli": "^7.2.1",
 		"env": "workspace:^0.0.0",
+		"html5-qrcode": "^2.3.8",
 		"lucide-svelte": "^0.257.0",
 		"qr-scanner": "^1.4.2",
 		"radix-svelte": "^0.8.0",
