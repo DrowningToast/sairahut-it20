@@ -51,6 +51,9 @@ importers:
       '@trpc/server':
         specifier: ^10.35.0
         version: 10.35.0
+      '@vercel/analytics':
+        specifier: ^1.0.1
+        version: 1.0.1
       airtable:
         specifier: ^0.12.1
         version: 0.12.1
@@ -2455,6 +2458,10 @@ packages:
       '@typescript-eslint/types': 5.60.1
       eslint-visitor-keys: 3.4.0
     dev: true
+
+  /@vercel/analytics@1.0.1:
+    resolution: {integrity: sha512-Ux0c9qUfkcPqng3vrR0GTrlQdqNJ2JREn/2ydrVuKwM3RtMfF2mWX31Ijqo1opSjNAq6rK76PwtANw6kl6TAow==}
+    dev: false
 
   /@vite-pwa/sveltekit@0.2.5(@sveltejs/kit@1.21.0)(vite-plugin-pwa@0.16.4):
     resolution: {integrity: sha512-cBPxnIpMbGZi68OadC/16OsIhMUdEGooQjlgl/Q39ZcumdGecb+j7LEXe2twCSASGefNN+/K48VZi3W/Rc248Q==}

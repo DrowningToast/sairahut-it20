@@ -5,6 +5,7 @@
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
 	// @ts-ignore
 	import { pwaInfo } from 'virtual:pwa-info';
+	import { Analytics } from '@vercel/analytics/svelte';
 
 	$: webManifestLink = pwaInfo ? pwaInfo.webManifest.linkTag : '';
 
@@ -20,6 +21,8 @@
 <svelte:head>
 	{@html webManifestLink}
 </svelte:head>
+
+<Analytics />
 
 <div
 	class={`bg-gradient-to-b ${
