@@ -1,8 +1,16 @@
-<script>
+<script lang="ts">
 	import LandingFooter from '$components/svelte/LandingFooter.svelte';
 	import Navbar from '$components/svelte/Navbar.svelte';
+	import type { LayoutServerData } from './$types';
+	import { userType } from '$lib/store/userType';
+
+	let data: LayoutServerData;
+	export { data };
+
+	$: userType.set(data.userType !== 'FRESHMEN' ? 'SOPHOMORE' : 'FRESH');
 </script>
 
+<<<<<<< HEAD
 <div class="bg-gradient-to-b from-primary to-black hidden md:block min-h-screen relative">
 	<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-accent-alt border border-accent p-5 rounded-xl">
 		<h1 class="text-center font-Pridi text-3xl font-medium mb-5">ประกาศจากกระทรวงเวทมนตร์</h1>
@@ -21,6 +29,13 @@
 </div>
 
 <div class="min-h-screen overflow-x-hidden flex flex-col bg-gradient-to-b from-primary-alt to-black md:hidden">
+=======
+<div
+	class={`min-h-screen overflow-x-hidden flex flex-col bg-gradient-to-b ${
+		$userType === 'SOPHOMORE' ? 'from-primary' : 'from-primary-alt'
+	} to-black md:hidden`}
+>
+>>>>>>> main
 	<Navbar />
 	<div class="flex flex-col mx-6 my-10 gap-y-3">
 		<slot />

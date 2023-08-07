@@ -17,6 +17,7 @@
 
 </svelte:head>
 
+<<<<<<< HEAD
 <div class="bg-gradient-to-b from-primary to-black hidden md:block min-h-screen relative">
 	<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-accent-alt border border-accent p-5 rounded-xl">
 		<h1 class="text-center font-Pridi text-3xl font-medium mb-5">ประกาศจากกระทรวงเวทมนตร์</h1>
@@ -34,23 +35,21 @@
 	</div>
 </div>
 
+=======
+>>>>>>> main
 <div class="bg-gradient-to-b from-primary to-black overflow-x-hidden relative md:hidden">
-	<img
-		src="./hero.png"
-		class="absolute w-full inset-x-0 overflow-x-visible w-auto object-cover"
-		alt=""
-	/>
+	<img src="./hero.webp" class="absolute w-full inset-x-0 overflow-x-visible object-cover" alt="" />
 	<div class="px-3 py-16 md:px-16 md:py-24 flex flex-col gap-y-4">
 		<div class="text-center relative">
 			<img src="./konnok.png" alt="" class="scale-90 h-full absolute bottom-1 -right-2" />
-			<SrhHeading>Sairahut IT20</SrhHeading>
+			<SrhHeading class="text-5xl">Sairahut IT20</SrhHeading>
 			<p class="text-sm text-accent drop-shadow-[0px_0px_10px_#FFD130] font-Pridi">
 				กิจกรรมสานสัมพันธ์รุ่นคณะเทคโนโลยีสารสนเทศ
 			</p>
 			<img
 				src="./konnok.png"
 				alt=""
-				class=" h-full scale-90 absolute bottom-1 -left-2 transform -scale-x-100"
+				class=" h-full scale-90 absolute bottom-1 -left-3 transform -scale-x-100"
 			/>
 		</div>
 		<div class=" relative overflow-x-visible w-auto h-72">
@@ -84,7 +83,7 @@
 				</div>
 				<p class="text-white text-sm border-accent-alt border py-12 px-3 font-thin font-Pridi">
 					นักศึกษาคณะเทคโนโลยีสารสนเทศ สจล. รุ่นที่ 20 และ 21
-					จะสามารเข้าร่วมมาเป็นสายรหัสรุ่นพี่และเข้าร่วมกิจกรรมหลักได้ โดยรุ่นพี่
+					จะสามารถเข้าร่วมมาเป็นสายรหัสรุ่นพี่และเข้าร่วมกิจกรรมหลักได้ โดยรุ่นพี่
 					รุ่นอื่นสามารถเข้าร่วมกิจกรรมในส่วนอื่นๆ ได้เหมือนกัน
 				</p>
 			</div>
@@ -98,7 +97,7 @@
 				</div>
 				<p class="text-white text-sm border-accent-alt border py-10 px-3 font-thin font-Pridi">
 					นักศึกษาต้องกรอกข้อมูลส่วนตัวนิสัย ความชอบของตนเองหลังจากเข้าสู่ระบบแล้วจึง
-					จะนับได้ว่าได้เข้าร่วมกิจกรรมโดนสมบูรณ์
+					จะนับได้ว่าได้เข้าร่วมกิจกรรมโดยสมบูรณ์
 				</p>
 			</div>
 			<img src="./konnok-footer.png" alt="" class="w-full my-2" />

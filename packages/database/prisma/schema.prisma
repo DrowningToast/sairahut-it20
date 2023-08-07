@@ -153,6 +153,9 @@ model Hints {
   sophomore             SophomoreDetails        @relation(fields: [sophomoreId], references: [id], onDelete: Cascade)
   revealedHintInstances RevealedHintInstances[]
 
+  craete_at DateTime @default(now())
+  update_at DateTime @default(now()) @updatedAt
+
   @@id([hintSlugId, sophomoreId])
 }
 
@@ -171,8 +174,8 @@ model SophomoreDetails {
   branch            Branch
   participate       Boolean
   many_fresh        Boolean
-  facebook_link     String
-  instagram_link    String
+  facebook_link     String?
+  instagram_link    String?
   phone             String
   hints             Hints[]
   PasscodeInstances PasscodeInstances[]
