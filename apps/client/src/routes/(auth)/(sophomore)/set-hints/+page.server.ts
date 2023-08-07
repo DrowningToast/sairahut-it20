@@ -37,7 +37,8 @@ export const load: PageServerLoad = async ({ locals }) => {
         return {
             displayName: slugDisplayName?.displayName as string,
             slug: hintSlug,
-            content: find?.content
+            // content: find?.content
+            content: null
         }
     })
 
