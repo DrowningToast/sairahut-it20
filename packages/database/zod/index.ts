@@ -30,7 +30,7 @@ export const FreshmenDetailsScalarFieldEnumSchema = z.enum(['create_at','update_
 
 export const HintSlugsScalarFieldEnumSchema = z.enum(['slug','displayName']);
 
-export const HintsScalarFieldEnumSchema = z.enum(['hintSlugId','content','sophomoreId']);
+export const HintsScalarFieldEnumSchema = z.enum(['hintSlugId','content','sophomoreId','craete_at','update_at']);
 
 export const SophomoreDetailsScalarFieldEnumSchema = z.enum(['create_at','update_at','thisOrThat','thisOrThatReady','hintsReady','userId','id','fullname','title','student_id','nickname','branch','participate','many_fresh','facebook_link','instagram_link','phone']);
 
@@ -211,6 +211,8 @@ export const HintsSchema = z.object({
   hintSlugId: z.string(),
   content: z.string(),
   sophomoreId: z.string(),
+  craete_at: z.coerce.date(),
+  update_at: z.coerce.date(),
 })
 
 export type Hints = z.infer<typeof HintsSchema>
@@ -234,8 +236,8 @@ export const SophomoreDetailsSchema = z.object({
   nickname: z.string(),
   participate: z.boolean(),
   many_fresh: z.boolean(),
-  facebook_link: z.string(),
-  instagram_link: z.string(),
+  facebook_link: z.string().nullable(),
+  instagram_link: z.string().nullable(),
   phone: z.string(),
 })
 
@@ -526,6 +528,8 @@ export const HintsSelectSchema: z.ZodType<Prisma.HintsSelect> = z.object({
   hintSlugId: z.boolean().optional(),
   content: z.boolean().optional(),
   sophomoreId: z.boolean().optional(),
+  craete_at: z.boolean().optional(),
+  update_at: z.boolean().optional(),
   slug: z.union([z.boolean(),z.lazy(() => HintSlugsArgsSchema)]).optional(),
   sophomore: z.union([z.boolean(),z.lazy(() => SophomoreDetailsArgsSchema)]).optional(),
 }).strict()
@@ -1111,6 +1115,8 @@ export const HintsWhereInputSchema: z.ZodType<Prisma.HintsWhereInput> = z.object
   hintSlugId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   content: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   sophomoreId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  craete_at: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  update_at: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   slug: z.union([ z.lazy(() => HintSlugsRelationFilterSchema),z.lazy(() => HintSlugsWhereInputSchema) ]).optional(),
   sophomore: z.union([ z.lazy(() => SophomoreDetailsRelationFilterSchema),z.lazy(() => SophomoreDetailsWhereInputSchema) ]).optional(),
 }).strict();
@@ -1119,6 +1125,8 @@ export const HintsOrderByWithRelationInputSchema: z.ZodType<Prisma.HintsOrderByW
   hintSlugId: z.lazy(() => SortOrderSchema).optional(),
   content: z.lazy(() => SortOrderSchema).optional(),
   sophomoreId: z.lazy(() => SortOrderSchema).optional(),
+  craete_at: z.lazy(() => SortOrderSchema).optional(),
+  update_at: z.lazy(() => SortOrderSchema).optional(),
   slug: z.lazy(() => HintSlugsOrderByWithRelationInputSchema).optional(),
   sophomore: z.lazy(() => SophomoreDetailsOrderByWithRelationInputSchema).optional()
 }).strict();
@@ -1131,6 +1139,8 @@ export const HintsOrderByWithAggregationInputSchema: z.ZodType<Prisma.HintsOrder
   hintSlugId: z.lazy(() => SortOrderSchema).optional(),
   content: z.lazy(() => SortOrderSchema).optional(),
   sophomoreId: z.lazy(() => SortOrderSchema).optional(),
+  craete_at: z.lazy(() => SortOrderSchema).optional(),
+  update_at: z.lazy(() => SortOrderSchema).optional(),
   _count: z.lazy(() => HintsCountOrderByAggregateInputSchema).optional(),
   _max: z.lazy(() => HintsMaxOrderByAggregateInputSchema).optional(),
   _min: z.lazy(() => HintsMinOrderByAggregateInputSchema).optional()
@@ -1143,6 +1153,8 @@ export const HintsScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.HintsSc
   hintSlugId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   content: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   sophomoreId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  craete_at: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
+  update_at: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
 }).strict();
 
 export const SophomoreDetailsWhereInputSchema: z.ZodType<Prisma.SophomoreDetailsWhereInput> = z.object({
@@ -1163,8 +1175,8 @@ export const SophomoreDetailsWhereInputSchema: z.ZodType<Prisma.SophomoreDetails
   branch: z.union([ z.lazy(() => EnumBranchFilterSchema),z.lazy(() => BranchSchema) ]).optional(),
   participate: z.union([ z.lazy(() => BoolFilterSchema),z.boolean() ]).optional(),
   many_fresh: z.union([ z.lazy(() => BoolFilterSchema),z.boolean() ]).optional(),
-  facebook_link: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  instagram_link: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  facebook_link: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
+  instagram_link: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   phone: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   hints: z.lazy(() => HintsListRelationFilterSchema).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesListRelationFilterSchema).optional(),
@@ -1187,8 +1199,8 @@ export const SophomoreDetailsOrderByWithRelationInputSchema: z.ZodType<Prisma.So
   branch: z.lazy(() => SortOrderSchema).optional(),
   participate: z.lazy(() => SortOrderSchema).optional(),
   many_fresh: z.lazy(() => SortOrderSchema).optional(),
-  facebook_link: z.lazy(() => SortOrderSchema).optional(),
-  instagram_link: z.lazy(() => SortOrderSchema).optional(),
+  facebook_link: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  instagram_link: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   phone: z.lazy(() => SortOrderSchema).optional(),
   hints: z.lazy(() => HintsOrderByRelationAggregateInputSchema).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesOrderByRelationAggregateInputSchema).optional(),
@@ -1217,8 +1229,8 @@ export const SophomoreDetailsOrderByWithAggregationInputSchema: z.ZodType<Prisma
   branch: z.lazy(() => SortOrderSchema).optional(),
   participate: z.lazy(() => SortOrderSchema).optional(),
   many_fresh: z.lazy(() => SortOrderSchema).optional(),
-  facebook_link: z.lazy(() => SortOrderSchema).optional(),
-  instagram_link: z.lazy(() => SortOrderSchema).optional(),
+  facebook_link: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  instagram_link: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   phone: z.lazy(() => SortOrderSchema).optional(),
   _count: z.lazy(() => SophomoreDetailsCountOrderByAggregateInputSchema).optional(),
   _max: z.lazy(() => SophomoreDetailsMaxOrderByAggregateInputSchema).optional(),
@@ -1243,8 +1255,8 @@ export const SophomoreDetailsScalarWhereWithAggregatesInputSchema: z.ZodType<Pri
   branch: z.union([ z.lazy(() => EnumBranchWithAggregatesFilterSchema),z.lazy(() => BranchSchema) ]).optional(),
   participate: z.union([ z.lazy(() => BoolWithAggregatesFilterSchema),z.boolean() ]).optional(),
   many_fresh: z.union([ z.lazy(() => BoolWithAggregatesFilterSchema),z.boolean() ]).optional(),
-  facebook_link: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
-  instagram_link: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  facebook_link: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
+  instagram_link: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
   phone: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
 }).strict();
 
@@ -1902,6 +1914,8 @@ export const HintSlugsUncheckedUpdateManyInputSchema: z.ZodType<Prisma.HintSlugs
 
 export const HintsCreateInputSchema: z.ZodType<Prisma.HintsCreateInput> = z.object({
   content: z.string(),
+  craete_at: z.coerce.date().optional(),
+  update_at: z.coerce.date().optional(),
   slug: z.lazy(() => HintSlugsCreateNestedOneWithoutHintsInputSchema),
   sophomore: z.lazy(() => SophomoreDetailsCreateNestedOneWithoutHintsInputSchema)
 }).strict();
@@ -1909,11 +1923,15 @@ export const HintsCreateInputSchema: z.ZodType<Prisma.HintsCreateInput> = z.obje
 export const HintsUncheckedCreateInputSchema: z.ZodType<Prisma.HintsUncheckedCreateInput> = z.object({
   hintSlugId: z.string(),
   content: z.string(),
-  sophomoreId: z.string()
+  sophomoreId: z.string(),
+  craete_at: z.coerce.date().optional(),
+  update_at: z.coerce.date().optional()
 }).strict();
 
 export const HintsUpdateInputSchema: z.ZodType<Prisma.HintsUpdateInput> = z.object({
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  craete_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   slug: z.lazy(() => HintSlugsUpdateOneRequiredWithoutHintsNestedInputSchema).optional(),
   sophomore: z.lazy(() => SophomoreDetailsUpdateOneRequiredWithoutHintsNestedInputSchema).optional()
 }).strict();
@@ -1922,22 +1940,30 @@ export const HintsUncheckedUpdateInputSchema: z.ZodType<Prisma.HintsUncheckedUpd
   hintSlugId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   sophomoreId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  craete_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const HintsCreateManyInputSchema: z.ZodType<Prisma.HintsCreateManyInput> = z.object({
   hintSlugId: z.string(),
   content: z.string(),
-  sophomoreId: z.string()
+  sophomoreId: z.string(),
+  craete_at: z.coerce.date().optional(),
+  update_at: z.coerce.date().optional()
 }).strict();
 
 export const HintsUpdateManyMutationInputSchema: z.ZodType<Prisma.HintsUpdateManyMutationInput> = z.object({
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  craete_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const HintsUncheckedUpdateManyInputSchema: z.ZodType<Prisma.HintsUncheckedUpdateManyInput> = z.object({
   hintSlugId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   sophomoreId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  craete_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const SophomoreDetailsCreateInputSchema: z.ZodType<Prisma.SophomoreDetailsCreateInput> = z.object({
@@ -1954,8 +1980,8 @@ export const SophomoreDetailsCreateInputSchema: z.ZodType<Prisma.SophomoreDetail
   branch: z.lazy(() => BranchSchema),
   participate: z.boolean(),
   many_fresh: z.boolean(),
-  facebook_link: z.string(),
-  instagram_link: z.string(),
+  facebook_link: z.string().optional().nullable(),
+  instagram_link: z.string().optional().nullable(),
   phone: z.string(),
   hints: z.lazy(() => HintsCreateNestedManyWithoutSophomoreInputSchema).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesCreateNestedManyWithoutOwnerInputSchema).optional(),
@@ -1978,8 +2004,8 @@ export const SophomoreDetailsUncheckedCreateInputSchema: z.ZodType<Prisma.Sophom
   branch: z.lazy(() => BranchSchema),
   participate: z.boolean(),
   many_fresh: z.boolean(),
-  facebook_link: z.string(),
-  instagram_link: z.string(),
+  facebook_link: z.string().optional().nullable(),
+  instagram_link: z.string().optional().nullable(),
   phone: z.string(),
   hints: z.lazy(() => HintsUncheckedCreateNestedManyWithoutSophomoreInputSchema).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesUncheckedCreateNestedManyWithoutOwnerInputSchema).optional(),
@@ -2000,8 +2026,8 @@ export const SophomoreDetailsUpdateInputSchema: z.ZodType<Prisma.SophomoreDetail
   branch: z.union([ z.lazy(() => BranchSchema),z.lazy(() => EnumBranchFieldUpdateOperationsInputSchema) ]).optional(),
   participate: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   many_fresh: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  facebook_link: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  instagram_link: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  facebook_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  instagram_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   phone: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   hints: z.lazy(() => HintsUpdateManyWithoutSophomoreNestedInputSchema).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesUpdateManyWithoutOwnerNestedInputSchema).optional(),
@@ -2024,8 +2050,8 @@ export const SophomoreDetailsUncheckedUpdateInputSchema: z.ZodType<Prisma.Sophom
   branch: z.union([ z.lazy(() => BranchSchema),z.lazy(() => EnumBranchFieldUpdateOperationsInputSchema) ]).optional(),
   participate: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   many_fresh: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  facebook_link: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  instagram_link: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  facebook_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  instagram_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   phone: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   hints: z.lazy(() => HintsUncheckedUpdateManyWithoutSophomoreNestedInputSchema).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesUncheckedUpdateManyWithoutOwnerNestedInputSchema).optional(),
@@ -2047,8 +2073,8 @@ export const SophomoreDetailsCreateManyInputSchema: z.ZodType<Prisma.SophomoreDe
   branch: z.lazy(() => BranchSchema),
   participate: z.boolean(),
   many_fresh: z.boolean(),
-  facebook_link: z.string(),
-  instagram_link: z.string(),
+  facebook_link: z.string().optional().nullable(),
+  instagram_link: z.string().optional().nullable(),
   phone: z.string()
 }).strict();
 
@@ -2066,8 +2092,8 @@ export const SophomoreDetailsUpdateManyMutationInputSchema: z.ZodType<Prisma.Sop
   branch: z.union([ z.lazy(() => BranchSchema),z.lazy(() => EnumBranchFieldUpdateOperationsInputSchema) ]).optional(),
   participate: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   many_fresh: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  facebook_link: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  instagram_link: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  facebook_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  instagram_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   phone: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
@@ -2086,8 +2112,8 @@ export const SophomoreDetailsUncheckedUpdateManyInputSchema: z.ZodType<Prisma.So
   branch: z.union([ z.lazy(() => BranchSchema),z.lazy(() => EnumBranchFieldUpdateOperationsInputSchema) ]).optional(),
   participate: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   many_fresh: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  facebook_link: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  instagram_link: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  facebook_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  instagram_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   phone: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
@@ -2740,19 +2766,25 @@ export const HintsHintSlugIdSophomoreIdCompoundUniqueInputSchema: z.ZodType<Pris
 export const HintsCountOrderByAggregateInputSchema: z.ZodType<Prisma.HintsCountOrderByAggregateInput> = z.object({
   hintSlugId: z.lazy(() => SortOrderSchema).optional(),
   content: z.lazy(() => SortOrderSchema).optional(),
-  sophomoreId: z.lazy(() => SortOrderSchema).optional()
+  sophomoreId: z.lazy(() => SortOrderSchema).optional(),
+  craete_at: z.lazy(() => SortOrderSchema).optional(),
+  update_at: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const HintsMaxOrderByAggregateInputSchema: z.ZodType<Prisma.HintsMaxOrderByAggregateInput> = z.object({
   hintSlugId: z.lazy(() => SortOrderSchema).optional(),
   content: z.lazy(() => SortOrderSchema).optional(),
-  sophomoreId: z.lazy(() => SortOrderSchema).optional()
+  sophomoreId: z.lazy(() => SortOrderSchema).optional(),
+  craete_at: z.lazy(() => SortOrderSchema).optional(),
+  update_at: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const HintsMinOrderByAggregateInputSchema: z.ZodType<Prisma.HintsMinOrderByAggregateInput> = z.object({
   hintSlugId: z.lazy(() => SortOrderSchema).optional(),
   content: z.lazy(() => SortOrderSchema).optional(),
-  sophomoreId: z.lazy(() => SortOrderSchema).optional()
+  sophomoreId: z.lazy(() => SortOrderSchema).optional(),
+  craete_at: z.lazy(() => SortOrderSchema).optional(),
+  update_at: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const SophomoreDetailsCountOrderByAggregateInputSchema: z.ZodType<Prisma.SophomoreDetailsCountOrderByAggregateInput> = z.object({
@@ -4020,8 +4052,8 @@ export const SophomoreDetailsCreateWithoutUserInputSchema: z.ZodType<Prisma.Soph
   branch: z.lazy(() => BranchSchema),
   participate: z.boolean(),
   many_fresh: z.boolean(),
-  facebook_link: z.string(),
-  instagram_link: z.string(),
+  facebook_link: z.string().optional().nullable(),
+  instagram_link: z.string().optional().nullable(),
   phone: z.string(),
   hints: z.lazy(() => HintsCreateNestedManyWithoutSophomoreInputSchema).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesCreateNestedManyWithoutOwnerInputSchema).optional(),
@@ -4042,8 +4074,8 @@ export const SophomoreDetailsUncheckedCreateWithoutUserInputSchema: z.ZodType<Pr
   branch: z.lazy(() => BranchSchema),
   participate: z.boolean(),
   many_fresh: z.boolean(),
-  facebook_link: z.string(),
-  instagram_link: z.string(),
+  facebook_link: z.string().optional().nullable(),
+  instagram_link: z.string().optional().nullable(),
   phone: z.string(),
   hints: z.lazy(() => HintsUncheckedCreateNestedManyWithoutSophomoreInputSchema).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesUncheckedCreateNestedManyWithoutOwnerInputSchema).optional(),
@@ -4196,8 +4228,8 @@ export const SophomoreDetailsUpdateWithoutUserInputSchema: z.ZodType<Prisma.Soph
   branch: z.union([ z.lazy(() => BranchSchema),z.lazy(() => EnumBranchFieldUpdateOperationsInputSchema) ]).optional(),
   participate: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   many_fresh: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  facebook_link: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  instagram_link: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  facebook_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  instagram_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   phone: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   hints: z.lazy(() => HintsUpdateManyWithoutSophomoreNestedInputSchema).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesUpdateManyWithoutOwnerNestedInputSchema).optional(),
@@ -4218,8 +4250,8 @@ export const SophomoreDetailsUncheckedUpdateWithoutUserInputSchema: z.ZodType<Pr
   branch: z.union([ z.lazy(() => BranchSchema),z.lazy(() => EnumBranchFieldUpdateOperationsInputSchema) ]).optional(),
   participate: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   many_fresh: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  facebook_link: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  instagram_link: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  facebook_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  instagram_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   phone: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   hints: z.lazy(() => HintsUncheckedUpdateManyWithoutSophomoreNestedInputSchema).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesUncheckedUpdateManyWithoutOwnerNestedInputSchema).optional(),
@@ -4257,8 +4289,8 @@ export const SophomoreDetailsCreateWithoutQRInstancesInputSchema: z.ZodType<Pris
   branch: z.lazy(() => BranchSchema),
   participate: z.boolean(),
   many_fresh: z.boolean(),
-  facebook_link: z.string(),
-  instagram_link: z.string(),
+  facebook_link: z.string().optional().nullable(),
+  instagram_link: z.string().optional().nullable(),
   phone: z.string(),
   hints: z.lazy(() => HintsCreateNestedManyWithoutSophomoreInputSchema).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesCreateNestedManyWithoutOwnerInputSchema).optional(),
@@ -4280,8 +4312,8 @@ export const SophomoreDetailsUncheckedCreateWithoutQRInstancesInputSchema: z.Zod
   branch: z.lazy(() => BranchSchema),
   participate: z.boolean(),
   many_fresh: z.boolean(),
-  facebook_link: z.string(),
-  instagram_link: z.string(),
+  facebook_link: z.string().optional().nullable(),
+  instagram_link: z.string().optional().nullable(),
   phone: z.string(),
   hints: z.lazy(() => HintsUncheckedCreateNestedManyWithoutSophomoreInputSchema).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesUncheckedCreateNestedManyWithoutOwnerInputSchema).optional()
@@ -4354,8 +4386,8 @@ export const SophomoreDetailsUpdateWithoutQRInstancesInputSchema: z.ZodType<Pris
   branch: z.union([ z.lazy(() => BranchSchema),z.lazy(() => EnumBranchFieldUpdateOperationsInputSchema) ]).optional(),
   participate: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   many_fresh: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  facebook_link: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  instagram_link: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  facebook_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  instagram_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   phone: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   hints: z.lazy(() => HintsUpdateManyWithoutSophomoreNestedInputSchema).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesUpdateManyWithoutOwnerNestedInputSchema).optional(),
@@ -4377,8 +4409,8 @@ export const SophomoreDetailsUncheckedUpdateWithoutQRInstancesInputSchema: z.Zod
   branch: z.union([ z.lazy(() => BranchSchema),z.lazy(() => EnumBranchFieldUpdateOperationsInputSchema) ]).optional(),
   participate: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   many_fresh: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  facebook_link: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  instagram_link: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  facebook_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  instagram_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   phone: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   hints: z.lazy(() => HintsUncheckedUpdateManyWithoutSophomoreNestedInputSchema).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesUncheckedUpdateManyWithoutOwnerNestedInputSchema).optional()
@@ -4435,8 +4467,8 @@ export const SophomoreDetailsCreateWithoutPasscodeInstancesInputSchema: z.ZodTyp
   branch: z.lazy(() => BranchSchema),
   participate: z.boolean(),
   many_fresh: z.boolean(),
-  facebook_link: z.string(),
-  instagram_link: z.string(),
+  facebook_link: z.string().optional().nullable(),
+  instagram_link: z.string().optional().nullable(),
   phone: z.string(),
   hints: z.lazy(() => HintsCreateNestedManyWithoutSophomoreInputSchema).optional(),
   QRInstances: z.lazy(() => QRInstancesCreateNestedManyWithoutOwnerInputSchema).optional(),
@@ -4458,8 +4490,8 @@ export const SophomoreDetailsUncheckedCreateWithoutPasscodeInstancesInputSchema:
   branch: z.lazy(() => BranchSchema),
   participate: z.boolean(),
   many_fresh: z.boolean(),
-  facebook_link: z.string(),
-  instagram_link: z.string(),
+  facebook_link: z.string().optional().nullable(),
+  instagram_link: z.string().optional().nullable(),
   phone: z.string(),
   hints: z.lazy(() => HintsUncheckedCreateNestedManyWithoutSophomoreInputSchema).optional(),
   QRInstances: z.lazy(() => QRInstancesUncheckedCreateNestedManyWithoutOwnerInputSchema).optional()
@@ -4532,8 +4564,8 @@ export const SophomoreDetailsUpdateWithoutPasscodeInstancesInputSchema: z.ZodTyp
   branch: z.union([ z.lazy(() => BranchSchema),z.lazy(() => EnumBranchFieldUpdateOperationsInputSchema) ]).optional(),
   participate: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   many_fresh: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  facebook_link: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  instagram_link: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  facebook_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  instagram_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   phone: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   hints: z.lazy(() => HintsUpdateManyWithoutSophomoreNestedInputSchema).optional(),
   QRInstances: z.lazy(() => QRInstancesUpdateManyWithoutOwnerNestedInputSchema).optional(),
@@ -4555,8 +4587,8 @@ export const SophomoreDetailsUncheckedUpdateWithoutPasscodeInstancesInputSchema:
   branch: z.union([ z.lazy(() => BranchSchema),z.lazy(() => EnumBranchFieldUpdateOperationsInputSchema) ]).optional(),
   participate: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   many_fresh: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  facebook_link: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  instagram_link: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  facebook_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  instagram_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   phone: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   hints: z.lazy(() => HintsUncheckedUpdateManyWithoutSophomoreNestedInputSchema).optional(),
   QRInstances: z.lazy(() => QRInstancesUncheckedUpdateManyWithoutOwnerNestedInputSchema).optional()
@@ -4857,12 +4889,16 @@ export const QRInstancesScalarWhereInputSchema: z.ZodType<Prisma.QRInstancesScal
 
 export const HintsCreateWithoutSlugInputSchema: z.ZodType<Prisma.HintsCreateWithoutSlugInput> = z.object({
   content: z.string(),
+  craete_at: z.coerce.date().optional(),
+  update_at: z.coerce.date().optional(),
   sophomore: z.lazy(() => SophomoreDetailsCreateNestedOneWithoutHintsInputSchema)
 }).strict();
 
 export const HintsUncheckedCreateWithoutSlugInputSchema: z.ZodType<Prisma.HintsUncheckedCreateWithoutSlugInput> = z.object({
   content: z.string(),
-  sophomoreId: z.string()
+  sophomoreId: z.string(),
+  craete_at: z.coerce.date().optional(),
+  update_at: z.coerce.date().optional()
 }).strict();
 
 export const HintsCreateOrConnectWithoutSlugInputSchema: z.ZodType<Prisma.HintsCreateOrConnectWithoutSlugInput> = z.object({
@@ -4898,6 +4934,8 @@ export const HintsScalarWhereInputSchema: z.ZodType<Prisma.HintsScalarWhereInput
   hintSlugId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   content: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   sophomoreId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  craete_at: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  update_at: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
 }).strict();
 
 export const HintSlugsCreateWithoutHintsInputSchema: z.ZodType<Prisma.HintSlugsCreateWithoutHintsInput> = z.object({
@@ -4929,8 +4967,8 @@ export const SophomoreDetailsCreateWithoutHintsInputSchema: z.ZodType<Prisma.Sop
   branch: z.lazy(() => BranchSchema),
   participate: z.boolean(),
   many_fresh: z.boolean(),
-  facebook_link: z.string(),
-  instagram_link: z.string(),
+  facebook_link: z.string().optional().nullable(),
+  instagram_link: z.string().optional().nullable(),
   phone: z.string(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesCreateNestedManyWithoutOwnerInputSchema).optional(),
   QRInstances: z.lazy(() => QRInstancesCreateNestedManyWithoutOwnerInputSchema).optional(),
@@ -4952,8 +4990,8 @@ export const SophomoreDetailsUncheckedCreateWithoutHintsInputSchema: z.ZodType<P
   branch: z.lazy(() => BranchSchema),
   participate: z.boolean(),
   many_fresh: z.boolean(),
-  facebook_link: z.string(),
-  instagram_link: z.string(),
+  facebook_link: z.string().optional().nullable(),
+  instagram_link: z.string().optional().nullable(),
   phone: z.string(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesUncheckedCreateNestedManyWithoutOwnerInputSchema).optional(),
   QRInstances: z.lazy(() => QRInstancesUncheckedCreateNestedManyWithoutOwnerInputSchema).optional()
@@ -4998,8 +5036,8 @@ export const SophomoreDetailsUpdateWithoutHintsInputSchema: z.ZodType<Prisma.Sop
   branch: z.union([ z.lazy(() => BranchSchema),z.lazy(() => EnumBranchFieldUpdateOperationsInputSchema) ]).optional(),
   participate: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   many_fresh: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  facebook_link: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  instagram_link: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  facebook_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  instagram_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   phone: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesUpdateManyWithoutOwnerNestedInputSchema).optional(),
   QRInstances: z.lazy(() => QRInstancesUpdateManyWithoutOwnerNestedInputSchema).optional(),
@@ -5021,8 +5059,8 @@ export const SophomoreDetailsUncheckedUpdateWithoutHintsInputSchema: z.ZodType<P
   branch: z.union([ z.lazy(() => BranchSchema),z.lazy(() => EnumBranchFieldUpdateOperationsInputSchema) ]).optional(),
   participate: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   many_fresh: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  facebook_link: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  instagram_link: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  facebook_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  instagram_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   phone: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesUncheckedUpdateManyWithoutOwnerNestedInputSchema).optional(),
   QRInstances: z.lazy(() => QRInstancesUncheckedUpdateManyWithoutOwnerNestedInputSchema).optional()
@@ -5030,12 +5068,16 @@ export const SophomoreDetailsUncheckedUpdateWithoutHintsInputSchema: z.ZodType<P
 
 export const HintsCreateWithoutSophomoreInputSchema: z.ZodType<Prisma.HintsCreateWithoutSophomoreInput> = z.object({
   content: z.string(),
+  craete_at: z.coerce.date().optional(),
+  update_at: z.coerce.date().optional(),
   slug: z.lazy(() => HintSlugsCreateNestedOneWithoutHintsInputSchema)
 }).strict();
 
 export const HintsUncheckedCreateWithoutSophomoreInputSchema: z.ZodType<Prisma.HintsUncheckedCreateWithoutSophomoreInput> = z.object({
   hintSlugId: z.string(),
-  content: z.string()
+  content: z.string(),
+  craete_at: z.coerce.date().optional(),
+  update_at: z.coerce.date().optional()
 }).strict();
 
 export const HintsCreateOrConnectWithoutSophomoreInputSchema: z.ZodType<Prisma.HintsCreateOrConnectWithoutSophomoreInput> = z.object({
@@ -5479,27 +5521,37 @@ export const QRInstancesUncheckedUpdateManyWithoutScannedQrsInputSchema: z.ZodTy
 
 export const HintsCreateManySlugInputSchema: z.ZodType<Prisma.HintsCreateManySlugInput> = z.object({
   content: z.string(),
-  sophomoreId: z.string()
+  sophomoreId: z.string(),
+  craete_at: z.coerce.date().optional(),
+  update_at: z.coerce.date().optional()
 }).strict();
 
 export const HintsUpdateWithoutSlugInputSchema: z.ZodType<Prisma.HintsUpdateWithoutSlugInput> = z.object({
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  craete_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   sophomore: z.lazy(() => SophomoreDetailsUpdateOneRequiredWithoutHintsNestedInputSchema).optional()
 }).strict();
 
 export const HintsUncheckedUpdateWithoutSlugInputSchema: z.ZodType<Prisma.HintsUncheckedUpdateWithoutSlugInput> = z.object({
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   sophomoreId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  craete_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const HintsUncheckedUpdateManyWithoutHintsInputSchema: z.ZodType<Prisma.HintsUncheckedUpdateManyWithoutHintsInput> = z.object({
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   sophomoreId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  craete_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const HintsCreateManySophomoreInputSchema: z.ZodType<Prisma.HintsCreateManySophomoreInput> = z.object({
   hintSlugId: z.string(),
-  content: z.string()
+  content: z.string(),
+  craete_at: z.coerce.date().optional(),
+  update_at: z.coerce.date().optional()
 }).strict();
 
 export const PasscodeInstancesCreateManyOwnerInputSchema: z.ZodType<Prisma.PasscodeInstancesCreateManyOwnerInput> = z.object({
@@ -5519,12 +5571,16 @@ export const QRInstancesCreateManyOwnerInputSchema: z.ZodType<Prisma.QRInstances
 
 export const HintsUpdateWithoutSophomoreInputSchema: z.ZodType<Prisma.HintsUpdateWithoutSophomoreInput> = z.object({
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  craete_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   slug: z.lazy(() => HintSlugsUpdateOneRequiredWithoutHintsNestedInputSchema).optional()
 }).strict();
 
 export const HintsUncheckedUpdateWithoutSophomoreInputSchema: z.ZodType<Prisma.HintsUncheckedUpdateWithoutSophomoreInput> = z.object({
   hintSlugId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  craete_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const PasscodeInstancesUpdateWithoutOwnerInputSchema: z.ZodType<Prisma.PasscodeInstancesUpdateWithoutOwnerInput> = z.object({
