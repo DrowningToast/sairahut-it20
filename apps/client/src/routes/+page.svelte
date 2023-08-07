@@ -7,8 +7,8 @@
 <svelte:head>
 	<title>Sairahut IT KMITL | สายรหัสคณะเทคโนโลยีสารสนเทศ</title>
 	<meta name="twitter:card" content="summary_large_image" />
-	<meta property="twitter:domain" content="sairahut.iservkmitl.tech" />
-	<meta property="twitter:url" content="https://sairahut.iservkmitl.tech%22%3E/" />
+	<meta property="twitter:domain" content="https://sairahut.it20.dev" />
+	<meta property="twitter:url" content="https://sairahut.it20.dev" />
 	<meta name="twitter:title" content="Sairahut IT KMITL | สายรหัสคณะเทคโนโลยีสารสนเทศ" />
 	<meta
 		name="twitter:description"
