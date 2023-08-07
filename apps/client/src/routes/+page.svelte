@@ -14,7 +14,7 @@
 		name="twitter:description"
 		content="เรื่องราวการผจญภัยระหว่างจอมเวทย์ฝึกหัดกับภูตวิเศษ กับการปราบจอมมาร"
 	/>
-	<meta name="twitter:image" content="hero.png" />
+	<meta name="twitter:image" content="hero.webp" />
 </svelte:head>
 
 <div class="bg-gradient-to-b from-primary to-black overflow-x-hidden relative md:hidden">
