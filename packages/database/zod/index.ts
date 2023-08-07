@@ -30,7 +30,7 @@ export const FreshmenDetailsScalarFieldEnumSchema = z.enum(['create_at','update_
 
 export const HintSlugsScalarFieldEnumSchema = z.enum(['slug','displayName']);
 
-export const HintsScalarFieldEnumSchema = z.enum(['hintSlugId','content','sophomoreId']);
+export const HintsScalarFieldEnumSchema = z.enum(['hintSlugId','content','sophomoreId','craete_at','update_at']);
 
 export const SophomoreDetailsScalarFieldEnumSchema = z.enum(['create_at','update_at','thisOrThat','thisOrThatReady','hintsReady','userId','id','fullname','title','student_id','nickname','branch','participate','many_fresh','facebook_link','instagram_link','phone']);
 
@@ -211,6 +211,8 @@ export const HintsSchema = z.object({
   hintSlugId: z.string(),
   content: z.string(),
   sophomoreId: z.string(),
+  craete_at: z.coerce.date(),
+  update_at: z.coerce.date(),
 })
 
 export type Hints = z.infer<typeof HintsSchema>
@@ -526,6 +528,8 @@ export const HintsSelectSchema: z.ZodType<Prisma.HintsSelect> = z.object({
   hintSlugId: z.boolean().optional(),
   content: z.boolean().optional(),
   sophomoreId: z.boolean().optional(),
+  craete_at: z.boolean().optional(),
+  update_at: z.boolean().optional(),
   slug: z.union([z.boolean(),z.lazy(() => HintSlugsArgsSchema)]).optional(),
   sophomore: z.union([z.boolean(),z.lazy(() => SophomoreDetailsArgsSchema)]).optional(),
 }).strict()
@@ -1111,6 +1115,8 @@ export const HintsWhereInputSchema: z.ZodType<Prisma.HintsWhereInput> = z.object
   hintSlugId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   content: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   sophomoreId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  craete_at: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  update_at: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   slug: z.union([ z.lazy(() => HintSlugsRelationFilterSchema),z.lazy(() => HintSlugsWhereInputSchema) ]).optional(),
   sophomore: z.union([ z.lazy(() => SophomoreDetailsRelationFilterSchema),z.lazy(() => SophomoreDetailsWhereInputSchema) ]).optional(),
 }).strict();
@@ -1119,6 +1125,8 @@ export const HintsOrderByWithRelationInputSchema: z.ZodType<Prisma.HintsOrderByW
   hintSlugId: z.lazy(() => SortOrderSchema).optional(),
   content: z.lazy(() => SortOrderSchema).optional(),
   sophomoreId: z.lazy(() => SortOrderSchema).optional(),
+  craete_at: z.lazy(() => SortOrderSchema).optional(),
+  update_at: z.lazy(() => SortOrderSchema).optional(),
   slug: z.lazy(() => HintSlugsOrderByWithRelationInputSchema).optional(),
   sophomore: z.lazy(() => SophomoreDetailsOrderByWithRelationInputSchema).optional()
 }).strict();
@@ -1131,6 +1139,8 @@ export const HintsOrderByWithAggregationInputSchema: z.ZodType<Prisma.HintsOrder
   hintSlugId: z.lazy(() => SortOrderSchema).optional(),
   content: z.lazy(() => SortOrderSchema).optional(),
   sophomoreId: z.lazy(() => SortOrderSchema).optional(),
+  craete_at: z.lazy(() => SortOrderSchema).optional(),
+  update_at: z.lazy(() => SortOrderSchema).optional(),
   _count: z.lazy(() => HintsCountOrderByAggregateInputSchema).optional(),
   _max: z.lazy(() => HintsMaxOrderByAggregateInputSchema).optional(),
   _min: z.lazy(() => HintsMinOrderByAggregateInputSchema).optional()
@@ -1143,6 +1153,8 @@ export const HintsScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.HintsSc
   hintSlugId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   content: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   sophomoreId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  craete_at: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
+  update_at: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
 }).strict();
 
 export const SophomoreDetailsWhereInputSchema: z.ZodType<Prisma.SophomoreDetailsWhereInput> = z.object({
@@ -1902,6 +1914,8 @@ export const HintSlugsUncheckedUpdateManyInputSchema: z.ZodType<Prisma.HintSlugs
 
 export const HintsCreateInputSchema: z.ZodType<Prisma.HintsCreateInput> = z.object({
   content: z.string(),
+  craete_at: z.coerce.date().optional(),
+  update_at: z.coerce.date().optional(),
   slug: z.lazy(() => HintSlugsCreateNestedOneWithoutHintsInputSchema),
   sophomore: z.lazy(() => SophomoreDetailsCreateNestedOneWithoutHintsInputSchema)
 }).strict();
@@ -1909,11 +1923,15 @@ export const HintsCreateInputSchema: z.ZodType<Prisma.HintsCreateInput> = z.obje
 export const HintsUncheckedCreateInputSchema: z.ZodType<Prisma.HintsUncheckedCreateInput> = z.object({
   hintSlugId: z.string(),
   content: z.string(),
-  sophomoreId: z.string()
+  sophomoreId: z.string(),
+  craete_at: z.coerce.date().optional(),
+  update_at: z.coerce.date().optional()
 }).strict();
 
 export const HintsUpdateInputSchema: z.ZodType<Prisma.HintsUpdateInput> = z.object({
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  craete_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   slug: z.lazy(() => HintSlugsUpdateOneRequiredWithoutHintsNestedInputSchema).optional(),
   sophomore: z.lazy(() => SophomoreDetailsUpdateOneRequiredWithoutHintsNestedInputSchema).optional()
 }).strict();
@@ -1922,22 +1940,30 @@ export const HintsUncheckedUpdateInputSchema: z.ZodType<Prisma.HintsUncheckedUpd
   hintSlugId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   sophomoreId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  craete_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const HintsCreateManyInputSchema: z.ZodType<Prisma.HintsCreateManyInput> = z.object({
   hintSlugId: z.string(),
   content: z.string(),
-  sophomoreId: z.string()
+  sophomoreId: z.string(),
+  craete_at: z.coerce.date().optional(),
+  update_at: z.coerce.date().optional()
 }).strict();
 
 export const HintsUpdateManyMutationInputSchema: z.ZodType<Prisma.HintsUpdateManyMutationInput> = z.object({
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  craete_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const HintsUncheckedUpdateManyInputSchema: z.ZodType<Prisma.HintsUncheckedUpdateManyInput> = z.object({
   hintSlugId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   sophomoreId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  craete_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const SophomoreDetailsCreateInputSchema: z.ZodType<Prisma.SophomoreDetailsCreateInput> = z.object({
@@ -2740,19 +2766,25 @@ export const HintsHintSlugIdSophomoreIdCompoundUniqueInputSchema: z.ZodType<Pris
 export const HintsCountOrderByAggregateInputSchema: z.ZodType<Prisma.HintsCountOrderByAggregateInput> = z.object({
   hintSlugId: z.lazy(() => SortOrderSchema).optional(),
   content: z.lazy(() => SortOrderSchema).optional(),
-  sophomoreId: z.lazy(() => SortOrderSchema).optional()
+  sophomoreId: z.lazy(() => SortOrderSchema).optional(),
+  craete_at: z.lazy(() => SortOrderSchema).optional(),
+  update_at: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const HintsMaxOrderByAggregateInputSchema: z.ZodType<Prisma.HintsMaxOrderByAggregateInput> = z.object({
   hintSlugId: z.lazy(() => SortOrderSchema).optional(),
   content: z.lazy(() => SortOrderSchema).optional(),
-  sophomoreId: z.lazy(() => SortOrderSchema).optional()
+  sophomoreId: z.lazy(() => SortOrderSchema).optional(),
+  craete_at: z.lazy(() => SortOrderSchema).optional(),
+  update_at: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const HintsMinOrderByAggregateInputSchema: z.ZodType<Prisma.HintsMinOrderByAggregateInput> = z.object({
   hintSlugId: z.lazy(() => SortOrderSchema).optional(),
   content: z.lazy(() => SortOrderSchema).optional(),
-  sophomoreId: z.lazy(() => SortOrderSchema).optional()
+  sophomoreId: z.lazy(() => SortOrderSchema).optional(),
+  craete_at: z.lazy(() => SortOrderSchema).optional(),
+  update_at: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const SophomoreDetailsCountOrderByAggregateInputSchema: z.ZodType<Prisma.SophomoreDetailsCountOrderByAggregateInput> = z.object({
@@ -4857,12 +4889,16 @@ export const QRInstancesScalarWhereInputSchema: z.ZodType<Prisma.QRInstancesScal
 
 export const HintsCreateWithoutSlugInputSchema: z.ZodType<Prisma.HintsCreateWithoutSlugInput> = z.object({
   content: z.string(),
+  craete_at: z.coerce.date().optional(),
+  update_at: z.coerce.date().optional(),
   sophomore: z.lazy(() => SophomoreDetailsCreateNestedOneWithoutHintsInputSchema)
 }).strict();
 
 export const HintsUncheckedCreateWithoutSlugInputSchema: z.ZodType<Prisma.HintsUncheckedCreateWithoutSlugInput> = z.object({
   content: z.string(),
-  sophomoreId: z.string()
+  sophomoreId: z.string(),
+  craete_at: z.coerce.date().optional(),
+  update_at: z.coerce.date().optional()
 }).strict();
 
 export const HintsCreateOrConnectWithoutSlugInputSchema: z.ZodType<Prisma.HintsCreateOrConnectWithoutSlugInput> = z.object({
@@ -4898,6 +4934,8 @@ export const HintsScalarWhereInputSchema: z.ZodType<Prisma.HintsScalarWhereInput
   hintSlugId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   content: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   sophomoreId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  craete_at: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  update_at: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
 }).strict();
 
 export const HintSlugsCreateWithoutHintsInputSchema: z.ZodType<Prisma.HintSlugsCreateWithoutHintsInput> = z.object({
@@ -5030,12 +5068,16 @@ export const SophomoreDetailsUncheckedUpdateWithoutHintsInputSchema: z.ZodType<P
 
 export const HintsCreateWithoutSophomoreInputSchema: z.ZodType<Prisma.HintsCreateWithoutSophomoreInput> = z.object({
   content: z.string(),
+  craete_at: z.coerce.date().optional(),
+  update_at: z.coerce.date().optional(),
   slug: z.lazy(() => HintSlugsCreateNestedOneWithoutHintsInputSchema)
 }).strict();
 
 export const HintsUncheckedCreateWithoutSophomoreInputSchema: z.ZodType<Prisma.HintsUncheckedCreateWithoutSophomoreInput> = z.object({
   hintSlugId: z.string(),
-  content: z.string()
+  content: z.string(),
+  craete_at: z.coerce.date().optional(),
+  update_at: z.coerce.date().optional()
 }).strict();
 
 export const HintsCreateOrConnectWithoutSophomoreInputSchema: z.ZodType<Prisma.HintsCreateOrConnectWithoutSophomoreInput> = z.object({
@@ -5479,27 +5521,37 @@ export const QRInstancesUncheckedUpdateManyWithoutScannedQrsInputSchema: z.ZodTy
 
 export const HintsCreateManySlugInputSchema: z.ZodType<Prisma.HintsCreateManySlugInput> = z.object({
   content: z.string(),
-  sophomoreId: z.string()
+  sophomoreId: z.string(),
+  craete_at: z.coerce.date().optional(),
+  update_at: z.coerce.date().optional()
 }).strict();
 
 export const HintsUpdateWithoutSlugInputSchema: z.ZodType<Prisma.HintsUpdateWithoutSlugInput> = z.object({
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  craete_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   sophomore: z.lazy(() => SophomoreDetailsUpdateOneRequiredWithoutHintsNestedInputSchema).optional()
 }).strict();
 
 export const HintsUncheckedUpdateWithoutSlugInputSchema: z.ZodType<Prisma.HintsUncheckedUpdateWithoutSlugInput> = z.object({
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   sophomoreId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  craete_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const HintsUncheckedUpdateManyWithoutHintsInputSchema: z.ZodType<Prisma.HintsUncheckedUpdateManyWithoutHintsInput> = z.object({
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   sophomoreId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  craete_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const HintsCreateManySophomoreInputSchema: z.ZodType<Prisma.HintsCreateManySophomoreInput> = z.object({
   hintSlugId: z.string(),
-  content: z.string()
+  content: z.string(),
+  craete_at: z.coerce.date().optional(),
+  update_at: z.coerce.date().optional()
 }).strict();
 
 export const PasscodeInstancesCreateManyOwnerInputSchema: z.ZodType<Prisma.PasscodeInstancesCreateManyOwnerInput> = z.object({
@@ -5519,12 +5571,16 @@ export const QRInstancesCreateManyOwnerInputSchema: z.ZodType<Prisma.QRInstances
 
 export const HintsUpdateWithoutSophomoreInputSchema: z.ZodType<Prisma.HintsUpdateWithoutSophomoreInput> = z.object({
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  craete_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   slug: z.lazy(() => HintSlugsUpdateOneRequiredWithoutHintsNestedInputSchema).optional()
 }).strict();
 
 export const HintsUncheckedUpdateWithoutSophomoreInputSchema: z.ZodType<Prisma.HintsUncheckedUpdateWithoutSophomoreInput> = z.object({
   hintSlugId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  craete_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const PasscodeInstancesUpdateWithoutOwnerInputSchema: z.ZodType<Prisma.PasscodeInstancesUpdateWithoutOwnerInput> = z.object({
