@@ -19,6 +19,7 @@
 	import { determineYear } from '$lib/utils';
 	import { createQuery } from '@tanstack/svelte-query';
 	import { FacebookIcon, InstagramIcon } from 'lucide-svelte';
+	import { z } from 'zod';
 
 	const PAGINATION_SIZE = 600;
 	let queryBy: 'STUDENT_ID' | 'FIRSTNAME' | 'NICKNAME';
@@ -153,12 +154,12 @@
 						<TableCell>{d.fullname?.split(' ')[0] ?? `${d.first_name}`}</TableCell>
 						<TableCell>{d.nickname}</TableCell>
 						<TableCell class="flex flex-row gap-1">
-							{#if d.facebook_link}
+							{#if z.string().url().safeParse(d.facebook_link).success}
 								<a href={d.facebook_link} target="_blank" rel="noreferrer">
 									<FacebookIcon />
 								</a>
 							{/if}
-							{#if d.instagram_link}
+							{#if z.string().url().safeParse(d.instagram_link).success}
 								<a href={d.instagram_link} target="_blank" rel="noreferrer">
 									<InstagramIcon />
 								</a>
