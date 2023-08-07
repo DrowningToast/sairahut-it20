@@ -27,13 +27,13 @@
 		<p class=" font-thin leading-6 mt-4">สำหรับคุณพรี่ ๆ เอาไปให้น้องสแกน</p>
 	</div>
 	<div class="flex flex-col justify-center items-center w-full mt-16 gap-y-10">
-		<div class="w-4/5 h-full grid place-items-center aspect-square bg-neutral-900 rounded-lg">
+		<div class="w-4/5 h-full grid place-items-center aspect-square bg-white rounded-lg">
 			{#if !isLoading}
 				<QrCode
-					className="bg-neutral-900 p-4 rounded-md"
+					className="bg-white p-4 rounded-md"
 					value={secret}
-					color="white"
-					background="#171717d9"
+					color="#171717d9"
+					background="white"
 				/>
 			{:else}
 				<Loader color="white" size="64px" />
