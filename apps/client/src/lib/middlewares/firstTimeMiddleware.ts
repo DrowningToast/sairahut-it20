@@ -35,7 +35,7 @@ export const firstTimeMiddleware: Handle = async ({ event, resolve }) => {
 					throw new Error('Email not found');
 				}
 
-				res = { ...res, participate: true }
+				res = { ...res, participate: true };
 			} else if (gen == 20) {
 				// fetch the IT20 airtable
 				res = await AirtableController.participantIT20.getParticipantByStudentId(
@@ -46,6 +46,8 @@ export const firstTimeMiddleware: Handle = async ({ event, resolve }) => {
 			if (!res) {
 				throw new Error('Email not found');
 			}
+
+			console.log(res);
 
 			// populate the user details
 			await prisma.$transaction([
