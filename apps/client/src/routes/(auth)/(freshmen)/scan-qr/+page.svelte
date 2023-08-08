@@ -5,7 +5,7 @@
 		gen: number;
 		quota: number;
 		secret: string;
-		scanned: boolean;
+		already: boolean;
 	}
 
 	import { trpc } from '$lib/trpc';
@@ -43,7 +43,7 @@
 			gen: determineYear(res?.owner!.student_id!),
 			quota: res?.quota!,
 			secret: res?.secret!,
-			scanned: res?.already
+			already: res?.already
 		};
 	};
 
@@ -108,10 +108,10 @@
 				({found.fullname})
 			</p>
 			<p class="text-accent text-left">
-				และดูเหมือนว่าเจ้านั้น{found.quota >= 1
-					? 'จะยังไม่ได้จับ!'
-					: found.scanned
+				และดูเหมือนว่าเจ้านั้น{found.already
 					? 'เคยจับได้แล้ว!'
+					: found.quota >= 1
+					? 'จะยังไม่ได้จับ!'
 					: 'มาช้าเกินไปจนถูกคนอื่นจับไปแล้ว... ถ้าเป็นไปได้ลองให้เค้า refresh QR Code ดูได้ไหม?'}
 			</p>
 			<div class="mt-12 flex flex-col gap-y-4">
@@ -121,7 +121,7 @@
 						handleSubmit(found?.secret);
 						qrScanner.start();
 					}}
-					disabled={found.quota < 1}
+					disabled={found.quota < 1 || found.already}
 					{isLoading}>จับเลย!</SrhButton
 				>
 				<SrhButton
