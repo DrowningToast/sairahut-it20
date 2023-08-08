@@ -1,6 +1,5 @@
 <script lang="ts">
 	import SrhButton from '$components/svelte/SRHButton.svelte';
-	import Button from '$components/ui/button/Button.svelte';
 	import Input from '$components/ui/input/Input.svelte';
 	import Label from '$components/ui/label/Label.svelte';
 	import RadioGroup from '$components/ui/radio-group/RadioGroup.svelte';
@@ -33,9 +32,6 @@
 
 	$: {
 		switch (queryTarget) {
-			case 'ALL':
-				targetPointTitle = 'Points';
-				break;
 			case 'FRESH':
 				targetPointTitle = 'Spirit Shards';
 				break;
@@ -54,7 +50,7 @@
 		const [a, b] = await Promise.all([
 			// fetch fresh
 			new Promise<void>(async (resolve, reject) => {
-				if (queryTarget === 'FRESH' || queryTarget === 'ALL') {
+				if (queryTarget === 'FRESH') {
 					const res = await trpc.freshmens.getAllFreshmens.query({
 						first: 0,
 						last: PAGINATION_SIZE,
@@ -68,7 +64,7 @@
 			}),
 			// fetch sop
 			new Promise<void>(async (resolve, reject) => {
-				if (queryTarget === 'SOP' || queryTarget === 'ALL') {
+				if (queryTarget === 'SOP') {
 					const res = await trpc.sophomores.getAllSophomores.query({
 						first: 0,
 						last: PAGINATION_SIZE,
