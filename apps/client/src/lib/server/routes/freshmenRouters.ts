@@ -23,17 +23,26 @@ interface SearchQuery {
 }
 
 export const checkIfAlreadyScanThisSophomore = async (freshmen: User, secret: string) => {
-	const alreadyScanned = await prisma.qRInstances.findMany({
-		where: {
-			scannedBy: {
-				some: {
-					userId: freshmen.id
+	const [targetQRCode, alreadyScanned] = await Promise.all([
+		prisma.qRInstances.findUnique({
+			where: {
+				secret
+			}
+		}),
+		prisma.qRInstances.findMany({
+			where: {
+				scannedBy: {
+					some: {
+						userId: freshmen.id
+					}
 				}
 			}
-		}
-	});
+		})
+	]);
 
-	return !!alreadyScanned.find((scanned) => scanned.secret === secret);
+	return !!alreadyScanned.find((scanned) => scanned.ownerId === targetQRCode?.ownerId);
+
+	// return !!alreadyScanned.find((scanned) => scanned.secret === secret);
 };
 
 export const freshmenRouters = createRouter({
@@ -188,6 +197,7 @@ export const freshmenRouters = createRouter({
 			FreshmenDetailsController(prisma).incrementFreshmenBalance({
 				userId: user.id
 			}),
+
 			prisma.qRInstances.update({
 				where: {
 					id: data.id
