@@ -45,6 +45,7 @@
 		"@trpc/server": "^10.35.0",
 		"@vercel/analytics": "^1.0.1",
 		"airtable": "^0.12.1",
+		"axios": "^1.4.0",
 		"class-variance-authority": "^0.6.1",
 		"clsx": "^1.2.1",
 		"database": "workspace:^0.0.0",

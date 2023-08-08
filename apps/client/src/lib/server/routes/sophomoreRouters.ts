@@ -214,5 +214,29 @@ export const sophomoreRouters = createRouter({
 			return {
 				data
 			};
-		})
+		}),
+	getUsedQRs: oldProcedure.query(async ({ ctx }) => {
+		const { user } = ctx
+		
+		const res = await SophomoreDetailsController(prisma).getUsedQRsByOwnerId(
+			user?.sophomoreDetails?.id as string
+		)
+
+		return {
+			success: true,
+			payload: res
+		}
+	}),
+	getUsedPasscodes: oldProcedure.query(async ({ ctx }) => {
+		const { user } = ctx
+		
+		const res = await SophomoreDetailsController(prisma).getUsedPasscodesByOwnerId(
+			user?.sophomoreDetails?.id as string
+		)
+
+		return {
+			success: true,
+			payload: res
+		}
+	}),
 });
