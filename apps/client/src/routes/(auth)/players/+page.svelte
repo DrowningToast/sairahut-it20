@@ -19,15 +19,17 @@
 	import { createQuery } from '@tanstack/svelte-query';
 	import { FacebookIcon, InstagramIcon } from 'lucide-svelte';
 	import { z } from 'zod';
-	import { userType } from '$lib/store/userType';
 
 	const PAGINATION_SIZE = 600;
 	let queryBy: 'STUDENT_ID' | 'FIRSTNAME' | 'NICKNAME';
 	let queryTarget: 'FRESH' | 'SOP';
 	let targetPointTitle: 'Spirit Shards' | 'Points' | 'Humanity' = 'Points';
 
+	$: bindedQueryBy = 'NICKNAME' as typeof queryBy;
 	$: queryBy = 'NICKNAME';
+	$: bindedQueryString = '' as string | undefined;
 	$: queryString = '' as string | undefined;
+	$: bindedQueryTarget = 'SOP' as typeof queryTarget;
 	$: queryTarget = 'SOP';
 
 	$: {
@@ -42,6 +44,13 @@
 				break;
 		}
 	}
+
+	const handleSearch = () => () => {
+		queryBy = bindedQueryBy;
+		queryString = bindedQueryString;
+		queryTarget = bindedQueryTarget;
+		$searchQuery.refetch();
+	};
 
 	// avoid using this directly, and use searchQuery instead, it caches
 	const search = async () => {
@@ -105,7 +114,7 @@
 	<p class="text-base">บัญชีรวบรวมรายชื่อจอมเวทย์ฝึกหัดทุกท่านและของเหล่าภูตมากมาย</p>
 </div>
 
-<RadioGroup class="flex gap-x-2 ml-auto mt-8 text-accent" bind:value={queryTarget}>
+<RadioGroup class="flex gap-x-2 ml-auto mt-8 text-accent" bind:value={bindedQueryTarget}>
 	<div class="flex items-center space-x-2">
 		<RadioGroupItem value="SOP" id="SOP" />
 		<Label for="SOP">เหล่าภูต</Label>
@@ -116,7 +125,7 @@
 	</div>
 </RadioGroup>
 
-<RadioGroup class="flex gap-x-2 ml-auto text-accent mt-2" bind:value={queryBy}>
+<RadioGroup class="flex gap-x-2 ml-auto text-accent mt-2" bind:value={bindedQueryBy}>
 	<div class="flex items-center space-x-2">
 		<RadioGroupItem value="NICKNAME" id="NICKNAME" />
 		<Label for="NICKNAME">ชื่อเล่น</Label>
@@ -134,11 +143,11 @@
 	<Input
 		placeholder="ค้นหา"
 		class="col-span-8 text-white bg-blue-400/25"
-		bind:value={queryString}
+		bind:value={bindedQueryString}
 	/>
 	<SrhButton
 		isLoading={$searchQuery.isLoading}
-		on:click={() => $searchQuery.refetch()}
+		on:click={handleSearch()}
 		class="col-span-4 bg-neutral-900 text-accent p-0 text-center">ค้นหา</SrhButton
 	>
 </div>
