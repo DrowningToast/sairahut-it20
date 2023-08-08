@@ -200,7 +200,12 @@ export const sophomoreRouters = createRouter({
 					student_id: true,
 					facebook_link: true,
 					instagram_link: true,
-					fullname: true
+					fullname: true,
+					user: {
+						select: {
+							balance: true
+						}
+					}
 				},
 				skip: first,
 				take: last

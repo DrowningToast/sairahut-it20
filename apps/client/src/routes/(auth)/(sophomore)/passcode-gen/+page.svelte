@@ -1,7 +1,5 @@
 <script lang="ts">
-	import { RotateCcw } from "lucide-svelte";
-
-
+	import { RotateCcw } from 'lucide-svelte';
 </script>
 
 <div class="relative">
@@ -20,13 +18,18 @@
         <a href="/take-passcode-history" class="text-accent text-xs font-Pridi font-extralight decoration-solid bg-[#29436c2b] px-3 py-2 border-2 border-[#29436C] rounded-md mt-5">ดูประวัติการกรอกรหัส</a>
     </div>
 </div>
-<div class="absolute bottom-20 left-1/2 transform -translate-x-1/2 w-full flex flex-col items-center">
-    <button class="drop-shadow-[0px_0px_10px_#FFD130] mt-5" >
-        <RotateCcw size={36} color="white" strokeWidth={1.5} />
-    </button>
-    <img src="./konnok-footer.png" alt="" class=" my-2" />
-    <div class="text-center text-accent px-5 font-Pridi font-thin">
-        <p>คำอธิบาย</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Vel ducimus error repudiandae rem quod quaerat quisquam animi cumque ad excepturi!</p>
-    </div>
+<div
+	class="absolute bottom-20 left-1/2 transform -translate-x-1/2 w-full flex flex-col items-center"
+>
+	<button class="drop-shadow-[0px_0px_10px_#FFD130] mt-5">
+		<RotateCcw size={36} color="white" strokeWidth={1.5} />
+	</button>
+	<img src="./konnok-footer.png" alt="" class=" my-2" />
+	<div class="text-center text-accent px-5 font-Pridi font-thin">
+		<p>คำอธิบาย</p>
+		<p>
+			Lorem ipsum dolor sit amet consectetur adipisicing elit. Vel ducimus error repudiandae rem
+			quod quaerat quisquam animi cumque ad excepturi!
+		</p>
+	</div>
 </div>

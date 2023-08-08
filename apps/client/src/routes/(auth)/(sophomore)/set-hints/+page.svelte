@@ -1,16 +1,14 @@
 <script lang="ts">
-	import { page } from '$app/stores';
 	import { trpc } from '$lib/trpc';
 	import { onMount, onDestroy } from 'svelte';
 	import SRHButton from '$lib/components/svelte/SRHButton.svelte';
 	import Input from '$lib/components/ui/input/Input.svelte';
 	import { goto } from '$app/navigation';
-	import { Loader2 } from 'lucide-svelte';
+	import { Eye, EyeOff, Loader2, Lock, Unlock } from 'lucide-svelte';
 	import ConfirmDialog from '$components/svelte/ConfirmDialog.svelte';
 	import DialogFooter from '$components/ui/dialog/DialogFooter.svelte';
 	import DialogHeader from '$components/ui/dialog/DialogHeader.svelte';
 	import type { PageData } from './$types';
-	import type { Hints } from 'database';
 	import { AlertDialog, AlertDialogTrigger } from '$components/ui/alert-dialog';
 	import SrhButton from '$lib/components/svelte/SRHButton.svelte';
 	import AlertDialogContent from '$components/ui/alert-dialog/AlertDialogContent.svelte';
@@ -59,6 +57,7 @@
 		displayName: string;
 		slug: string;
 		content: undefined | string;
+		shown?: boolean;
 	}
 	let hints: Hint[] = [];
 
@@ -113,19 +112,37 @@
 <div class="text-white flex flex-col gap-y-7 font-extralight font-krub mt-3">
 	{#each hints as hint, index}
 		<div class="flex flex-col gap-y-2">
-			<p>{hint.displayName}</p>
+			<div class="flex gap-x-2 items-center">
+				{#if !hint?.shown}
+					<EyeOff opacity={0.75} size={20} />
+				{:else}
+					<Eye opacity={0.75} size={20} />
+				{/if}
+				<p>{hint.displayName}</p>
+			</div>
 			<Input
 				type={hidePassword ? 'password' : 'text'}
 				isDisabled={alreadySetHints}
-				class=" text-white bg-blue-400/25"
+				class={`text-white bg-blue-400/25 $`}
 				bind:value={hints[index].content}
 			/>
 		</div>
 	{/each}
+	{#if alreadySetHints}
+		<div class="flex flex-col items-center gap-y-4">
+			<div class="flex flex-col items-center gap-y-2">
+				<EyeOff opacity={0.5} />
+				<p>บ่งบอกถึงว่าน้องรหัสนั้นยังไม่เห็นคำใบ้นี้</p>
+			</div>
+			<div class="flex flex-col items-center gap-y-2">
+				<Eye opacity={0.5} />
+				<p>บ่งบอกว่าน้องนั้นเห็นคำใบ้นี้แล้ว</p>
+			</div>
+		</div>
+	{/if}
 	<div class="flex justify-between mt-2">
-		<!-- <div class="w-full flex justify-start">
-			<SrhButton class="w-10/12" on:click={onReset}>รีเซ็ต</SrhButton>
-		</div> -->
+		<!-- Inform the user about the icon's meaning -->
+
 		<div class="w-full flex justify-center">
 			{#if !alreadySetHints}
 				<ConfirmDialog

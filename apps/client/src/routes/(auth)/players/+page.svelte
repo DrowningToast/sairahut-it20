@@ -1,6 +1,5 @@
 <script lang="ts">
 	import SrhButton from '$components/svelte/SRHButton.svelte';
-	import Button from '$components/ui/button/Button.svelte';
 	import Input from '$components/ui/input/Input.svelte';
 	import Label from '$components/ui/label/Label.svelte';
 	import RadioGroup from '$components/ui/radio-group/RadioGroup.svelte';
@@ -20,14 +19,29 @@
 	import { createQuery } from '@tanstack/svelte-query';
 	import { FacebookIcon, InstagramIcon } from 'lucide-svelte';
 	import { z } from 'zod';
+	import { userType } from '$lib/store/userType';
 
 	const PAGINATION_SIZE = 600;
 	let queryBy: 'STUDENT_ID' | 'FIRSTNAME' | 'NICKNAME';
-	let queryTarget: 'ALL' | 'FRESH' | 'SOP';
+	let queryTarget: 'FRESH' | 'SOP';
+	let targetPointTitle: 'Spirit Shards' | 'Points' | 'Humanity' = 'Points';
 
 	$: queryBy = 'NICKNAME';
 	$: queryString = '' as string | undefined;
-	$: queryTarget = 'ALL';
+	$: queryTarget = 'SOP';
+
+	$: {
+		switch (queryTarget) {
+			case 'FRESH':
+				targetPointTitle = 'Spirit Shards';
+				break;
+			case 'SOP':
+				targetPointTitle = 'Humanity';
+				break;
+			default:
+				break;
+		}
+	}
 
 	// avoid using this directly, and use searchQuery instead, it caches
 	const search = async () => {
@@ -36,7 +50,7 @@
 		const [a, b] = await Promise.all([
 			// fetch fresh
 			new Promise<void>(async (resolve, reject) => {
-				if (queryTarget === 'FRESH' || queryTarget === 'ALL') {
+				if (queryTarget === 'FRESH') {
 					const res = await trpc.freshmens.getAllFreshmens.query({
 						first: 0,
 						last: PAGINATION_SIZE,
@@ -50,7 +64,7 @@
 			}),
 			// fetch sop
 			new Promise<void>(async (resolve, reject) => {
-				if (queryTarget === 'SOP' || queryTarget === 'ALL') {
+				if (queryTarget === 'SOP') {
 					const res = await trpc.sophomores.getAllSophomores.query({
 						first: 0,
 						last: PAGINATION_SIZE,
@@ -63,6 +77,8 @@
 				resolve();
 			})
 		]);
+
+		data.sort((a, b) => a.user.balance - b.user.balance).reverse();
 
 		return data;
 	};
@@ -90,17 +106,13 @@
 </div>
 
 <RadioGroup class="flex gap-x-2 ml-auto mt-8 text-accent" bind:value={queryTarget}>
-	<div class=" flex items-center space-x-2">
-		<RadioGroupItem value="ALL" id="ALl" />
-		<Label for="ALL">ค้นหาทั้งหมด</Label>
+	<div class="flex items-center space-x-2">
+		<RadioGroupItem value="SOP" id="SOP" />
+		<Label for="SOP">เหล่าภูต</Label>
 	</div>
 	<div class="flex items-center space-x-2">
 		<RadioGroupItem value="FRESH" id="FRESH" />
 		<Label for="FRESH">เหล่าจอมเวทย์</Label>
-	</div>
-	<div class="flex items-center space-x-2">
-		<RadioGroupItem value="SOP" id="SOP" />
-		<Label for="SOP">เหล่าภูต</Label>
 	</div>
 </RadioGroup>
 
@@ -143,6 +155,7 @@
 				<TableHead>รุ่น</TableHead>
 				<TableHead>ชื่อจริง</TableHead>
 				<TableHead>ชื่อเล่น</TableHead>
+				<TableHead>{targetPointTitle}</TableHead>
 				<TableHead>Contact</TableHead>
 			</TableRow>
 		</TableHeader>
@@ -153,6 +166,7 @@
 						<TableCell>{determineYear(d.student_id)}</TableCell>
 						<TableCell>{d.fullname?.split(' ')[0] ?? `${d.first_name}`}</TableCell>
 						<TableCell>{d.nickname}</TableCell>
+						<TableCell>{d.user.balance}</TableCell>
 						<TableCell class="flex flex-row gap-1">
 							{#if z.string().url().safeParse(d.facebook_link).success}
 								<a href={d.facebook_link} target="_blank" rel="noreferrer">
@@ -170,6 +184,9 @@
 			{:else if $searchQuery.isLoading}
 				{#each new Array(10).fill(null) as _}
 					<TableRow class="gap-x-2 h-6">
+						<TableCell>
+							<Skeleton class="h-6" />
+						</TableCell>
 						<TableCell>
 							<Skeleton class="h-6" />
 						</TableCell>
