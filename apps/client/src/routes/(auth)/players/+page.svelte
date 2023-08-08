@@ -20,14 +20,32 @@
 	import { createQuery } from '@tanstack/svelte-query';
 	import { FacebookIcon, InstagramIcon } from 'lucide-svelte';
 	import { z } from 'zod';
+	import { userType } from '$lib/store/userType';
 
 	const PAGINATION_SIZE = 600;
 	let queryBy: 'STUDENT_ID' | 'FIRSTNAME' | 'NICKNAME';
 	let queryTarget: 'ALL' | 'FRESH' | 'SOP';
+	let targetPointTitle: 'Spirit Shards' | 'Points' | 'Humanity' = 'Points';
 
 	$: queryBy = 'NICKNAME';
 	$: queryString = '' as string | undefined;
 	$: queryTarget = 'ALL';
+
+	$: {
+		switch (queryTarget) {
+			case 'ALL':
+				targetPointTitle = 'Points';
+				break;
+			case 'FRESH':
+				targetPointTitle = 'Spirit Shards';
+				break;
+			case 'SOP':
+				targetPointTitle = 'Humanity';
+				break;
+			default:
+				break;
+		}
+	}
 
 	// avoid using this directly, and use searchQuery instead, it caches
 	const search = async () => {
@@ -63,6 +81,13 @@
 				resolve();
 			})
 		]);
+
+		console.log(data);
+
+		console.log(data.map((_) => _.user.balance));
+		data.sort((_) => _.user.balance);
+		data.reverse();
+		console.log(data.map((_) => _.user.balance));
 
 		return data;
 	};
@@ -143,6 +168,7 @@
 				<TableHead>รุ่น</TableHead>
 				<TableHead>ชื่อจริง</TableHead>
 				<TableHead>ชื่อเล่น</TableHead>
+				<TableHead>{targetPointTitle}</TableHead>
 				<TableHead>Contact</TableHead>
 			</TableRow>
 		</TableHeader>
@@ -153,6 +179,7 @@
 						<TableCell>{determineYear(d.student_id)}</TableCell>
 						<TableCell>{d.fullname?.split(' ')[0] ?? `${d.first_name}`}</TableCell>
 						<TableCell>{d.nickname}</TableCell>
+						<TableCell>{d.user.balance}</TableCell>
 						<TableCell class="flex flex-row gap-1">
 							{#if z.string().url().safeParse(d.facebook_link).success}
 								<a href={d.facebook_link} target="_blank" rel="noreferrer">
@@ -170,6 +197,9 @@
 			{:else if $searchQuery.isLoading}
 				{#each new Array(10).fill(null) as _}
 					<TableRow class="gap-x-2 h-6">
+						<TableCell>
+							<Skeleton class="h-6" />
+						</TableCell>
 						<TableCell>
 							<Skeleton class="h-6" />
 						</TableCell>

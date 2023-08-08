@@ -275,7 +275,12 @@ export const freshmenRouters = createRouter({
 					first_name: true,
 					nickname: true,
 					facebook_link: true,
-					instagram_link: true
+					instagram_link: true,
+					user: {
+						select: {
+							balance: true
+						}
+					}
 				},
 				skip: first,
 				take: last
