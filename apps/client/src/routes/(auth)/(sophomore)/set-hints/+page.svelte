@@ -125,7 +125,6 @@
 			/>
 		</div>
 	{/each}
-
 	<div class="flex justify-between mt-2">
 		<!-- Inform the user about the icon's meaning -->
 

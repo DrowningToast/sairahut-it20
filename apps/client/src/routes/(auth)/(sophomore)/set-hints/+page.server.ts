@@ -1,5 +1,6 @@
 import { databaseController } from '$lib/server/controllers';
 import { prisma } from '$lib/serverUtils';
+import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
