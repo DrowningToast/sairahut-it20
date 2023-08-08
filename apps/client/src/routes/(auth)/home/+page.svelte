@@ -21,6 +21,11 @@
 	let isHintActive = new Date().getTime() >= homePageState.hints.activateDate.getTime();
 	let isPasswordActive = new Date() >= homePageState.passcode.activateDate;
 	let isProfileActive = new Date() >= homePageState.profile.activateDate;
+
+	const sophomorePair = {
+		'img' : '../Titania.png',
+		'family' : 'Fairy'
+	}
 </script>
 
 <div>
@@ -41,7 +46,24 @@
 			{playerType === 'FRESHMEN' ? 'Spirit Shards' : 'Humanity'}
 		</p>
 	</div>
-	<div class="grid grid-cols-2 grid-rows-2 gap-x-3 gap-y-14 mt-8">
+	<div class="mx-2 mt-5">
+		{#if playerType === 'FRESHMEN'}
+			<div class="flex justify-center gap-x-2 items-center py-5 bg-cover bg-[url('../bg_seirei.png')]">
+				<div>
+					<img src={sophomorePair.img} alt="">
+				</div>
+				<div class="font-krub text-base font-normal">
+					<p class="text-[#F7B962] drop-shadow-[0px_0px_2px_#FFF5C0]">ภูติของท่านกำลังรอคอยอยู่</p>
+					<p class="text-white drop-shadow-[0px_0px_4px_#FFF5C0]">เผ่า : {sophomorePair.family}</p>
+				</div>
+			</div>
+		{:else}
+			<a href="/view-pair">
+				<SrhButton class="w-full">ดูจอมเวทย์ของท่าน</SrhButton>
+			</a>
+		{/if}
+	</div>
+	<div class="grid grid-cols-2 grid-rows-2 gap-x-3 gap-y-14 mt-5">
 		<CardButtonMenu
 			isActived={isQrCodeActive}
 			img_active={'../qrCode-active.png'}
