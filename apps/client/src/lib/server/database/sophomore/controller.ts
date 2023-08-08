@@ -1,7 +1,7 @@
 import type { Prisma, PrismaClient } from 'database';
 
 export const SophomoreDetailsController = (prisma: PrismaClient) => {
-	const findUnique = (fresh: Prisma.FreshmenDetailsWhereUniqueInput) => {
+	const findUnique = (fresh: Prisma.SophomoreDetailsWhereUniqueInput) => {
 		return prisma.sophomoreDetails.findUnique({
 			where: fresh
 		});
@@ -24,5 +24,40 @@ export const SophomoreDetailsController = (prisma: PrismaClient) => {
 		return prisma.sophomoreDetails.update(searchQuery);
 	};
 
-	return { findUnique, findUniqueUserWithFresh: findUniqueWithUser, findMany, updateOne };
+	const getUsedQRsByOwnerId = async (ownerId: string) => {
+		return await prisma.qRInstances.findMany({
+			where: {
+				ownerId,
+				quota: {
+					equals: 0
+				}
+			},
+			include: {
+				scannedBy: true
+			}
+		})
+	}
+
+	const getUsedPasscodesByOwnerId = async (ownerId: string) => {
+		return await prisma.passcodeInstances.findMany({
+			where: {
+				ownerId,
+				usedById: {
+					not: null
+				}
+			},
+			include: {
+				usedBy: true
+			}
+		})
+	}
+
+	return {
+		findUnique,
+		findUniqueUserWithFresh: findUniqueWithUser,
+		findMany,
+		updateOne,
+		getUsedQRsByOwnerId,
+		getUsedPasscodesByOwnerId
+	};
 };
