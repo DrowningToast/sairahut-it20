@@ -1,8 +1,8 @@
 <script lang="ts">
+	import { userType } from '$lib/store/userType';
 	import { page } from '$app/stores';
 	import { z } from 'zod';
 	import type { PageServerData } from './$types';
-
 	const user = $page.data as PageServerData;
 
 	const data = [
@@ -24,6 +24,7 @@
 	class="border border-solid border-accent-alt px-4 py-6 rounded-3xl bg-gradient-to-b from-[#f58cb71a] to-[#ffffff05] mx-6 mt-1"
 >
 	<div class="flex flex-col gap-y-3 border border-solid border-accent-alt pt-10 pb-24 px-5">
+
 		{#each data as item}
 			<div class="flex flex-col gap-y-1">
 				<p class="text-sm font-krub font-thin text-white">{item.title}</p>

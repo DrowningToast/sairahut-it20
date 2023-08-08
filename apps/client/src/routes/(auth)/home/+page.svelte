@@ -14,7 +14,8 @@
 	import AlertDialogFooter from '$components/ui/alert-dialog/AlertDialogFooter.svelte';
 	import AlertDialogCancel from '$components/ui/alert-dialog/AlertDialogCancel.svelte';
 	import AlertDialogAction from '$components/ui/alert-dialog/AlertDialogAction.svelte';
-
+	import { browser } from '$app/environment';
+	import { View } from 'lucide-svelte';
 	const { session, homePageState, user, playerType } = $page.data as PageData;
 
 	let isQrCodeActive = new Date() >= homePageState.qrCode.activateDate;
@@ -26,6 +27,8 @@
 		'img' : '../Titania.png',
 		'family' : 'Fairy'
 	}
+
+	$: isOpen = false;
 </script>
 
 <div>
@@ -48,13 +51,23 @@
 	</div>
 	<div class="mx-2 mt-5">
 		{#if playerType === 'FRESHMEN'}
-			<div class="flex justify-center gap-x-2 items-center py-5 bg-cover bg-[url('../bg_seirei.png')]">
-				<div>
+			<div class="flex justify-center gap-x-2 items-center py-5 bg-cover bg-[url('../bg_seirei.png')] relative">
+				<div class={
+					!isOpen  ? 'blur-md' : ''
+				}>
 					<img src={sophomorePair.img} alt="">
 				</div>
-				<div class="font-krub text-base font-normal">
+				<div class={`font-krub text-base font-normal ${
+					!isOpen  ? 'blur-md' : ''
+				}`}>
 					<p class="text-[#F7B962] drop-shadow-[0px_0px_2px_#FFF5C0]">ภูติของท่านกำลังรอคอยอยู่</p>
 					<p class="text-white drop-shadow-[0px_0px_4px_#FFF5C0]">เผ่า : {sophomorePair.family}</p>
+				</div>
+				<div class={!isOpen ? 'block' : 'hidden'}>
+					<div class="flex flex-col items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+						<button on:click={() => {isOpen = true;}}><View size={72} color="#AF9E6E" strokeWidth={1} /></button>
+						<p class="text-yellow-100 drop-shadow-[0px_0px_4px_#FFD130] text-xs">ดูภูติของท่าน</p>
+					</div>
 				</div>
 			</div>
 		{:else}
