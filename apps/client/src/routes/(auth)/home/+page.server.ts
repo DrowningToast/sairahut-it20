@@ -3,8 +3,8 @@ import type { PageServerLoad } from './$types';
 import type { PlayerType } from 'database';
 
 const scanQRDate = new Date();
-const seeHintsDate = new Date(1692064800000);
-const passcodeDate = new Date(1692064800000);
+const seeHintsDate = new Date();
+const passcodeDate = new Date();
 const profileDate = new Date();
 
 export interface CardState {
