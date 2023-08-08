@@ -1,6 +1,7 @@
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import type { PlayerType } from 'database';
+import type { Pair, PlayerType } from 'database';
+import { prisma } from '$lib/serverUtils';
 
 const scanQRDate = new Date();
 const seeHintsDate = new Date();
@@ -74,8 +75,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 					},
 					hints: {
 						activateDate: new Date(1970),
-						title: 'ดูคำใบ้ที่ตัวเองกรอก',
-						href: '/set-hints'
+						title: 'ดูความคืบหน้าของคำใบ้ตัวเอง',
+						href: '/hints-status'
 					},
 					passcode: {
 						activateDate: passcodeDate,
@@ -89,10 +90,20 @@ export const load: PageServerLoad = async ({ locals }) => {
 					}
 			  };
 
+	let hasPair = false;
+	if (type === 'SOPHOMORE') {
+		hasPair = !!(await prisma.pair.findUnique({
+			where: {
+				sophomoreDetailsId: user.sophomoreDetails?.id
+			}
+		}));
+	}
+
 	return {
 		homePageState,
 		playerType: type,
 		session,
-		user
+		user,
+		hasPair
 	};
 };

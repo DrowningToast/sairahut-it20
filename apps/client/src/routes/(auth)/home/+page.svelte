@@ -13,8 +13,9 @@
 	import AlertDialogFooter from '$components/ui/alert-dialog/AlertDialogFooter.svelte';
 	import AlertDialogCancel from '$components/ui/alert-dialog/AlertDialogCancel.svelte';
 	import AlertDialogAction from '$components/ui/alert-dialog/AlertDialogAction.svelte';
+	import { userType } from '$lib/store/userType';
 
-	const { session, homePageState, user, playerType } = $page.data as PageData;
+	const { session, homePageState, user, playerType, hasPair } = $page.data as PageData;
 
 	let isQrCodeActive = new Date() >= homePageState.qrCode.activateDate;
 	let isHintActive = new Date().getTime() >= homePageState.hints.activateDate.getTime();
@@ -22,9 +23,9 @@
 	let isProfileActive = new Date() >= homePageState.profile.activateDate;
 
 	const sophomorePair = {
-		'img' : '../Titania.png',
-		'family' : 'Fairy'
-	}
+		img: '../Titania.png',
+		family: 'Fairy'
+	};
 </script>
 
 <div>
@@ -47,9 +48,11 @@
 	</div>
 	<div class="mx-2 mt-5">
 		{#if playerType === 'FRESHMEN'}
-			<div class="flex justify-center gap-x-2 items-center py-5 bg-cover bg-[url('../bg_seirei.png')]">
+			<div
+				class="flex justify-center gap-x-2 items-center py-5 bg-cover bg-[url('../bg_seirei.png')]"
+			>
 				<div>
-					<img src={sophomorePair.img} alt="">
+					<img src={sophomorePair.img} alt="" />
 				</div>
 				<div class="font-krub text-base font-normal">
 					<p class="text-[#F7B962] drop-shadow-[0px_0px_2px_#FFF5C0]">ภูติของท่านกำลังรอคอยอยู่</p>
@@ -71,7 +74,7 @@
 			link={homePageState.qrCode.href}
 		/>
 		<CardButtonMenu
-			isActived={isHintActive}
+			isActived={isHintActive || ($userType === 'SOPHOMORE' && hasPair)}
 			img_active={'../hint-active.png'}
 			img_inactive={'../hint-inactive.png'}
 			text={homePageState.hints.title}
