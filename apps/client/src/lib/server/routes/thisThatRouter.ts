@@ -1,4 +1,3 @@
-import { prisma } from '$lib/serverUtils';
 import { createRouter } from '../context';
 import { hintController } from '../database/hint/controller';
 import { protectedProcedure } from '../procedure';

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { page } from '$app/stores';
 	import { trpc } from '$lib/trpc';
 	import { onMount, onDestroy } from 'svelte';
 	import SRHButton from '$lib/components/svelte/SRHButton.svelte';
@@ -10,7 +9,6 @@
 	import DialogFooter from '$components/ui/dialog/DialogFooter.svelte';
 	import DialogHeader from '$components/ui/dialog/DialogHeader.svelte';
 	import type { PageData } from './$types';
-	import type { Hints } from 'database';
 	import { AlertDialog, AlertDialogTrigger } from '$components/ui/alert-dialog';
 	import SrhButton from '$lib/components/svelte/SRHButton.svelte';
 	import AlertDialogContent from '$components/ui/alert-dialog/AlertDialogContent.svelte';
