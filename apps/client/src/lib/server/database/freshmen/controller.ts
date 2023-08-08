@@ -36,6 +36,11 @@ export const FreshmenDetailsController = (prisma: PrismaClient) => {
 					include: {
 						owner: true
 					}
+				},
+				usedPasscodes: {
+					include: {
+						owner: true
+					}
 				}
 			}
 		})
