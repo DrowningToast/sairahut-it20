@@ -26,8 +26,24 @@ export const FreshmenDetailsController = (prisma: PrismaClient) => {
 		});
 	};
 
+	const getFreshmenById = async (id: string) => {
+		return await prisma.freshmenDetails.findUnique({
+			where: {
+				id
+			},
+			include: {
+				scannedQrs: {
+					include: {
+						owner: true
+					}
+				}
+			}
+		})
+	}
+
 	return {
 		createFreshmenDetails,
-		incrementFreshmenBalance
+		incrementFreshmenBalance,
+		getFreshmenById
 	};
 };
