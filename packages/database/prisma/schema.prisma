@@ -114,7 +114,7 @@ model Pair {
   revealedHints RevealedHintInstances[]
 
   freshmenDetailsId  String @unique
-  sophomoreDetailsId String @unique
+  sophomoreDetailsId String
 }
 
 model FreshmenDetails {
