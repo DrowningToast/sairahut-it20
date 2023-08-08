@@ -300,5 +300,17 @@ export const freshmenRouters = createRouter({
 			success: true,
 			payload: res?.scannedQrs
 		}
+	}),
+	getUsedPasscodes: freshmenProcedure.query(async ({ ctx }) => {
+		const { user } = ctx;
+
+		const res = await FreshmenDetailsController(prisma).getFreshmenById(
+			user?.freshmenDetails?.id as string
+		)
+
+		return {
+			success: true,
+			payload: res?.usedPasscodes
+		}
 	})
 });

@@ -38,11 +38,26 @@ export const SophomoreDetailsController = (prisma: PrismaClient) => {
 		})
 	}
 
+	const getUsedPasscodesByOwnerId = async (ownerId: string) => {
+		return await prisma.passcodeInstances.findMany({
+			where: {
+				ownerId,
+				usedById: {
+					not: null
+				}
+			},
+			include: {
+				usedBy: true
+			}
+		})
+	}
+
 	return {
 		findUnique,
 		findUniqueUserWithFresh: findUniqueWithUser,
 		findMany,
 		updateOne,
-		getUsedQRsByOwnerId
+		getUsedQRsByOwnerId,
+		getUsedPasscodesByOwnerId
 	};
 };
