@@ -4,7 +4,6 @@
 	import LogoutButton from '$components/svelte/LogoutButton.svelte';
 	import SrhButton from '$components/svelte/SRHButton.svelte';
 	import { Separator } from '$components/ui/separator';
-	import { signOut } from '@auth/sveltekit/client';
 	import type { PageData } from './$types';
 	import { AlertDialog, AlertDialogTrigger } from '$components/ui/alert-dialog';
 	import AlertDialogContent from '$components/ui/alert-dialog/AlertDialogContent.svelte';
