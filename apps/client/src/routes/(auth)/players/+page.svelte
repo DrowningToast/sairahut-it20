@@ -24,12 +24,12 @@
 
 	const PAGINATION_SIZE = 600;
 	let queryBy: 'STUDENT_ID' | 'FIRSTNAME' | 'NICKNAME';
-	let queryTarget: 'ALL' | 'FRESH' | 'SOP';
+	let queryTarget: 'FRESH' | 'SOP';
 	let targetPointTitle: 'Spirit Shards' | 'Points' | 'Humanity' = 'Points';
 
 	$: queryBy = 'NICKNAME';
 	$: queryString = '' as string | undefined;
-	$: queryTarget = 'ALL';
+	$: queryTarget = 'SOP';
 
 	$: {
 		switch (queryTarget) {
@@ -82,12 +82,7 @@
 			})
 		]);
 
-		console.log(data);
-
-		console.log(data.map((_) => _.user.balance));
-		data.sort((_) => _.user.balance);
-		data.reverse();
-		console.log(data.map((_) => _.user.balance));
+		data.sort((a, b) => a.user.balance - b.user.balance).reverse();
 
 		return data;
 	};
@@ -115,17 +110,13 @@
 </div>
 
 <RadioGroup class="flex gap-x-2 ml-auto mt-8 text-accent" bind:value={queryTarget}>
-	<div class=" flex items-center space-x-2">
-		<RadioGroupItem value="ALL" id="ALl" />
-		<Label for="ALL">ค้นหาทั้งหมด</Label>
+	<div class="flex items-center space-x-2">
+		<RadioGroupItem value="SOP" id="SOP" />
+		<Label for="SOP">เหล่าภูต</Label>
 	</div>
 	<div class="flex items-center space-x-2">
 		<RadioGroupItem value="FRESH" id="FRESH" />
 		<Label for="FRESH">เหล่าจอมเวทย์</Label>
-	</div>
-	<div class="flex items-center space-x-2">
-		<RadioGroupItem value="SOP" id="SOP" />
-		<Label for="SOP">เหล่าภูต</Label>
 	</div>
 </RadioGroup>
 
