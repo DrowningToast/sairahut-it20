@@ -29,24 +29,17 @@
 </script>
 
 <div>
-	<div>
-		<p class="text-lg font-Pridi text-white text-center">
+	<div class="flex flex-col gap-y-2">
+		<p class="text-lg font-Pridi text-white">
 			ยินดีต้อนรับ {session?.user?.name?.split(' ')[0]} เข้าสู่โลกเวทย์มนตร์
 		</p>
-	</div>
-	<div class="relative flex gap-y-2 justify-between items-center px-2 mt-4">
-		<a href="/calendar">
-			<button
-				class="bg-neutral-900 text-accent font-Pridi px-5 py-2 rounded-full border border-accent-alt"
-				><p class="drop-shadow-[0px_0px_4px_#FFD130]">ปฏิทินบอกเหตุ</p></button
-			>
-		</a>
 		<p class="font-Pridi text-gray-200 text-sm">
 			ตอนนี้คุณมีอยู่ {user.balance}
 			{playerType === 'FRESHMEN' ? 'Spirit Shards' : 'Humanity'}
 		</p>
 	</div>
-	<div class="mx-2 mt-5">
+	<Separator class="my-6" />
+	<div class="mx-2">
 		{#if playerType === 'FRESHMEN'}
 			<div
 				class="flex justify-center gap-x-2 items-center py-5 bg-cover bg-[url('../bg_seirei.png')]"
@@ -65,7 +58,7 @@
 			</a>
 		{/if}
 	</div>
-	<div class="grid grid-cols-2 grid-rows-2 gap-x-3 gap-y-14 mt-5">
+	<div class="grid grid-cols-2 grid-rows-2 gap-x-3 gap-y-8 mt-8">
 		<CardButtonMenu
 			isActived={isQrCodeActive}
 			img_active={'../qrCode-active.png'}
@@ -81,7 +74,7 @@
 			link={homePageState.hints.href}
 		/>
 		<CardButtonMenu
-			isActived={false}
+			isActived={$userType === 'SOPHOMORE' && hasPair}
 			img_active={'../password-active.png'}
 			img_inactive={'../password-inactive.png'}
 			text={homePageState.passcode.title}
@@ -97,16 +90,23 @@
 	</div>
 	<Separator class="mt-12 bg-accent" />
 
-	<div class="flex flex-col gap-y-2 mt-4">
-		<h5 class="text-accent text-lg font-semibold mb-4 text-center">เมนูอื่นๆ</h5>
-		<div class="flex justify-center mt-4">
+	<div class="flex flex-col gap-y-4 mt-4">
+		<h5 class="text-accent text-lg font-semibold text-center">เมนูอื่นๆ</h5>
+		<div class="flex justify-center">
 			<a class="w-full" href="/players"
 				><SrhButton class="w-full">รายชื่อนักเวทย์และภูตทั้งหมด</SrhButton></a
 			>
 		</div>
+		<div>
+			<a href="/calendar">
+				<SrhButton class="w-full"><p>ปฏิทินบอกเหตุ</p></SrhButton>
+			</a>
+		</div>
 		<div class="flex justify-center mt-4">
 			<AlertDialog>
-				<AlertDialogTrigger><SrhButton>ออกจากระบบ</SrhButton></AlertDialogTrigger>
+				<AlertDialogTrigger class="w-full"
+					><SrhButton class="w-full">ออกจากระบบ</SrhButton></AlertDialogTrigger
+				>
 				<AlertDialogContent>
 					<AlertDialogHeader>
 						<AlertDialogTitle>เจ้าแน่ใจนะ?</AlertDialogTitle>

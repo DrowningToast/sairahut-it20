@@ -1,6 +1,6 @@
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import type { Pair, PlayerType } from 'database';
+import type { PlayerType } from 'database';
 import { prisma } from '$lib/serverUtils';
 
 const scanQRDate = new Date();
@@ -92,7 +92,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 	let hasPair = false;
 	if (type === 'SOPHOMORE') {
-		hasPair = !!(await prisma.pair.findUnique({
+		hasPair = !!(await prisma.pair.findFirst({
 			where: {
 				sophomoreDetailsId: user.sophomoreDetails?.id
 			}
