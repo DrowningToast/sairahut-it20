@@ -1,5 +1,8 @@
+// ONLY CLIENT SIDE CODE HERE
+
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import axios from 'axios';
 // import type { PrismaClient } from 'database';
 // import { client } from 'database/client';
 // import { NODE_ENV } from '$env/static/public';
