@@ -2,11 +2,8 @@
 	import { goto } from '$app/navigation';
 	import ConfirmDialog from '$components/svelte/ConfirmDialog.svelte';
 	import Dropdown from '$components/svelte/Dropdown.svelte';
-	import FormErrorText from '$components/svelte/FormErrorText.svelte';
 	import SrhButton from '$components/svelte/SRHButton.svelte';
 	import SrhHeading from '$components/svelte/SRHHeading.svelte';
-	import { Dialog, DialogTrigger } from '$components/ui/dialog';
-	import DialogContent from '$components/ui/dialog/DialogContent.svelte';
 	import DialogFooter from '$components/ui/dialog/DialogFooter.svelte';
 	import DialogHeader from '$components/ui/dialog/DialogHeader.svelte';
 
