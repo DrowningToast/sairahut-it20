@@ -308,10 +308,17 @@ export const freshmenRouters = createRouter({
 				content: input
 			})
 
-			if (!passcodeQuery || passcodeQuery.usedById) {
+			if (!passcodeQuery) {
 				throw new TRPCError({
 					code: 'BAD_REQUEST',
-					message: 'Passcode already used or not found'
+					message: 'Passcode not found'
+				});
+			}
+
+			if (passcodeQuery.usedById) {
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message: 'Passcode already used'
 				});
 			}
 
