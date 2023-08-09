@@ -275,9 +275,9 @@ export const freshmenRouters = createRouter({
 				data
 			};
 		}),
-	getPasscodeByPasscodeId: freshmenProcedure.input(z.string())
+	getPasscodeInfo: freshmenProcedure.input(z.string())
 		.query(async ({ input }) => {
-			const res = await FreshmenDetailsController(prisma).getPasscode({
+			const res = await FreshmenDetailsController(prisma).getPasscodeBySecret({
 				content: input
 			})
 
@@ -304,7 +304,7 @@ export const freshmenRouters = createRouter({
 			const freshmenId = ctx.user?.freshmenDetails?.id as string
 			const controller = FreshmenDetailsController(prisma)
 
-			const passcodeQuery = await controller.getPasscode({
+			const passcodeQuery = await controller.getPasscodeBySecret({
 				content: input
 			})
 
@@ -322,7 +322,14 @@ export const freshmenRouters = createRouter({
 				});
 			}
 
-			await controller.submitPasscode({
+			if (passcodeQuery.usedById === ctx.user?.freshmenDetails?.id) {
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message: 'You can use only 1 passcode per person'
+				});
+			}
+
+			await controller.updatePasscodeInfo({
 				freshmenId,
 				id: passcodeQuery.id,
 			})

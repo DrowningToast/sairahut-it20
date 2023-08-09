@@ -33,7 +33,10 @@ export const FreshmenDetailsController = (prisma: PrismaClient) => {
 		});
 	};
 
-	const getPasscode = async (fresh: Prisma.PasscodeInstancesWhereUniqueInput) => {
+	/**
+	 * Get passcode by secret
+	 */
+	const getPasscodeBySecret = async (fresh: Prisma.PasscodeInstancesWhereUniqueInput) => {
 		return await prisma.passcodeInstances.findUnique({
 			where: fresh,
 			include: {
@@ -42,7 +45,7 @@ export const FreshmenDetailsController = (prisma: PrismaClient) => {
 		})
 	}
 
-	const submitPasscode = async ({ freshmenId, id }: ISubmitPasscode) => {
+	const updatePasscodeInfo = async ({ freshmenId, id }: ISubmitPasscode) => {
 		return await prisma.passcodeInstances.update({
 			where: {
 				id,
@@ -52,7 +55,7 @@ export const FreshmenDetailsController = (prisma: PrismaClient) => {
 			}
 		})
 	}
-	
+
 	const getUsedPasscodeByFreshmenId = async (freshmenId: string) => {
 		return await prisma.passcodeInstances.findMany({
 			where: {
@@ -92,13 +95,25 @@ export const FreshmenDetailsController = (prisma: PrismaClient) => {
 				revealedHints: true,
 				freshmenDetailsId: true,
 				sophomoreDetailsId: true,
-				id: true
+				id: true,
+				freshmen: {
+					select: {
+						usedPasscodes: true
+					}
+				}
 			}
 		})
 
 		if (query?.revealedHints.length === 10) {
 			throw new TRPCError({
 				message: 'No more hints can revealed',
+				code: 'BAD_REQUEST'
+			})
+		}
+
+		if (query?.freshmen.usedPasscodes.length == 0 && query?.freshmen.usedPasscodes.length % 5 !== 0) {
+			throw new TRPCError({
+				message: 'Cannot revealed hints',
 				code: 'BAD_REQUEST'
 			})
 		}
@@ -117,8 +132,8 @@ export const FreshmenDetailsController = (prisma: PrismaClient) => {
 	return {
 		createFreshmenDetails,
 		incrementFreshmenBalance,
-		getPasscode,
-		submitPasscode,
+		getPasscodeBySecret,
+		updatePasscodeInfo,
 		getUsedPasscodeByFreshmenId,
 		getRevealedHints,
 		createRevealedHint

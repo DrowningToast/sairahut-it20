@@ -36,7 +36,7 @@
 			return;
 		}
 
-		const res = await trpc.freshmens.getPasscodeByPasscodeId.query(passcode);
+		const res = await trpc.freshmens.getPasscodeInfo.query(passcode);
 
         if (!res.success) {
             return alert(res.payload)
@@ -69,7 +69,7 @@
 				({found.fullname})
 			</p>
 			<p class="text-accent text-left">
-				และดูเหมือนว่าเจ้านั้น{found.isUsed ? 'เคยจับได้แล้ว!' : 'จะยังไม่ได้จับ!'}
+				และดูเหมือนว่าเจ้านั้น{found.isUsed ? 'เคยโจมตีแล้ว!' : 'ยังไม่ได้โจมตี!'}
 			</p>
 			<div class="mt-12 flex flex-col gap-y-4">
 				<SRHButton
@@ -78,7 +78,7 @@
 						handleSubmit();
 					}}
 					disabled={found.isUsed}
-					{isLoading}>จับเลย!</SRHButton
+					{isLoading}>โจมตีเลย!</SRHButton
 				>
 				<SRHButton
 					{isLoading}
@@ -94,11 +94,11 @@
 {#if success && passcodeRes}
 	<Alert class="bg-neutral-900/25 text-accent border-accent">
 		<AlertTitle>สำเร็จ!</AlertTitle>
-		<AlertDescription>คุณได้จับภูต {found?.nickname} เรียบร้อยแล้ว!</AlertDescription>
+		<AlertDescription>คุณได้โจมตีภูต {found?.nickname} เรียบร้อยแล้ว!</AlertDescription>
 		<AlertDescription
 			>{passcodeRes.hintRevealed
 				? 'คำใบ้ได้ถูกเปิดเพิ่มแล้้ว'
-				: `คำใบ้จะเปิดในอีก ${passcodeRes.revealedHintsIn} ครั้ง หลังจากการใส่รหัส`}</AlertDescription
+				: `คำใบ้จะเปิดในอีก ${passcodeRes.revealedHintsIn} ครั้ง หลังจากการโจมตีภูต`}</AlertDescription
 		>
 	</Alert>
 {/if}
