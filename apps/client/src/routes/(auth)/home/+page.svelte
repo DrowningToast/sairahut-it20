@@ -30,8 +30,8 @@
 
 <div>
 	<div class="flex flex-col gap-y-2">
-		<p class="text-lg font-Pridi text-white">
-			ยินดีต้อนรับ {session?.user?.name?.split(' ')[0]} เข้าสู่โลกเวทย์มนตร์
+		<p class="font-Pridi text-white">
+			ยินดีต้อนรับ {session?.user?.name?.split(' ')[0]} เข้าสู่โลกเวทย์มนต์
 		</p>
 		<p class="font-Pridi text-gray-200 text-sm">
 			ตอนนี้คุณมีอยู่ {user.balance}
