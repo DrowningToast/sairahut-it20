@@ -7,6 +7,7 @@ import { freshmenRegister } from '$lib/zod';
 import { AirtableController } from '$lib/airtable-api/controller';
 import type { FreshmenDetails, User } from 'database';
 import { FreshmenDetailsController } from '../database/freshmen/controller';
+import { determineYear } from '$lib/utils';
 
 interface SearchQuery {
 	where: {
@@ -289,28 +290,109 @@ export const freshmenRouters = createRouter({
 				data
 			};
 		}),
+	getPasscodeInfo: freshmenProcedure.input(z.string()).query(async ({ input }) => {
+		const res = await FreshmenDetailsController(prisma).getPasscodeBySecret({
+			content: input
+		});
+
+		if (!res) {
+			return {
+				success: false,
+				payload: `Passcode with passcode: "${input}" not found`
+			};
+		} else {
+			return {
+				success: true,
+				payload: {
+					passcode: res?.content,
+					nickname: res?.owner.nickname,
+					fullname: res?.owner.fullname,
+					isUsed: res?.usedById !== null,
+					gen: determineYear(res?.owner.student_id as string)
+				}
+			};
+		}
+	}),
+	submitPasscode: freshmenProcedure.input(z.string()).mutation(async ({ ctx, input }) => {
+		const freshmenId = ctx.user?.freshmenDetails?.id as string;
+		const controller = FreshmenDetailsController(prisma);
+
+		const passcodeQuery = await controller.getPasscodeBySecret({
+			content: input
+		});
+
+		if (!passcodeQuery) {
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'Passcode not found'
+			});
+		}
+
+		if (passcodeQuery.usedById) {
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'Passcode already used'
+			});
+		}
+
+		if (passcodeQuery.usedById === ctx.user?.freshmenDetails?.id) {
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'You can use only 1 passcode per person'
+			});
+		}
+
+		await controller.updatePasscodeInfo({
+			freshmenId,
+			id: passcodeQuery.id
+		});
+
+		const totalPasscodeFound = await controller.getUsedPasscodeByFreshmenId(freshmenId);
+
+		let revealedHintsIn = 5 - totalPasscodeFound.length;
+
+		if (totalPasscodeFound.length > 0 && totalPasscodeFound.length % 5 === 0) {
+			await controller.createRevealedHint(freshmenId);
+			revealedHintsIn = 5;
+		}
+
+		return {
+			success: true,
+			payload: {
+				hintRevealed: revealedHintsIn === 5,
+				revealedHintsIn
+			}
+		};
+	}),
+
+	getRevealedHints: freshmenProcedure.query(async ({ ctx }) => {
+		return await FreshmenDetailsController(prisma).getRevealedHints(
+			ctx.user?.freshmenDetails?.id as string
+		);
+	}),
+
 	getScannedQRs: freshmenProcedure.query(async ({ ctx }) => {
 		const { user } = ctx;
 
 		const res = await FreshmenDetailsController(prisma).getFreshmenById(
 			user?.freshmenDetails?.id as string
-		)
+		);
 
 		return {
 			success: true,
 			payload: res?.scannedQrs
-		}
+		};
 	}),
 	getUsedPasscodes: freshmenProcedure.query(async ({ ctx }) => {
 		const { user } = ctx;
 
 		const res = await FreshmenDetailsController(prisma).getFreshmenById(
 			user?.freshmenDetails?.id as string
-		)
+		);
 
 		return {
 			success: true,
 			payload: res?.usedPasscodes
-		}
+		};
 	})
 });
