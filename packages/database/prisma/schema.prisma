@@ -86,7 +86,7 @@ model PasscodeInstances {
   owner     SophomoreDetails @relation(fields: [ownerId], references: [id])
   usedBy    FreshmenDetails? @relation(fields: [usedById], references: [id])
 
-  content String
+  content String @unique
 }
 
 model Factions {
