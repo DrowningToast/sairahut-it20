@@ -15,31 +15,33 @@ export const createSvelteKitContext =
 		let sessionTokenCookie: string | undefined;
 
 		// If authenticated request
-		if (cookies !== null) {
+		if (cookies) {
 			sessionTokenCookie = getCookie(cookies, 'next-auth.session-token');
 
-			const user = (
-				await prisma.session.findUnique({
-					where: {
-						sessionToken: sessionTokenCookie
-					},
-					select: {
-						user: {
-							include: {
-								faction: true,
-								sophomoreDetails: true,
-								freshmenDetails: true
+			if (sessionTokenCookie) {
+				const user = (
+					await prisma.session.findUnique({
+						where: {
+							sessionToken: sessionTokenCookie
+						},
+						select: {
+							user: {
+								include: {
+									faction: true,
+									sophomoreDetails: true,
+									freshmenDetails: true
+								}
 							}
 						}
-					}
-				})
-			)?.user;
+					})
+				)?.user;
 
-			return {
-				...locals,
-				prisma: PrismaClient,
-				user
-			};
+				return {
+					...locals,
+					prisma: PrismaClient,
+					user
+				};
+			}
 		}
 
 		return {

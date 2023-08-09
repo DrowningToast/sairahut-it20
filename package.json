@@ -9,7 +9,8 @@
     "db:force-push": "turbo run pg:force-push",
     "db:force-reset": "turbo run pg:force-reset",
     "db:generate": "turbo run pg:generate",
-    "studio": "turbo run db:studio"
+    "studio": "turbo run db:studio",
+    "postinstall": "pnpm db:push"
   },
   "devDependencies": {
     "@turbo/gen": "^1.9.7",

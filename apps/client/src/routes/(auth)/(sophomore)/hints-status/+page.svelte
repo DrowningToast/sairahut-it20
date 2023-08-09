@@ -5,6 +5,9 @@
 	import Input from '$lib/components/ui/input/Input.svelte';
 	import { goto } from '$app/navigation';
 	import { Eye, EyeOff, Loader2, Lock, Unlock } from 'lucide-svelte';
+	import ConfirmDialog from '$components/svelte/ConfirmDialog.svelte';
+	import DialogFooter from '$components/ui/dialog/DialogFooter.svelte';
+	import DialogHeader from '$components/ui/dialog/DialogHeader.svelte';
 	import type { PageData } from './$types';
 	import { AlertDialog, AlertDialogTrigger } from '$components/ui/alert-dialog';
 	import SrhButton from '$lib/components/svelte/SRHButton.svelte';
@@ -15,7 +18,7 @@
 	import AlertDialogFooter from '$components/ui/alert-dialog/AlertDialogFooter.svelte';
 	import AlertDialogCancel from '$components/ui/alert-dialog/AlertDialogCancel.svelte';
 	import AlertDialogAction from '$components/ui/alert-dialog/AlertDialogAction.svelte';
-	import { hintSlugIds } from '$lib/hintSlugIds';
+	import Textarea from '$components/ui/textarea/Textarea.svelte';
 
 	let isLoading = false;
 
@@ -25,9 +28,22 @@
 	$: hidePassword = alreadySetHints;
 
 	const initHints = async () => {
+		const hintSlugId = [
+			'appearance',
+			'height',
+			'personality',
+			'sex',
+			'food',
+			'hobby',
+			'quote',
+			'place',
+			'fashion',
+			'name_hint'
+		];
+
 		const hintSlugs = await trpc.sophomores.getHintSlugs.query();
 
-		hints = hintSlugIds.map((hint) => {
+		hints = hintSlugId.map((hint) => {
 			const result = hintSlugs.find((value) => value.slug === hint);
 
 			return {
@@ -105,19 +121,60 @@
 				{/if}
 				<p>{hint.displayName}</p>
 			</div>
-			<Input
-				type={hidePassword ? 'password' : 'text'}
-				isDisabled={alreadySetHints}
-				class={`text-white bg-blue-400/25 $`}
-				bind:value={hints[index].content}
-			/>
+			{#if !hidePassword}
+				<Textarea
+					type={hidePassword ? 'password' : 'text'}
+					isDisabled={alreadySetHints}
+					class={`text-white bg-blue-400/25 $`}
+					bind:value={hints[index].content}
+				/>
+			{:else}
+				<Textarea
+					type={hidePassword ? 'password' : 'text'}
+					isDisabled={alreadySetHints}
+					class={`text-white bg-blue-400/25 $`}
+					value="???"
+				/>{/if}
 		</div>
 	{/each}
+	{#if alreadySetHints}
+		<div class="flex flex-col items-center gap-y-4">
+			<div class="flex flex-col items-center gap-y-2">
+				<EyeOff opacity={0.5} />
+				<p>บ่งบอกถึงว่าน้องรหัสนั้นยังไม่เห็นคำใบ้นี้</p>
+			</div>
+			<div class="flex flex-col items-center gap-y-2">
+				<Eye opacity={0.5} />
+				<p>บ่งบอกว่าน้องนั้นเห็นคำใบ้นี้แล้ว</p>
+			</div>
+		</div>
+	{/if}
 	<div class="flex justify-between mt-2">
 		<!-- Inform the user about the icon's meaning -->
 
 		<div class="w-full flex justify-center">
-			{#if hidePassword}
+			{#if !alreadySetHints}
+				<ConfirmDialog
+					{isLoading}
+					disabled={!readyToSubmit || alreadySetHints}
+					triggerText="ยืนยัน"
+				>
+					<DialogHeader class="text-xl">แน่ใจนะ?</DialogHeader>
+					<p class="text-sm">
+						คำใบ้ของพี่ๆ นั้นจะถูกแสดงให้รุ่นน้องเมื่อน้องได้เล่นเกมไปจนถึงจุดๆ นึง น้องๆ
+						อาจจะไม่ได้เห็นคำใบ้ทุกคำจนกระทั้งตอนจบ
+						เพราะฉะนั้นแน่ใจแล้วใช่ไหมว่าจะใช้คำใบ้พวกนี้กับรุ่นนี้
+					</p>
+					<DialogFooter>
+						<SRHButton
+							class="w-7/12 mx-auto"
+							on:click={onSubmit}
+							disabled={!readyToSubmit}
+							{isLoading}>บันทึก</SRHButton
+						>
+					</DialogFooter>
+				</ConfirmDialog>
+			{:else if alreadySetHints && hidePassword}
 				<AlertDialog>
 					<AlertDialogTrigger><SrhButton>แสดงคำใบ้</SrhButton></AlertDialogTrigger>
 					<AlertDialogContent>

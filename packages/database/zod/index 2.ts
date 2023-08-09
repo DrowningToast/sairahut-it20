@@ -1019,8 +1019,7 @@ export const PasscodeInstancesOrderByWithRelationInputSchema: z.ZodType<Prisma.P
 }).strict();
 
 export const PasscodeInstancesWhereUniqueInputSchema: z.ZodType<Prisma.PasscodeInstancesWhereUniqueInput> = z.object({
-  id: z.string().uuid().optional(),
-  content: z.string().optional()
+  id: z.string().uuid().optional()
 }).strict();
 
 export const PasscodeInstancesOrderByWithAggregationInputSchema: z.ZodType<Prisma.PasscodeInstancesOrderByWithAggregationInput> = z.object({
@@ -1151,7 +1150,6 @@ export const PairOrderByWithRelationInputSchema: z.ZodType<Prisma.PairOrderByWit
 export const PairWhereUniqueInputSchema: z.ZodType<Prisma.PairWhereUniqueInput> = z.object({
   id: z.string().cuid().optional(),
   freshmenDetailsId: z.string().optional()
-
 }).strict();
 
 export const PairOrderByWithAggregationInputSchema: z.ZodType<Prisma.PairOrderByWithAggregationInput> = z.object({

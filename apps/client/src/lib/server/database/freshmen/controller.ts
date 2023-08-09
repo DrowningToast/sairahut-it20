@@ -3,8 +3,8 @@ import { TRPCError } from '@trpc/server';
 import type { Prisma, PrismaClient } from 'database';
 
 interface ISubmitPasscode {
-	freshmenId: string
-	id: string
+	freshmenId: string;
+	id: string;
 }
 
 export const FreshmenDetailsController = (prisma: PrismaClient) => {
@@ -42,27 +42,27 @@ export const FreshmenDetailsController = (prisma: PrismaClient) => {
 			include: {
 				owner: true
 			}
-		})
-	}
+		});
+	};
 
 	const updatePasscodeInfo = async ({ freshmenId, id }: ISubmitPasscode) => {
 		return await prisma.passcodeInstances.update({
 			where: {
-				id,
+				id
 			},
 			data: {
 				usedById: freshmenId
 			}
-		})
-	}
+		});
+	};
 
 	const getUsedPasscodeByFreshmenId = async (freshmenId: string) => {
 		return await prisma.passcodeInstances.findMany({
 			where: {
-				usedById: freshmenId,
+				usedById: freshmenId
 			}
-		})
-	}
+		});
+	};
 
 	const getRevealedHints = async (freshmenId: string) => {
 		return await prisma.pair.findUnique({
@@ -81,10 +81,10 @@ export const FreshmenDetailsController = (prisma: PrismaClient) => {
 						}
 					}
 				},
-				freshmenDetailsId: true,
+				freshmenDetailsId: true
 			}
-		})
-	}
+		});
+	};
 
 	const createRevealedHint = async (freshmenId: string) => {
 		const query = await prisma.pair.findUnique({
@@ -102,23 +102,26 @@ export const FreshmenDetailsController = (prisma: PrismaClient) => {
 					}
 				}
 			}
-		})
+		});
 
 		if (query?.revealedHints.length === 10) {
 			throw new TRPCError({
 				message: 'No more hints can revealed',
 				code: 'BAD_REQUEST'
-			})
+			});
 		}
 
-		if (query?.freshmen.usedPasscodes.length == 0 && query?.freshmen.usedPasscodes.length % 5 !== 0) {
+		if (
+			query?.freshmen.usedPasscodes.length == 0 &&
+			query?.freshmen.usedPasscodes.length % 5 !== 0
+		) {
 			throw new TRPCError({
 				message: 'Cannot revealed hints',
 				code: 'BAD_REQUEST'
-			})
+			});
 		}
 
-		const hintIndex = query?.revealedHints.length || 0
+		const hintIndex = query?.revealedHints.length || 0;
 
 		await prisma.revealedHintInstances.create({
 			data: {
@@ -126,8 +129,28 @@ export const FreshmenDetailsController = (prisma: PrismaClient) => {
 				hintsSophomoreId: query?.sophomoreDetailsId as string,
 				pairId: query?.id as string
 			}
-		})
-	}
+		});
+	};
+
+	const getFreshmenById = async (id: string) => {
+		return await prisma.freshmenDetails.findUnique({
+			where: {
+				id
+			},
+			include: {
+				scannedQrs: {
+					include: {
+						owner: true
+					}
+				},
+				usedPasscodes: {
+					include: {
+						owner: true
+					}
+				}
+			}
+		});
+	};
 
 	return {
 		createFreshmenDetails,
@@ -136,6 +159,7 @@ export const FreshmenDetailsController = (prisma: PrismaClient) => {
 		updatePasscodeInfo,
 		getUsedPasscodeByFreshmenId,
 		getRevealedHints,
-		createRevealedHint
+		createRevealedHint,
+		getFreshmenById
 	};
 };

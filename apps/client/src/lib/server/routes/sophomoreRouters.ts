@@ -200,7 +200,12 @@ export const sophomoreRouters = createRouter({
 					student_id: true,
 					facebook_link: true,
 					instagram_link: true,
-					fullname: true
+					fullname: true,
+					user: {
+						select: {
+							balance: true
+						}
+					}
 				},
 				skip: first,
 				take: last
@@ -210,4 +215,28 @@ export const sophomoreRouters = createRouter({
 				data
 			};
 		}),
+	getUsedQRs: oldProcedure.query(async ({ ctx }) => {
+		const { user } = ctx;
+
+		const res = await SophomoreDetailsController(prisma).getUsedQRsByOwnerId(
+			user?.sophomoreDetails?.id as string
+		);
+
+		return {
+			success: true,
+			payload: res
+		};
+	}),
+	getUsedPasscodes: oldProcedure.query(async ({ ctx }) => {
+		const { user } = ctx;
+
+		const res = await SophomoreDetailsController(prisma).getUsedPasscodesByOwnerId(
+			user?.sophomoreDetails?.id as string
+		);
+
+		return {
+			success: true,
+			payload: res
+		};
+	})
 });

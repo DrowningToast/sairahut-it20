@@ -7,7 +7,7 @@
 
 <h1
 	class={cn(
-		'text-5xl font-krub font-bold text-accent drop-shadow-[0px_0px_10px_#FFD130]',
+		'text-3xl font-krub font-bold text-accent drop-shadow-[0px_0px_10px_#FFD130]',
 		className
 	)}
 >
