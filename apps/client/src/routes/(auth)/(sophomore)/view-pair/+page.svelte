@@ -75,7 +75,7 @@
 			<h1 class="text-4xl font-bold">{pair.freshmen.nickname}</h1>
 		</div>
 		<div class="flex flex-row gap-2">
-			{#if z.string().url().safeParse(pair.freshmen.instagram_link).success}
+			{#if z.string().url().safeParse(pair.freshmen.facebook_link).success}
 				<a href={pair.freshmen.facebook_link} target="_blank" rel="noreferrer">
 					<FacebookIcon size={32} />
 				</a>
