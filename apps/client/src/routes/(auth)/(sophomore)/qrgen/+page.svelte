@@ -36,7 +36,7 @@
 					background="white"
 				/>
 			{:else}
-				<Loader color="white" size="64px" />
+				<Loader color="black" size="64px" />
 			{/if}
 		</div>
 		<div class="text-accent font-Pridi font-thin text-center px-8">
