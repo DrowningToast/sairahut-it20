@@ -32,7 +32,7 @@
 	console.log(pairs);
 </script>
 
-<SRHHeading class="text-center">บัตรประจำตัว</SRHHeading>
+<SRHHeading class="text-center">จอมเวทย์ของฉัน</SRHHeading>
 <hr class="border border-white my-3" />
 {#each pairs as pair, index}
 	<div
