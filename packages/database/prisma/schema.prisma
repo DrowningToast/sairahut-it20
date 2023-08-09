@@ -137,6 +137,11 @@ model FreshmenDetails {
   usedPasscodes   PasscodeInstances[]
   scannedQrs      QRInstances[]
   pair            Pair?
+
+  passcodePoints Int @default(0)
+
+  // Freshmen quota of guessing their pair for free
+  quota Int @default(3)
 }
 
 model HintSlugs {
