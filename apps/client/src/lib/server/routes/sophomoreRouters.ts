@@ -226,5 +226,21 @@ export const sophomoreRouters = createRouter({
 			success: true,
 			payload: res
 		};
+	}),
+	/**
+	 * Return a 6 characters passcode, return the last one if it still hasn't been claimed
+	 * generate a new one, if the last one expires
+	 */
+	getPasscode: oldProcedure.query(async ({ ctx }) => {
+		const { user } = ctx;
+
+		const res = await SophomoreDetailsController(prisma).getSophomorePasscode({
+			id: user?.sophomoreDetails!.id
+		});
+
+		return {
+			success: true,
+			payload: res
+		};
 	})
 });

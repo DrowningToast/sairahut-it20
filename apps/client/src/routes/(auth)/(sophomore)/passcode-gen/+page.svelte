@@ -3,6 +3,7 @@
 	import { generateRandomString } from '$lib/utils';
 	import { RotateCcw } from 'lucide-svelte';
 	import { onMount } from 'svelte';
+	import { draw, fade, slide } from 'svelte/transition';
 
 	let intervalId: NodeJS.Timer;
 	$: secret = '';
@@ -15,7 +16,6 @@
 				passcodeViewModel = generateRandomString(6);
 			}, 100);
 		} else {
-			console.log('plesae stop');
 			clearInterval(intervalId);
 		}
 	};
@@ -23,12 +23,15 @@
 	const handleLoadPasscode = async () => {
 		isLoading = true;
 		secret = '';
-		const res = await trpc.sophomores.get;
+		const res = await trpc.sophomores.getPasscode.query();
+		secret = res.payload.content;
+		passcodeViewModel = secret;
 		isLoading = false;
 		updatePasscodeViewState();
 	};
 
 	onMount(() => {
+		handleLoadPasscode();
 		updatePasscodeViewState();
 	});
 </script>
@@ -39,7 +42,16 @@
 		class="relative flex justify-center items-center mx-6 py-6 bg-[#29436C]/10 rounded-3xl border-[#29436C] drop-shadow-[0px_4px_4px_black] border-solid border mt-5"
 	>
 		<img src="./konnok.png" alt="" class=" absolute left-5 h-3/5 transform -scale-x-100" />
-		<h1 class="text-accent font-Pridi font-thin text-3xl">{passcodeViewModel}</h1>
+		{#if isLoading}
+			<h1 class="text-gray-500 font-Pridi font-thin text-3xl">
+				{passcodeViewModel}
+			</h1>
+		{:else}
+			<h1 in:fade={{ duration: 200, delay: 100 }} class="text-accent font-Pridi font-thin text-3xl">
+				{secret}
+			</h1>
+		{/if}
+
 		<img src="./konnok.png" alt="" class=" absolute right-5 h-3/5 transform" />
 	</div>
 	<div

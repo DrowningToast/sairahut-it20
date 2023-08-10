@@ -32,7 +32,7 @@ export const PairScalarFieldEnumSchema = z.enum(['id','freshmenDetailsId','sopho
 
 export const FreshmenDetailsScalarFieldEnumSchema = z.enum(['create_at','update_at','id','userId','thisOrThat','thisOrThatReady','student_id','title','first_name','last_name','nickname','branch','facebook_link','instagram_link','phone','passcodePoints','quota']);
 
-export const HintSlugsScalarFieldEnumSchema = z.enum(['slug','displayName']);
+export const HintSlugsScalarFieldEnumSchema = z.enum(['slug','displayName','index']);
 
 export const HintsScalarFieldEnumSchema = z.enum(['hintSlugId','content','sophomoreId','craete_at','update_at']);
 
@@ -230,6 +230,7 @@ export type FreshmenDetails = z.infer<typeof FreshmenDetailsSchema>
 export const HintSlugsSchema = z.object({
   slug: z.string(),
   displayName: z.string(),
+  index: z.number().int().nullable(),
 })
 
 export type HintSlugs = z.infer<typeof HintSlugsSchema>
@@ -597,6 +598,7 @@ export const HintSlugsCountOutputTypeSelectSchema: z.ZodType<Prisma.HintSlugsCou
 export const HintSlugsSelectSchema: z.ZodType<Prisma.HintSlugsSelect> = z.object({
   slug: z.boolean().optional(),
   displayName: z.boolean().optional(),
+  index: z.boolean().optional(),
   Hints: z.union([z.boolean(),z.lazy(() => HintsFindManyArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => HintSlugsCountOutputTypeArgsSchema)]).optional(),
 }).strict()
@@ -1286,25 +1288,31 @@ export const HintSlugsWhereInputSchema: z.ZodType<Prisma.HintSlugsWhereInput> = 
   NOT: z.union([ z.lazy(() => HintSlugsWhereInputSchema),z.lazy(() => HintSlugsWhereInputSchema).array() ]).optional(),
   slug: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   displayName: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  index: z.union([ z.lazy(() => IntNullableFilterSchema),z.number() ]).optional().nullable(),
   Hints: z.lazy(() => HintsListRelationFilterSchema).optional()
 }).strict();
 
 export const HintSlugsOrderByWithRelationInputSchema: z.ZodType<Prisma.HintSlugsOrderByWithRelationInput> = z.object({
   slug: z.lazy(() => SortOrderSchema).optional(),
   displayName: z.lazy(() => SortOrderSchema).optional(),
+  index: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   Hints: z.lazy(() => HintsOrderByRelationAggregateInputSchema).optional()
 }).strict();
 
 export const HintSlugsWhereUniqueInputSchema: z.ZodType<Prisma.HintSlugsWhereUniqueInput> = z.object({
-  slug: z.string().optional()
+  slug: z.string().optional(),
+  index: z.number().int().optional()
 }).strict();
 
 export const HintSlugsOrderByWithAggregationInputSchema: z.ZodType<Prisma.HintSlugsOrderByWithAggregationInput> = z.object({
   slug: z.lazy(() => SortOrderSchema).optional(),
   displayName: z.lazy(() => SortOrderSchema).optional(),
+  index: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   _count: z.lazy(() => HintSlugsCountOrderByAggregateInputSchema).optional(),
+  _avg: z.lazy(() => HintSlugsAvgOrderByAggregateInputSchema).optional(),
   _max: z.lazy(() => HintSlugsMaxOrderByAggregateInputSchema).optional(),
-  _min: z.lazy(() => HintSlugsMinOrderByAggregateInputSchema).optional()
+  _min: z.lazy(() => HintSlugsMinOrderByAggregateInputSchema).optional(),
+  _sum: z.lazy(() => HintSlugsSumOrderByAggregateInputSchema).optional()
 }).strict();
 
 export const HintSlugsScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.HintSlugsScalarWhereWithAggregatesInput> = z.object({
@@ -1313,6 +1321,7 @@ export const HintSlugsScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.Hin
   NOT: z.union([ z.lazy(() => HintSlugsScalarWhereWithAggregatesInputSchema),z.lazy(() => HintSlugsScalarWhereWithAggregatesInputSchema).array() ]).optional(),
   slug: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   displayName: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  index: z.union([ z.lazy(() => IntNullableWithAggregatesFilterSchema),z.number() ]).optional().nullable(),
 }).strict();
 
 export const HintsWhereInputSchema: z.ZodType<Prisma.HintsWhereInput> = z.object({
@@ -2193,40 +2202,47 @@ export const FreshmenDetailsUncheckedUpdateManyInputSchema: z.ZodType<Prisma.Fre
 export const HintSlugsCreateInputSchema: z.ZodType<Prisma.HintSlugsCreateInput> = z.object({
   slug: z.string(),
   displayName: z.string(),
+  index: z.number().int().optional().nullable(),
   Hints: z.lazy(() => HintsCreateNestedManyWithoutSlugInputSchema).optional()
 }).strict();
 
 export const HintSlugsUncheckedCreateInputSchema: z.ZodType<Prisma.HintSlugsUncheckedCreateInput> = z.object({
   slug: z.string(),
   displayName: z.string(),
+  index: z.number().int().optional().nullable(),
   Hints: z.lazy(() => HintsUncheckedCreateNestedManyWithoutSlugInputSchema).optional()
 }).strict();
 
 export const HintSlugsUpdateInputSchema: z.ZodType<Prisma.HintSlugsUpdateInput> = z.object({
   slug: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   displayName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  index: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   Hints: z.lazy(() => HintsUpdateManyWithoutSlugNestedInputSchema).optional()
 }).strict();
 
 export const HintSlugsUncheckedUpdateInputSchema: z.ZodType<Prisma.HintSlugsUncheckedUpdateInput> = z.object({
   slug: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   displayName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  index: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   Hints: z.lazy(() => HintsUncheckedUpdateManyWithoutSlugNestedInputSchema).optional()
 }).strict();
 
 export const HintSlugsCreateManyInputSchema: z.ZodType<Prisma.HintSlugsCreateManyInput> = z.object({
   slug: z.string(),
-  displayName: z.string()
+  displayName: z.string(),
+  index: z.number().int().optional().nullable()
 }).strict();
 
 export const HintSlugsUpdateManyMutationInputSchema: z.ZodType<Prisma.HintSlugsUpdateManyMutationInput> = z.object({
   slug: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   displayName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  index: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const HintSlugsUncheckedUpdateManyInputSchema: z.ZodType<Prisma.HintSlugsUncheckedUpdateManyInput> = z.object({
   slug: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   displayName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  index: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const HintsCreateInputSchema: z.ZodType<Prisma.HintsCreateInput> = z.object({
@@ -3146,17 +3162,28 @@ export const HintsOrderByRelationAggregateInputSchema: z.ZodType<Prisma.HintsOrd
 
 export const HintSlugsCountOrderByAggregateInputSchema: z.ZodType<Prisma.HintSlugsCountOrderByAggregateInput> = z.object({
   slug: z.lazy(() => SortOrderSchema).optional(),
-  displayName: z.lazy(() => SortOrderSchema).optional()
+  displayName: z.lazy(() => SortOrderSchema).optional(),
+  index: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const HintSlugsAvgOrderByAggregateInputSchema: z.ZodType<Prisma.HintSlugsAvgOrderByAggregateInput> = z.object({
+  index: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const HintSlugsMaxOrderByAggregateInputSchema: z.ZodType<Prisma.HintSlugsMaxOrderByAggregateInput> = z.object({
   slug: z.lazy(() => SortOrderSchema).optional(),
-  displayName: z.lazy(() => SortOrderSchema).optional()
+  displayName: z.lazy(() => SortOrderSchema).optional(),
+  index: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const HintSlugsMinOrderByAggregateInputSchema: z.ZodType<Prisma.HintSlugsMinOrderByAggregateInput> = z.object({
   slug: z.lazy(() => SortOrderSchema).optional(),
-  displayName: z.lazy(() => SortOrderSchema).optional()
+  displayName: z.lazy(() => SortOrderSchema).optional(),
+  index: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const HintSlugsSumOrderByAggregateInputSchema: z.ZodType<Prisma.HintSlugsSumOrderByAggregateInput> = z.object({
+  index: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const HintSlugsRelationFilterSchema: z.ZodType<Prisma.HintSlugsRelationFilter> = z.object({
@@ -5973,12 +6000,14 @@ export const HintsScalarWhereInputSchema: z.ZodType<Prisma.HintsScalarWhereInput
 
 export const HintSlugsCreateWithoutHintsInputSchema: z.ZodType<Prisma.HintSlugsCreateWithoutHintsInput> = z.object({
   slug: z.string(),
-  displayName: z.string()
+  displayName: z.string(),
+  index: z.number().int().optional().nullable()
 }).strict();
 
 export const HintSlugsUncheckedCreateWithoutHintsInputSchema: z.ZodType<Prisma.HintSlugsUncheckedCreateWithoutHintsInput> = z.object({
   slug: z.string(),
-  displayName: z.string()
+  displayName: z.string(),
+  index: z.number().int().optional().nullable()
 }).strict();
 
 export const HintSlugsCreateOrConnectWithoutHintsInputSchema: z.ZodType<Prisma.HintSlugsCreateOrConnectWithoutHintsInput> = z.object({
@@ -6063,11 +6092,13 @@ export const HintSlugsUpsertWithoutHintsInputSchema: z.ZodType<Prisma.HintSlugsU
 export const HintSlugsUpdateWithoutHintsInputSchema: z.ZodType<Prisma.HintSlugsUpdateWithoutHintsInput> = z.object({
   slug: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   displayName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  index: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const HintSlugsUncheckedUpdateWithoutHintsInputSchema: z.ZodType<Prisma.HintSlugsUncheckedUpdateWithoutHintsInput> = z.object({
   slug: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   displayName: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  index: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 }).strict();
 
 export const SophomoreDetailsUpsertWithoutHintsInputSchema: z.ZodType<Prisma.SophomoreDetailsUpsertWithoutHintsInput> = z.object({

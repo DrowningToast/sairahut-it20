@@ -148,6 +148,8 @@ model HintSlugs {
   slug        String  @id @unique
   displayName String
   Hints       Hints[]
+
+  index Int? @unique
 }
 
 model Hints {
