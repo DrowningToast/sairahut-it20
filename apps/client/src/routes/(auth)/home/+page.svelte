@@ -15,6 +15,7 @@
 	import AlertDialogAction from '$components/ui/alert-dialog/AlertDialogAction.svelte';
 	import { browser } from '$app/environment';
 	import { View } from 'lucide-svelte';
+	import { onMount } from 'svelte';
 	const { session, homePageState, user, playerType } = $page.data as PageData;
 
 	let isQrCodeActive = new Date() >= homePageState.qrCode.activateDate;
@@ -27,7 +28,10 @@
 		'family' : 'Fairy'
 	}
 
-	$: isOpen = false;
+	let isOpen:boolean = false;
+	onMount(() => {isOpen = localStorage.getItem('isOpen') === 'true';});
+	// isOpen = localStorage.getItem('isOpen') === 'true';
+	console.log(isOpen);
 </script>
 
 <div>
@@ -64,7 +68,7 @@
 				</div>
 				<div class={!isOpen ? 'block' : 'hidden'}>
 					<div class="flex flex-col items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-						<button on:click={() => {isOpen = true;}}><View size={72} color="#AF9E6E" strokeWidth={1} /></button>
+						<button on:click={() => {localStorage.setItem('isOpen', 'true'); isOpen = true;}}><View size={72} color="#AF9E6E" strokeWidth={1} /></button>
 						<p class="text-yellow-100 drop-shadow-[0px_0px_4px_#FFD130] text-xs">ดูภูติของท่าน</p>
 					</div>
 				</div>
