@@ -127,8 +127,8 @@ export const FreshmenDetailsController = (prisma: PrismaClient) => {
 	const getNextHintPrice = async (fresh: Prisma.FreshmenDetailsWhereUniqueInput) => {
 		const revealedHints = (await getRevealedHints(fresh)) ?? [];
 		const index = revealedHints.length;
-		if (index >= HINT_PRICES.length) return 'MAX';
-		const price = await HintsController(prisma).getHintPrice(index);
+		if (index >= HINT_PRICES.length) return Infinity;
+		const price = (await HintsController(prisma).getHintPrice(index)) ?? Infinity;
 		return price;
 	};
 
@@ -151,13 +151,17 @@ export const FreshmenDetailsController = (prisma: PrismaClient) => {
 
 		// get all hints
 		const hints = (await getAllHints(fresh)) ?? [];
+		if (hints.length > 1) hints.sort((a, b) => a.slug.index! - b.slug.index!);
+
 		if (hints?.length <= 0) throw new Error('HINTS NOT FOUND');
 		const nextHint = hints[nextIndex];
 
 		// create a reveal instance
-		await HintsController(prisma).revealHint(fresh, {
+		const revealed = await HintsController(prisma).revealHint(fresh, {
 			slug: nextHint.slug.slug
 		});
+
+		return revealed;
 	};
 
 	return {

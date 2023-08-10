@@ -8,7 +8,7 @@ import { AirtableController } from '$lib/airtable-api/controller';
 import type { FreshmenDetails, Prisma, User } from 'database';
 import { FreshmenDetailsController } from '../database/freshmen/controller';
 import { determineYear } from '$lib/utils';
-import { HintsController, hintController } from '../database/hint/controller';
+import { HintsController, getHintSlugs, hintController } from '../database/hint/controller';
 import { PasscodeController } from '../database/passcode/controller';
 
 interface SearchQuery {
@@ -437,5 +437,45 @@ export const freshmenRouters = createRouter({
 			success: true,
 			payload: res?.usedPasscodes
 		};
+	}),
+
+	getNextHintPrice: freshmenProcedure.query(async ({ ctx }) => {
+		const freshId = ctx.user?.freshmenDetails!.id;
+		const freshmenController = FreshmenDetailsController(prisma);
+		return await freshmenController.getNextHintPrice({ id: freshId });
+	}),
+
+	buyHint: freshmenProcedure.query(async ({ ctx }) => {
+		const freshId = ctx.user?.freshmenDetails!.id;
+		const freshmenController = FreshmenDetailsController(prisma);
+		const hints =
+			(await freshmenController.getAllHints({
+				id: freshId
+			})) ?? [];
+
+		// check if already unlock all hint
+		if (hints?.length >= 10)
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'Already have unlocked all the hints'
+			});
+
+		// get the money the user has
+		const money = ctx.user!.freshmenDetails!.passcodePoints;
+
+		const cost = await freshmenController.getNextHintPrice({ id: freshId });
+
+		if (cost > money)
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'Not enough money'
+			});
+
+		// begin buying hint
+		await prisma.$transaction([freshmenController.decrementPasscodePoint({ id: freshId }, 5)]);
+
+		const revealed = await freshmenController.revealNextHint({ id: freshId });
+
+		return revealed;
 	})
 });
