@@ -426,6 +426,7 @@ export const freshmenRouters = createRouter({
 			payload: res?.scannedQrs
 		};
 	}),
+
 	getUsedPasscodes: freshmenProcedure.query(async ({ ctx }) => {
 		const { user } = ctx;
 

@@ -16,9 +16,7 @@ export const PasscodeController = (prisma: PrismaClient) => {
 						instagram_link: true,
 						facebook_link: true,
 						student_id: true,
-						branch: true
-					},
-					include: {
+						branch: true,
 						user: {
 							select: {
 								faction: {

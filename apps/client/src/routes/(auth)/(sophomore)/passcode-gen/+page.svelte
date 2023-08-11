@@ -23,6 +23,7 @@
 	const handleLoadPasscode = async () => {
 		isLoading = true;
 		secret = '';
+		updatePasscodeViewState();
 		const res = await trpc.sophomores.getPasscode.query();
 		secret = res.payload.content;
 		passcodeViewModel = secret;
@@ -60,26 +61,19 @@
 		<div>
 			<p>คำอธิบายการเล่น</p>
 			<p class="px-2">
-				จงให้น้องกรอกรหัสผ่านของเหล่าภูต โดยเมื่อเหล่าจอมเวทย์สะสมรหัสของภูต จะได้รับ Ember
+				จงให้น้องกรอกรหัสผ่านของเหล่าภูต โดยเมื่อเหล่าจอมเวทย์สะสมรหัสของภูต จะได้รับ Echo
 				เพื่อไปแลกคำใบ้ของภูตตนเอง
 			</p>
+			<br />
+			<p class="px-2">น้องนั้นจะสามารถนำ Echo ไปแลกคำใบ้ภูตของตนเองได้</p>
 			<br />
 			<p class="">เมื่อรหัสถูกใช้แล้วจะต้องรีเซ็ตใหม่ทุกรอบ</p>
 		</div>
 	</div>
 </div>
-<div
-	class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-full flex flex-col items-center"
->
+<div class=" w-full flex flex-col items-center">
 	<button on:click={handleLoadPasscode} class="drop-shadow-[0px_0px_10px_#FFD130] mt-5">
 		<RotateCcw size={36} color="white" strokeWidth={1.5} />
 	</button>
 	<img src="./konnok-footer.png" alt="" class=" my-2" />
-	<div class="text-center text-accent px-5 font-Pridi font-thin">
-		<p>คำอธิบาย</p>
-		<p>
-			Lorem ipsum dolor sit amet consectetur adipisicing elit. Vel ducimus error repudiandae rem
-			quod quaerat quisquam animi cumque ad excepturi!
-		</p>
-	</div>
 </div>
