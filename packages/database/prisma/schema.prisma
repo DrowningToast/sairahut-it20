@@ -137,7 +137,7 @@ model FreshmenDetails {
   usedPasscodes   PasscodeInstances[]
   scannedQrs      QRInstances[]
   pair            Pair?
-  BuyHints        BuyHints[]
+  todayResin      TodayResin[]
 }
 
 model HintSlugs {
