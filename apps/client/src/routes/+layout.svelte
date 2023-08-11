@@ -54,7 +54,7 @@
 </div>
 
 <QueryClientProvider client={queryClient}
-	><div class="w-screen min-h-screen flex flex-col font-noto md:hidden">
+	><div class="w-screen min-h-screen flex flex-col font-noto">
 		<!-- <Header /> -->
 
 		<main>
