@@ -31,7 +31,7 @@
 	let isOpen:boolean = false;
 	onMount(() => {isOpen = localStorage.getItem('isOpen') === 'true';});
 	// isOpen = localStorage.getItem('isOpen') === 'true';
-	console.log(isOpen);
+	// console.log(isOpen);
 </script>
 
 <div>
