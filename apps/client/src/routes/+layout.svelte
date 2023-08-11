@@ -17,11 +17,7 @@
 	<meta name="twitter:image" content="hero.webp" />
 </svelte:head>
 
-<div
-	class={`bg-gradient-to-b ${
-		$userType === 'SOPHOMORE' ? 'from-primary' : 'from-primary-alt'
-	} to-black hidden md:block min-h-screen relative`}
->
+<div class={`bg-gradient-to-b from-primary to-black hidden md:block min-h-screen relative`}>
 	<div
 		class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-accent-alt border border-accent p-5 rounded-xl"
 	>
