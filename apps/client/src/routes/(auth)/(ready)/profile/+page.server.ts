@@ -6,6 +6,7 @@ export const load = (async ({ locals }) => {
 	return {
 		...user,
 		...user?.sophomoreDetails,
-		...user?.freshmenDetails
+		...user?.freshmenDetails,
+		...user?.faction
 	};
 }) satisfies PageServerLoad;

@@ -138,12 +138,19 @@ model FreshmenDetails {
   scannedQrs      QRInstances[]
   pair            Pair?
   todayResin      TodayResin[]
+
+  passcodePoints Int @default(0)
+
+  // Freshmen quota of guessing their pair for free
+  quota Int @default(3)
 }
 
 model HintSlugs {
   slug        String  @id @unique
   displayName String
   Hints       Hints[]
+
+  index Int? @unique
 }
 
 model Hints {
