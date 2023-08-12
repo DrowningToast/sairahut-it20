@@ -57,8 +57,8 @@
 <div class="font-krub text-white drop-shadow-[0px_0px_10px_#FFAEBD]">
 	<h1 class="text-2xl font-bold">คำใบ้จากเหล่าภูต</h1>
 	<p class="text-base">คำใบ้พวกนี้ จะนำพาเราไปเจอใครกันนะ</p>
+	<p class="mt-4 mb-2 text-lg text-accent text-right">คุณกำลังมีอยู่ {bells} bells</p>
 	<h2 class="text-4xl text-center my-6">{hints?.length}/10</h2>
-	<p class="mt-2 text-lg text-accent text-right">คุณกำลังมีอยู่ {bells} bells</p>
 </div>
 <div class="flex flex-col gap-y-4 mt-3">
 	{#each hints as hint}
