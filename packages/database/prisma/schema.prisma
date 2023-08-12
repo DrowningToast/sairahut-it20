@@ -94,9 +94,15 @@ model Factions {
   name    String
   handler String
   users   User[]
+
+  create_at DateTime @default(now())
+  update_at DateTime @default(now()) @updatedAt
 }
 
 model RevealedHintInstances {
+  create_at DateTime @default(now())
+  update_at DateTime @default(now()) @updatedAt
+
   hint             Hints  @relation(fields: [hintsHintSlugId, hintsSophomoreId], references: [hintSlugId, sophomoreId])
   hintsHintSlugId  String
   hintsSophomoreId String
