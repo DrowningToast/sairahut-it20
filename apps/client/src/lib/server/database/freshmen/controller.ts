@@ -34,6 +34,25 @@ export const FreshmenDetailsController = (prisma: PrismaClient) => {
 		return prisma.passcodeInstances.findMany({
 			where: {
 				usedById: freshmenId
+			},
+			select: {
+				update_at: true,
+				owner: {
+					select: {
+						branch: true,
+						nickname: true,
+						student_id: true,
+						user: {
+							select: {
+								faction: {
+									select: {
+										name: true
+									}
+								}
+							}
+						}
+					}
+				}
 			}
 		});
 	};
