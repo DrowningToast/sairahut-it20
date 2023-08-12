@@ -136,6 +136,11 @@
 
 <div class="flex flex-col items-center">
 	<h1 class="font-Pridi text-4xl font-thin text-white text-center">ใส่รหัสลับ</h1>
+	<span
+		class="text-accent text-xs font-Pridi font-extralight decoration-solid bg-[#29436c2b] px-6 py-2 border-[1px] border-accent rounded-md mt-5"
+	>
+		{resinLeft} resin left
+	</span>
 	<input
 		minlength="6"
 		maxlength="6"
@@ -147,7 +152,8 @@
 	/>
 	<div class="flex flex-col gap-y-4 py-8">
 		<p class="text-center font-Pridi text-sm text-white font-thin">
-			ปัจจุบันคุณมี Resin ทั้งหมด {resinLeft} โดยคุณสามารถนำ Resin ไปแปลงเป็น Bells เพื่อนำไปซื้อคำใบ้ได่
+			ปัจจุบันคุณมี Resin ทั้งหมด {resinLeft} โดยคุณสามารถนำ Resin ไปแปลงเป็น Bells ผ่านการกรอกรหัสผ่านจากภูตเพื่อนำไปซื้อคำใบ้ได้
+			โดยคุณจะได้เพิ่มวันละ 40 resin
 		</p>
 		<p class="text-center font-Pridi text-sm text-white font-thin">
 			เมื่อได้รับรหัสจากภูตแล้ว เจ้าจะได้ Bells ตำนานเล่าขานกันว่าผู้ได้ครอบครอง Bells
@@ -163,7 +169,7 @@
 		>ดูประวัติการกรอกรหัส</a
 	>
 
-	<SRHButton {isLoading} disabled={!readyToSubmit} class="mt-20" on:click={submitPasscode}
+	<SRHButton {isLoading} disabled={isDisabled} class="mt-10" on:click={submitPasscode}
 		>ล้วงความลับ</SRHButton
 	>
 	<img src="./konnok-footer.png" alt="" class=" mt-10" />
