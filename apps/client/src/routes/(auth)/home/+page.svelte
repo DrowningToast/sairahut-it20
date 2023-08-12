@@ -16,6 +16,9 @@
 	import { browser } from '$app/environment';
 	import { View } from 'lucide-svelte';
 	import { onMount } from 'svelte';
+	import { userType } from '$lib/store/userType';
+	import FactionDisplay from '$components/svelte/FactionDisplay.svelte';
+
 	const { session, homePageState, user, playerType } = $page.data as PageData;
 
 	let isQrCodeActive = new Date() >= homePageState.qrCode.activateDate;
@@ -24,62 +27,38 @@
 	let isProfileActive = new Date() >= homePageState.profile.activateDate;
 
 	const sophomorePair = {
-		'img' : '../Titania.png',
-		'family' : 'Fairy'
-	}
+		img: `/factions/${user.faction?.handler}.webp`,
+		family: user.faction?.name
+	};
 
-	let isOpen:boolean = false;
-	onMount(() => {isOpen = localStorage.getItem('isOpen') === 'true';});
 	// isOpen = localStorage.getItem('isOpen') === 'true';
 	// console.log(isOpen);
 </script>
 
 <div>
-	<div>
-		<p class="text-lg font-Pridi text-white text-center">
-			ยินดีต้อนรับ {session?.user?.name?.split(' ')[0]} เข้าสู่โลกเวทย์มนตร์
+	<div class="flex flex-col gap-y-2">
+		<p class="font-Pridi text-white">
+			ยินดีต้อนรับ {session?.user?.name?.split(' ')[0]} เข้าสู่โลกเวทมนตร์
 		</p>
-	</div>
-	<div class="relative flex gap-y-2 justify-between items-center px-2 mt-4">
-		<a href="/calendar">
-			<button
-				class="bg-neutral-900 text-accent font-Pridi px-5 py-2 rounded-full border border-accent-alt"
-				><p class="drop-shadow-[0px_0px_4px_#FFD130]">ปฏิทินบอกเหตุ</p></button
-			>
-		</a>
 		<p class="font-Pridi text-gray-200 text-sm">
 			ตอนนี้คุณมีอยู่ {user.balance}
 			{playerType === 'FRESHMEN' ? 'Spirit Shards' : 'Humanity'}
 		</p>
 	</div>
-	<div class="mx-2 mt-5">
-		{#if playerType === 'FRESHMEN'}
-			<div class="flex justify-center gap-x-2 items-center py-5 bg-cover bg-[url('../bg_seirei.png')] relative">
-				<div class={
-					!isOpen  ? 'blur-md' : ''
-				}>
-					<img src={sophomorePair.img} alt="">
-				</div>
-				<div class={`font-krub text-base font-normal ${
-					!isOpen  ? 'blur-md' : ''
-				}`}>
-					<p class="text-[#F7B962] drop-shadow-[0px_0px_2px_#FFF5C0]">ภูติของท่านกำลังรอคอยอยู่</p>
-					<p class="text-white drop-shadow-[0px_0px_4px_#FFF5C0]">เผ่า : {sophomorePair.family}</p>
-				</div>
-				<div class={!isOpen ? 'block' : 'hidden'}>
-					<div class="flex flex-col items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-						<button on:click={() => {localStorage.setItem('isOpen', 'true'); isOpen = true;}}><View size={72} color="#AF9E6E" strokeWidth={1} /></button>
-						<p class="text-yellow-100 drop-shadow-[0px_0px_4px_#FFD130] text-xs">ดูภูติของท่าน</p>
-					</div>
-				</div>
-			</div>
+	<Separator class="my-6" />
+	<div class="mx-2">
+		{#if playerType === 'FRESHMEN' && user?.faction?.handler}
+			<FactionDisplay {sophomorePair}>
+				<p class="text-[#F7B962] drop-shadow-[0px_0px_2px_#FFF5C0]">ภูติของท่านกำลังรอคอยอยู่</p>
+				<p class="text-white drop-shadow-[0px_0px_4px_#FFF5C0]">เผ่า : {sophomorePair.family}</p>
+			</FactionDisplay>
 		{:else}
 			<a href="/view-pair">
 				<SrhButton class="w-full">ดูจอมเวทย์ของท่าน</SrhButton>
 			</a>
 		{/if}
 	</div>
-	<div class="grid grid-cols-2 grid-rows-2 gap-x-3 gap-y-14 mt-5">
+	<div class="grid grid-cols-2 grid-rows-2 gap-x-3 gap-y-8 mt-8">
 		<CardButtonMenu
 			isActived={isQrCodeActive}
 			img_active={'../qrCode-active.png'}
@@ -88,14 +67,14 @@
 			link={homePageState.qrCode.href}
 		/>
 		<CardButtonMenu
-			isActived={isHintActive}
+			isActived={isHintActive || ($userType === 'SOPHOMORE' && hasPair)}
 			img_active={'../hint-active.png'}
 			img_inactive={'../hint-inactive.png'}
 			text={homePageState.hints.title}
 			link={homePageState.hints.href}
 		/>
 		<CardButtonMenu
-			isActived={false}
+			isActived={hasPair}
 			img_active={'../password-active.png'}
 			img_inactive={'../password-inactive.png'}
 			text={homePageState.passcode.title}
@@ -111,16 +90,23 @@
 	</div>
 	<Separator class="mt-12 bg-accent" />
 
-	<div class="flex flex-col gap-y-2 mt-4">
-		<h5 class="text-accent text-lg font-semibold mb-4 text-center">เมนูอื่นๆ</h5>
-		<div class="flex justify-center mt-4">
+	<div class="flex flex-col gap-y-4 mt-4">
+		<h5 class="text-accent text-lg font-semibold text-center">เมนูอื่นๆ</h5>
+		<div class="flex justify-center">
 			<a class="w-full" href="/players"
 				><SrhButton class="w-full">รายชื่อนักเวทย์และภูตทั้งหมด</SrhButton></a
 			>
 		</div>
+		<div>
+			<a href="/calendar">
+				<SrhButton class="w-full"><p>ปฏิทินบอกเหตุ</p></SrhButton>
+			</a>
+		</div>
 		<div class="flex justify-center mt-4">
 			<AlertDialog>
-				<AlertDialogTrigger><SrhButton>ออกจากระบบ</SrhButton></AlertDialogTrigger>
+				<AlertDialogTrigger class="w-full"
+					><SrhButton class="w-full">ออกจากระบบ</SrhButton></AlertDialogTrigger
+				>
 				<AlertDialogContent>
 					<AlertDialogHeader>
 						<AlertDialogTitle>เจ้าแน่ใจนะ?</AlertDialogTitle>

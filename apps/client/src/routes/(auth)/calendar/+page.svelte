@@ -15,19 +15,19 @@
     </CalendarTemplate> -->
 
 	<CalendarTemplate day="Tue. - Fri." date="8-9 August">
-		<p>กิจกรรมถ่ายรูปกับเหล่าภูติเพื่อเเลก Spirit Shard</p>
+		<p>กิจกรรมถ่ายรูปกับเหล่าภูตเพื่อเเลก Spirit Shard</p>
 	</CalendarTemplate>
 
 	<!-- <CalendarTemplate day="วันพุธ" date="9 สิงหาคม">
-        <p>สิ้นสุดกิจกรรมถ่ายรูปกับเผ่าภูติเพื่อเเลก Spirit Shard</p>
+        <p>สิ้นสุดกิจกรรมถ่ายรูปกับเผ่าภูตเพื่อเเลก Spirit Shard</p>
     </CalendarTemplate> -->
 
 	<CalendarTemplate day="Thu. - Fri." date="10-11 August">
-		<p>กิจกรรมถามคำถามพูดคุยกับเหล่าภูติเพื่อแลก Spirit Shard</p>
+		<p>กิจกรรมถามคำถามพูดคุยกับเหล่าภูตเพื่อแลก Spirit Shard</p>
 	</CalendarTemplate>
 
 	<!-- <CalendarTemplate day="วันศุกร์" date="11 สิงหาคม">
-        <p>สิ้นสุดกิจกรรมถามคำถามพูดคุยกับเผ่าภูติเพื่อแลก Spirit Shard</p>
+        <p>สิ้นสุดกิจกรรมถามคำถามพูดคุยกับเผ่าภูตเพื่อแลก Spirit Shard</p>
     </CalendarTemplate> -->
 
 	<CalendarTemplate day="Sat. - Mon." date="12-14 August">
@@ -35,18 +35,18 @@
 	</CalendarTemplate>
 
 	<CalendarTemplate day="Tue. - Fri." date="15-18 August">
-		<p>กิจกรรมตามหารหัสลับเพื่อปลดล็อคคำใบ้ของภูติตัวเอง</p>
+		<p>กิจกรรมตามหารหัสลับเพื่อปลดล็อคคำใบ้ของภูตตัวเอง</p>
 	</CalendarTemplate>
 
 	<!-- <CalendarTemplate day="วันศุกร์" date="18 สิงหาคม">
-        <p>สิ้นสุดกิจกรรมตามหารหัสลับเพื่อปลดล็อคคำใบ้ของภูติตัวเอง</p>
+        <p>สิ้นสุดกิจกรรมตามหารหัสลับเพื่อปลดล็อคคำใบ้ของภูตตัวเอง</p>
     </CalendarTemplate> -->
 
 	<CalendarTemplate day="Friday" date="18 August">
-		<p>นักเวทย์​ฝึกหัดชวนภูติมาเล่นกิจกรรม ITGG2023</p>
+		<p>นักเวทย์​ฝึกหัดชวนภูตมาเล่นกิจกรรม ITGG2023</p>
 	</CalendarTemplate>
 
 	<CalendarTemplate day="Saturday" date="19 August">
-		<p>เฉลยภูติของตัวเอง</p>
+		<p>เฉลยภูตของตัวเอง</p>
 	</CalendarTemplate>
 </div>

@@ -86,7 +86,7 @@ model PasscodeInstances {
   owner     SophomoreDetails @relation(fields: [ownerId], references: [id])
   usedBy    FreshmenDetails? @relation(fields: [usedById], references: [id])
 
-  content String
+  content String @unique
 }
 
 model Factions {
@@ -94,9 +94,15 @@ model Factions {
   name    String
   handler String
   users   User[]
+
+  create_at DateTime @default(now())
+  update_at DateTime @default(now()) @updatedAt
 }
 
 model RevealedHintInstances {
+  create_at DateTime @default(now())
+  update_at DateTime @default(now()) @updatedAt
+
   hint             Hints  @relation(fields: [hintsHintSlugId, hintsSophomoreId], references: [hintSlugId, sophomoreId])
   hintsHintSlugId  String
   hintsSophomoreId String
@@ -114,7 +120,7 @@ model Pair {
   revealedHints RevealedHintInstances[]
 
   freshmenDetailsId  String @unique
-  sophomoreDetailsId String @unique
+  sophomoreDetailsId String
 }
 
 model FreshmenDetails {
@@ -137,12 +143,19 @@ model FreshmenDetails {
   usedPasscodes   PasscodeInstances[]
   scannedQrs      QRInstances[]
   pair            Pair?
+
+  passcodePoints Int @default(0)
+
+  // Freshmen quota of guessing their pair for free
+  quota Int @default(3)
 }
 
 model HintSlugs {
   slug        String  @id @unique
   displayName String
   Hints       Hints[]
+
+  index Int? @unique
 }
 
 model Hints {
