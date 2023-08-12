@@ -33,3 +33,5 @@ export const generateRandomString = (length: number) => {
 	}
 	return result;
 };
+
+export const RESIN_QUOTA_PER_DAY = 40;
