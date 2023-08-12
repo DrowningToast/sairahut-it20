@@ -5,6 +5,8 @@
 	import SRHButton from '$lib/components/svelte/SRHButton.svelte';
 	import { trpc } from '$lib/trpc';
 	import { z } from 'zod';
+	import type { PageData } from './$types';
+	import { page } from '$app/stores';
 
 	interface IFound {
 		nickname: string;
@@ -15,16 +17,23 @@
 		faction: string;
 	}
 
+	const pageData = $page.data as PageData;
+
 	let readyToSubmit: boolean;
 	let found: IFound | undefined;
 	let passcodeRes;
 	let passcode = '';
+	let isDisabled = false;
+
+	let resinLeft = pageData.resinLeft;
+	$: resinLeft;
 
 	$: readyToSubmit = z.string().length(6).safeParse(passcode).success;
 	$: found = undefined;
 	$: passcodeRes = undefined;
 	$: success = false;
 	$: isLoading = false;
+	$: isDisabled = !!(!readyToSubmit || found?.hasScanned || found?.isExpired || resinLeft < 5);
 
 	const submitPasscode = async () => {
 		if (passcode === '') {
@@ -59,9 +68,12 @@
 			return alert('An error has occured, please try again.');
 		}
 
+		const newResinLeft = await trpc.resin.getMyQuota.query();
+
 		success = true;
 		passcodeRes = res.payload;
 		isLoading = false;
+		resinLeft = newResinLeft;
 
 		setTimeout(() => {
 			passcode = '';
@@ -134,6 +146,9 @@
 		}`}
 	/>
 	<div class="flex flex-col gap-y-4 py-8">
+		<p class="text-center font-Pridi text-sm text-white font-thin">
+			ปัจจุบันคุณมี Resin ทั้งหมด {resinLeft} โดยคุณสามารถนำ Resin ไปแปลงเป็น Bells เพื่อนำไปซื้อคำใบ้ได่
+		</p>
 		<p class="text-center font-Pridi text-sm text-white font-thin">
 			เมื่อได้รับรหัสจากภูตแล้ว เจ้าจะได้ Bells ตำนานเล่าขานกันว่าผู้ได้ครอบครอง Bells
 			เมื่อสะสมมากพอ จะสามารถฟังความลับของจักรวาลได้

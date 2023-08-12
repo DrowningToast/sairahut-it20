@@ -9,6 +9,7 @@ import type { FreshmenDetails, Prisma, User } from 'database';
 import { FreshmenDetailsController } from '../database/freshmen/controller';
 import { determineYear } from '$lib/utils';
 import { PasscodeController } from '../database/passcode/controller';
+import { ResinController } from '../database/resin/controller';
 
 interface SearchQuery {
 	where: {
@@ -388,6 +389,19 @@ export const freshmenRouters = createRouter({
 				code: 'BAD_REQUEST',
 				message: 'Already scanned this member'
 			});
+
+		// check if the user has enough resin or not
+		const resinQuota = (await ResinController(prisma).getTotalResin({ id: freshmenId })) ?? 0;
+		if (resinQuota < 5)
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'Not enough resin'
+			});
+
+		// decrease resin quota
+		await ResinController(prisma).decrementResin({
+			id: freshmenId
+		});
 
 		// mark the passcode as used
 		// increase the passcode point

@@ -15,7 +15,9 @@ export const resinRouter = createRouter({
 			});
 		const resinController = ResinController(prisma);
 
-		const resin = await resinController.getTotalResin({});
+		const resin = await resinController.getTotalResin({
+			id: ctx.user?.freshmenDetails!.id
+		});
 
 		return resin;
 	}),
