@@ -13,10 +13,13 @@
 	import AlertDialogFooter from '$components/ui/alert-dialog/AlertDialogFooter.svelte';
 	import AlertDialogCancel from '$components/ui/alert-dialog/AlertDialogCancel.svelte';
 	import AlertDialogAction from '$components/ui/alert-dialog/AlertDialogAction.svelte';
+	import { browser } from '$app/environment';
+	import { View } from 'lucide-svelte';
+	import { onMount } from 'svelte';
 	import { userType } from '$lib/store/userType';
 	import FactionDisplay from '$components/svelte/FactionDisplay.svelte';
 
-	const { session, homePageState, user, playerType, hasPair } = $page.data as PageData;
+	const { session, homePageState, user, playerType } = $page.data as PageData;
 
 	let isQrCodeActive = new Date() >= homePageState.qrCode.activateDate;
 	let isHintActive = new Date().getTime() >= homePageState.hints.activateDate.getTime();
@@ -27,6 +30,9 @@
 		img: `/factions/${user.faction?.handler}.webp`,
 		family: user.faction?.name
 	};
+
+	// isOpen = localStorage.getItem('isOpen') === 'true';
+	// console.log(isOpen);
 </script>
 
 <div>

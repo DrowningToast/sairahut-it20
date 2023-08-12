@@ -145,6 +145,12 @@
 
 		</a>
 	</div> -->
+	<a
+		href="/give-passcode-history"
+		class="text-accent text-xs font-Pridi font-extralight decoration-solid bg-[#29436c2b] px-3 py-2 border-2 border-[#462F47] rounded-md mt-5"
+		>ดูประวัติการกรอกรหัส</a
+	>
+
 	<SRHButton {isLoading} disabled={!readyToSubmit} class="mt-20" on:click={submitPasscode}
 		>ล้วงความลับ</SRHButton
 	>
