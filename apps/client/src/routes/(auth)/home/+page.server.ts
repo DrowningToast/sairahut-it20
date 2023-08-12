@@ -48,7 +48,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 			? {
 					qrCode: {
 						activateDate: scanQRDate,
-						title: 'แสกน QR Code',
+						title: 'สแกน QR Code',
 						href: '/scan-qr'
 					},
 					hints: {
@@ -70,7 +70,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 			: {
 					qrCode: {
 						activateDate: scanQRDate,
-						title: 'ให้น้องแสกน QR Code',
+						title: 'ให้น้องสแกน QR Code',
 						href: '/qrgen'
 					},
 					hints: {

@@ -31,7 +31,7 @@
 <div>
 	<div class="flex flex-col gap-y-2">
 		<p class="font-Pridi text-white">
-			ยินดีต้อนรับ {session?.user?.name?.split(' ')[0]} เข้าสู่โลกเวทย์มนต์
+			ยินดีต้อนรับ {session?.user?.name?.split(' ')[0]} เข้าสู่โลกเวทมนตร์
 		</p>
 		<p class="font-Pridi text-gray-200 text-sm">
 			ตอนนี้คุณมีอยู่ {user.balance}
@@ -48,7 +48,7 @@
 					<img src={sophomorePair.img} alt="" />
 				</div>
 				<div class="font-krub text-base font-normal">
-					<p class="text-[#F7B962] drop-shadow-[0px_0px_2px_#FFF5C0]">ภูติของท่านกำลังรอคอยอยู่</p>
+					<p class="text-[#F7B962] drop-shadow-[0px_0px_2px_#FFF5C0]">ภูตของท่านนั้นคือ</p>
 					<p class="text-white drop-shadow-[0px_0px_4px_#FFF5C0]">เผ่า : {sophomorePair.family}</p>
 				</div>
 			</div>
