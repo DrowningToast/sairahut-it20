@@ -1,6 +1,4 @@
 <script lang="ts">
-	import SRHButton from '../../../../lib/components/svelte/SRHButton.svelte';
-	import SRHHeading from '../../../../lib/components/svelte/SRHHeading.svelte';
 	import {
 		Table,
 		TableHead,
@@ -18,7 +16,7 @@
 		year: number;
 		nickname: string;
 		branch: string;
-		family: string | undeifned;
+		family: string | undefined;
 	}
 
 	let data: Log[] = [
