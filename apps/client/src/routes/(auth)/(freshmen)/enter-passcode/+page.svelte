@@ -12,6 +12,7 @@
 		gen: number;
 		isExpired: boolean;
 		hasScanned: boolean;
+		faction: string;
 	}
 
 	let readyToSubmit: boolean;
@@ -79,7 +80,8 @@
 				ภูตตัวนี้นั้นมีชื่อว่า {found.nickname} รุ่นที่ {found.gen}
 			</p>
 			<p class="text-accent text-center my-2">
-				({found.fullname})
+				({found.fullname}
+				{found.faction})
 			</p>
 
 			<p class="text-accent text-left">
@@ -140,11 +142,6 @@
 			จอมเวทย์จะไม่สามารถกรอกรหัสของเหล่าภูตที่เคยกรอกรหัสไปแล้วซ้ำได้
 		</p>
 	</div>
-	<!-- <div class="py-4">
-		<a>
-
-		</a>
-	</div> -->
 	<a
 		href="/give-passcode-history"
 		class="text-accent text-xs font-Pridi font-extralight decoration-solid bg-[#29436c2b] px-3 py-2 border-2 border-[#462F47] rounded-md mt-5"
