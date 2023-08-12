@@ -97,6 +97,12 @@ export const load: PageServerLoad = async ({ locals }) => {
 				sophomoreDetailsId: user.sophomoreDetails?.id
 			}
 		}));
+	} else if (type === 'FRESHMEN') {
+		hasPair = !!(await prisma.pair.findFirst({
+			where: {
+				freshmenDetailsId: user.freshmenDetails?.id
+			}
+		}));
 	}
 
 	return {

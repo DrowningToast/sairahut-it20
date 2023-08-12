@@ -2,6 +2,7 @@ import { databaseController } from '$lib/server/controllers';
 import { prisma } from '$lib/serverUtils';
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
+import { hintSlugIds } from '$lib/hintSlugIds';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const { user } = locals;
@@ -15,19 +16,6 @@ export const load: PageServerLoad = async ({ locals }) => {
 			sophomoreId: user?.sophomoreDetails?.id
 		}
 	});
-
-	const hintSlugIds = [
-		'appearance',
-		'height',
-		'personality',
-		'sex',
-		'food',
-		'hobby',
-		'quote',
-		'place',
-		'fashion',
-		'name_hint'
-	];
 
 	const hintSlugs = await databaseController.hints.getHintSlugs();
 

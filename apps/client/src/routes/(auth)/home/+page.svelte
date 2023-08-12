@@ -14,6 +14,7 @@
 	import AlertDialogCancel from '$components/ui/alert-dialog/AlertDialogCancel.svelte';
 	import AlertDialogAction from '$components/ui/alert-dialog/AlertDialogAction.svelte';
 	import { userType } from '$lib/store/userType';
+	import FactionDisplay from '$components/svelte/FactionDisplay.svelte';
 
 	const { session, homePageState, user, playerType, hasPair } = $page.data as PageData;
 
@@ -23,8 +24,8 @@
 	let isProfileActive = new Date() >= homePageState.profile.activateDate;
 
 	const sophomorePair = {
-		img: '../Titania.png',
-		family: 'Fairy'
+		img: `/factions/${user.faction?.handler}.webp`,
+		family: user.faction?.name
 	};
 </script>
 
@@ -40,18 +41,11 @@
 	</div>
 	<Separator class="my-6" />
 	<div class="mx-2">
-		{#if playerType === 'FRESHMEN'}
-			<div
-				class="flex justify-center gap-x-2 items-center py-5 bg-cover bg-[url('../bg_seirei.png')]"
-			>
-				<div>
-					<img src={sophomorePair.img} alt="" />
-				</div>
-				<div class="font-krub text-base font-normal">
-					<p class="text-[#F7B962] drop-shadow-[0px_0px_2px_#FFF5C0]">ภูตของท่านนั้นคือ</p>
-					<p class="text-white drop-shadow-[0px_0px_4px_#FFF5C0]">เผ่า : {sophomorePair.family}</p>
-				</div>
-			</div>
+		{#if playerType === 'FRESHMEN' && user?.faction?.handler}
+			<FactionDisplay {sophomorePair}>
+				<p class="text-[#F7B962] drop-shadow-[0px_0px_2px_#FFF5C0]">ภูติของท่านกำลังรอคอยอยู่</p>
+				<p class="text-white drop-shadow-[0px_0px_4px_#FFF5C0]">เผ่า : {sophomorePair.family}</p>
+			</FactionDisplay>
 		{:else}
 			<a href="/view-pair">
 				<SrhButton class="w-full">ดูจอมเวทย์ของท่าน</SrhButton>
@@ -74,7 +68,7 @@
 			link={homePageState.hints.href}
 		/>
 		<CardButtonMenu
-			isActived={$userType === 'SOPHOMORE' && hasPair}
+			isActived={hasPair}
 			img_active={'../password-active.png'}
 			img_inactive={'../password-inactive.png'}
 			text={homePageState.passcode.title}
