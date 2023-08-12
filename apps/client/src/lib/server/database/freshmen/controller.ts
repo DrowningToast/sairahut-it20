@@ -65,7 +65,7 @@ export const FreshmenDetailsController = (prisma: PrismaClient) => {
 						}
 					}
 				})
-			)?.pair?.revealedHints ?? []
+			)?.pair?.revealedHints.map((hint) => hint.hint) ?? []
 		);
 	};
 
@@ -157,9 +157,12 @@ export const FreshmenDetailsController = (prisma: PrismaClient) => {
 		const nextHint = hints[nextIndex];
 
 		// create a reveal instance
-		const revealed = await HintsController(prisma).revealHint(fresh, {
-			slug: nextHint.slug.slug
-		});
+		const revealed = await HintsController(prisma).revealHint(
+			{ freshmenDetailsId: fresh.id },
+			{
+				slug: nextHint.slug.slug
+			}
+		);
 
 		return revealed;
 	};

@@ -102,6 +102,7 @@
 					{isLoading}
 					on:click={() => {
 						found = undefined;
+						isLoading = false;
 					}}>ยกเลิก</SRHButton
 				>
 			</div>
@@ -110,13 +111,12 @@
 {/if}
 
 {#if success}
-	<Alert class="bg-neutral-900/25 text-accent border-accent">
+	<Alert class="bg-neutral-900/25 text-accent border-accent mb-6">
 		<AlertTitle>สำเร็จ!</AlertTitle>
-		<AlertDescription>คุณได้ล้วงความลับของภูต{found?.nickname} เรียบร้อยแล้ว!</AlertDescription>
-		<AlertDescription>
-			เจ้าได้ 5 Echo กับ 1 Spirit Shards แต่ว่าความลับที่ได้มานั้นมันยังไม่พอต่อการหาภูตของตนเอง
-			จงหาต่อไป!
-		</AlertDescription>
+		<AlertDescription
+			>คุณได้ล้วงความลับของภูต <span class="font-semibold">{found?.nickname}</span> เรียบร้อยแล้ว! เจ้าได้
+			5 Bells กับ 1 Spirit Shards</AlertDescription
+		>
 	</Alert>
 {/if}
 
@@ -131,13 +131,20 @@
 			readyToSubmit ? 'text-accent' : 'text-[#A8A29E]'
 		}`}
 	/>
-	<p class="text-center font-Pridi text-sm mt-16 text-white font-thin">
-		เมื่อได้รับรหัสจากภูตแล้ว เจ้าจะได้ Echo ตำนานเล่าขานกันว่าผู้ได้ครอบครอง Echo เมื่อสะสมมากพอ
-		จะสามารถฟังความลับของจักรวาลได้
-	</p>
-	<p class="text-center font-Pridi text-sm mt-16 text-white font-thin">
-		จอมเวทย์จะไม่สามารถกรอกรหัสของเหล่าภูตที่เคยกรอกรหัสไปแล้วซ้ำได้
-	</p>
+	<div class="flex flex-col gap-y-4 py-8">
+		<p class="text-center font-Pridi text-sm text-white font-thin">
+			เมื่อได้รับรหัสจากภูตแล้ว เจ้าจะได้ Bells ตำนานเล่าขานกันว่าผู้ได้ครอบครอง Bells
+			เมื่อสะสมมากพอ จะสามารถฟังความลับของจักรวาลได้
+		</p>
+		<p class="text-center font-Pridi text-sm text-white font-thin">
+			จอมเวทย์จะไม่สามารถกรอกรหัสของเหล่าภูตที่เคยกรอกรหัสไปแล้วซ้ำได้
+		</p>
+	</div>
+	<!-- <div class="py-4">
+		<a>
+
+		</a>
+	</div> -->
 	<SRHButton {isLoading} disabled={!readyToSubmit} class="mt-20" on:click={submitPasscode}
 		>ล้วงความลับ</SRHButton
 	>

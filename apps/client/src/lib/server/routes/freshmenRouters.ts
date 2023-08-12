@@ -8,7 +8,6 @@ import { AirtableController } from '$lib/airtable-api/controller';
 import type { FreshmenDetails, Prisma, User } from 'database';
 import { FreshmenDetailsController } from '../database/freshmen/controller';
 import { determineYear } from '$lib/utils';
-import { HintsController, getHintSlugs, hintController } from '../database/hint/controller';
 import { PasscodeController } from '../database/passcode/controller';
 
 interface SearchQuery {
@@ -123,6 +122,12 @@ export const freshmenRouters = createRouter({
 
 		return 'OK';
 	}),
+
+	// get the requester latest information
+	getMyInfo: freshmenProcedure.query(async ({ ctx }) => {
+		return ctx.user?.freshmenDetails;
+	}),
+
 	// Get the owner information of this qr code
 	getQRInfo: freshmenProcedure.input(z.string().length(6)).query(async ({ ctx, input }) => {
 		const data = await prisma.qRInstances.findUnique({
@@ -399,6 +404,12 @@ export const freshmenRouters = createRouter({
 					id: freshmenId
 				},
 				5
+			),
+			FreshmenDetailsController(prisma).incrementFreshmenBalance(
+				{
+					id: freshmenId
+				},
+				1
 			)
 		]);
 
@@ -447,10 +458,23 @@ export const freshmenRouters = createRouter({
 	}),
 
 	buyHint: freshmenProcedure.query(async ({ ctx }) => {
+		// check if the user has pair or not
+		const pair = await prisma.pair.findUnique({
+			where: {
+				freshmenDetailsId: ctx.user?.freshmenDetails?.id
+			}
+		});
+		if (!pair) {
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'Pair not found'
+			});
+		}
+
 		const freshId = ctx.user?.freshmenDetails!.id;
 		const freshmenController = FreshmenDetailsController(prisma);
 		const hints =
-			(await freshmenController.getAllHints({
+			(await freshmenController.getRevealedHints({
 				id: freshId
 			})) ?? [];
 
@@ -473,7 +497,7 @@ export const freshmenRouters = createRouter({
 			});
 
 		// begin buying hint
-		await prisma.$transaction([freshmenController.decrementPasscodePoint({ id: freshId }, 5)]);
+		await prisma.$transaction([freshmenController.decrementPasscodePoint({ id: freshId }, cost)]);
 
 		const revealed = await freshmenController.revealNextHint({ id: freshId });
 
