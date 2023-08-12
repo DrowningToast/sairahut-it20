@@ -36,19 +36,19 @@
 					background="white"
 				/>
 			{:else}
-				<Loader color="white" size="64px" />
+				<Loader color="black" size="64px" />
 			{/if}
 		</div>
 		<div class="text-accent font-Pridi font-thin text-center px-8">
 			<h5 class="font-semibold">คำอธิบาย</h5>
-			<p>จงแสดง QR code ให้เหล่านักเวทย์แสกน</p>
+			<p>จงแสดง QR code ให้เหล่านักเวทย์สแกน</p>
 			<br />
 			<p>
-				โดยเมื่อหากเหล่าภูตโดนแสกนโดยเหล่านักเวทย์แล้ว จะได้รับ Humanity เป็นการตอบแทน
+				โดยเมื่อหากเหล่าภูตโดนสแกนโดยเหล่านักเวทย์แล้ว จะได้รับ Humanity เป็นการตอบแทน
 				เพิ่มพลังและวิญญาณของมนุษย์เข้าไปในตัวภูต
 			</p>
 			<br />
-			<p>หากเหล่านักเวทย์แสกนแล้ว ภูตจะต้องกด Refresh เพื่อสร้าง QR Code ขึ้นมาใหม่</p>
+			<p>หากเหล่านักเวทย์สแกนแล้ว ภูตจะต้องกด Refresh เพื่อสร้าง QR Code ขึ้นมาใหม่</p>
 			<p />
 		</div>
 		<button class="drop-shadow-[0px_0px_10px_#FFD130]" on:click={initQr}>
