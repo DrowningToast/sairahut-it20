@@ -1,0 +1,8 @@
+{
+    "crons": [
+        {
+            "path": "/api/reset-resin",
+            "schedule": "0 1 * * *"
+        }
+    ]
+}

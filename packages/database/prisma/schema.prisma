@@ -143,6 +143,7 @@ model FreshmenDetails {
   usedPasscodes   PasscodeInstances[]
   scannedQrs      QRInstances[]
   pair            Pair?
+  todayResin      TodayResin[]
 
   passcodePoints Int @default(0)
 
@@ -198,6 +199,14 @@ model SophomoreDetails {
   QRInstances       QRInstances[]
   user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   pair              Pair[]
+}
+
+model TodayResin {
+  id                String          @id @unique @default(cuid())
+  create_at         DateTime        @default(now())
+  quota             Int             @default(40)
+  freshmen          FreshmenDetails @relation(fields: [freshmenDetailsId], references: [id])
+  freshmenDetailsId String
 }
 
 enum PlayerType {

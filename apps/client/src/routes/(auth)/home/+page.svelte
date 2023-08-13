@@ -45,7 +45,7 @@
 				<p class="text-[#F7B962] drop-shadow-[0px_0px_2px_#FFF5C0]">ภูติของท่านกำลังรอคอยอยู่</p>
 				<p class="text-white drop-shadow-[0px_0px_4px_#FFF5C0]">เผ่า : {sophomorePair.family}</p>
 			</FactionDisplay>
-		{:else}
+		{:else if playerType === 'SOPHOMORE' && hasPair}
 			<a href="/view-pair">
 				<SrhButton class="w-full">ดูจอมเวทย์ของท่าน</SrhButton>
 			</a>
