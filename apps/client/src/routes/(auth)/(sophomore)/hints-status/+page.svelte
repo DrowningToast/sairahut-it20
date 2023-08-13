@@ -127,6 +127,7 @@
 					isDisabled={alreadySetHints}
 					class={`text-white bg-blue-400/25 $`}
 					bind:value={hints[index].content}
+					disabled
 				/>
 			{:else}
 				<Textarea
@@ -134,6 +135,7 @@
 					isDisabled={alreadySetHints}
 					class={`text-white bg-blue-400/25 $`}
 					value="???"
+					disabled
 				/>{/if}
 		</div>
 	{/each}

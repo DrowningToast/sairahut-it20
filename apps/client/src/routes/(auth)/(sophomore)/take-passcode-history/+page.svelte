@@ -29,7 +29,7 @@
 		<h1 class="font-bold text-2xl">ประวัติการให้รหัส</h1>
 		<p class="mt-2">รวมประวัติการให้รหัสลับล่าสุดของท่าน</p>
 	</div>
-	<a href="/enter-passcode" class="absolute -top-1 right-0"
+	<a href="/passcode-gen" class="absolute -top-1 right-0"
 		><SRHButton class="text-xs">BACK</SRHButton></a
 	>
 	<!-- <a href="/enter-passcode" class="absolute -top-1 right-0"><SRHButton class="text-xs">BACK</SRHButton></a> -->

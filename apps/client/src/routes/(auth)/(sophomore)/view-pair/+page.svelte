@@ -71,9 +71,9 @@
 
 		<div>
 			<h1 class="text-lg font-semibold">
-				{`${pair.freshmen.first_name} ${pair.freshmen.last_name}`}
+				{`${pair.freshmen.first_name} ${pair.freshmen.last_name} (สาขา : ${pair.freshmen.branch})`}
 			</h1>
-			<h1 class="text-4xl font-bold">{pair.freshmen.nickname}</h1>
+			<h1 class="text-4xl font-bold mt-5">{pair.freshmen.nickname}</h1>
 		</div>
 		<div class="flex flex-row gap-2">
 			{#if z.string().url().safeParse(pair.freshmen.facebook_link).success}
