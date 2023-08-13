@@ -9,19 +9,26 @@
 		TableBody,
 		TableHeader
 	} from '$components/ui/table';
+	import { page } from '$app/stores';
+	import type { PageData } from './$types';
+	import { determineYear } from '$lib/utils';
 
-	const data = [
-		{
-			year: '20',
-			nickname: 'อาร์ม',
-			branch: 'IT'
-		},
-		{
-			year: '20',
-			nickname: 'สไป๊',
-			branch: 'IT'
-		}
-	];
+	interface Log {
+		year: number;
+		nickname: string;
+		branch: string;
+	}
+
+	const pageData = $page.data as PageData;
+
+	const data: Log[] =
+		pageData.history.map((log) => {
+			return {
+				branch: log.usedBy!.branch,
+				nickname: log.usedBy!.nickname,
+				year: determineYear(log.usedBy!.student_id)
+			};
+		}) ?? [];
 </script>
 
 <div class="relative">
