@@ -39,7 +39,7 @@
 		</p>
 	</div>
 	<Separator class="my-6" />
-	<div class="mx-2">
+	<div class="w-full">
 		{#if playerType === 'FRESHMEN' && user?.faction?.handler}
 			<FactionDisplay {sophomorePair}>
 				<p class="text-[#F7B962] drop-shadow-[0px_0px_2px_#FFF5C0]">ภูติของท่านกำลังรอคอยอยู่</p>
@@ -95,6 +95,11 @@
 				<SrhButton class="w-full"><p>ปฏิทินบอกเหตุ</p></SrhButton>
 			</a>
 		</div>
+		<!-- <div>
+			<a href="/">
+				<SrhButton class="w-full"><p>???</p></SrhButton>
+			</a>
+		</div> -->
 		<div class="flex justify-center mt-4">
 			<AlertDialog>
 				<AlertDialogTrigger class="w-full"

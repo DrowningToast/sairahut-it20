@@ -339,6 +339,7 @@ export const freshmenRouters = createRouter({
 					passcode: res?.content,
 					nickname: res?.owner.nickname,
 					fullname: res?.owner.fullname,
+					faction: res?.owner.user.faction?.name,
 					/**
 					 * has the code already been used by someone else?
 					 */

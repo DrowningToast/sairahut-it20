@@ -1,9 +1,8 @@
 <script lang="ts">
+	import { userType } from '$lib/store/userType';
 	import { page } from '$app/stores';
 	import { z } from 'zod';
 	import type { PageServerData } from './$types';
-	import FactionDisplay from '$components/svelte/FactionDisplay.svelte';
-	import { userType } from '$lib/store/userType';
 
 	const user = $page.data as PageServerData;
 

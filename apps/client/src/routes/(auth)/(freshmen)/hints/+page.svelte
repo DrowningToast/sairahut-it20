@@ -60,7 +60,7 @@
 	<p class="mt-4 mb-2 text-lg text-accent text-right">คุณกำลังมีอยู่ {bells} bells</p>
 	<h2 class="text-4xl text-center my-6">{hints?.length}/10</h2>
 </div>
-<div class="flex flex-col gap-y-4 mt-3">
+<div class="flex flex-col gap-y-4">
 	{#each hints as hint}
 		<div class="">
 			<h5 class="mb-1 text-white">{hint.slug.displayName}</h5>

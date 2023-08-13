@@ -69,6 +69,11 @@
 			<br />
 			<p class="">เมื่อรหัสถูกใช้แล้วจะต้องรีเซ็ตใหม่ทุกรอบ</p>
 		</div>
+		<a
+			href="/take-passcode-history"
+			class="text-accent text-xs font-Pridi font-extralight decoration-solid bg-[#29436c2b] px-3 py-2 border-2 border-[#29436C] rounded-md mt-5"
+			>ดูประวัติการกรอกรหัส</a
+		>
 	</div>
 </div>
 <div class=" w-full flex flex-col items-center">
