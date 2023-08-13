@@ -32,10 +32,11 @@ export const firstTimeMiddleware: Handle = async ({ event, resolve }) => {
 				);
 
 				if (!res) {
+					// if email not found then create a record in senior (not regis) table in airtable
 					throw new Error('Email not found');
 				}
 
-				res = { ...res, participate: true }
+				res = { ...res, participate: true };
 			} else if (gen == 20) {
 				// fetch the IT20 airtable
 				res = await AirtableController.participantIT20.getParticipantByStudentId(
