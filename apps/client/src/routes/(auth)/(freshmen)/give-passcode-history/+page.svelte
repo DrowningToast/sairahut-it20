@@ -12,7 +12,6 @@
 	import { page } from '$app/stores';
 	import type { PageData } from './$types';
 	import { determineYear } from '$lib/utils';
-	
 
 	interface Log {
 		year: number;
@@ -48,23 +47,29 @@
 	>
 </div>
 <hr class="border border-white my-3" />
-<Table class="font-krub">
-	<TableHeader>
-		<TableRow>
-			<TableHead class="text-white">รุ่น</TableHead>
-			<TableHead class="text-white">ชื่อเล่น</TableHead>
-			<TableHead class="text-white">สาขา</TableHead>
-			<TableHead class="text-white">เผ่า</TableHead>
-		</TableRow>
-	</TableHeader>
-	<TableBody>
-		{#each data as item}
-			<TableRow class="text-white">
-				<TableCell>{item.year}</TableCell>
-				<TableCell>{item.nickname}</TableCell>
-				<TableCell>{item.branch}</TableCell>
-				<TableCell>{item.family ?? '???'}</TableCell>
+{#if data.length === 0}
+	<p class="text-center font-Pridi text-sm text-accent font-extralight mt-10">
+		ดูเหมือนว่าเจ้าจะไม่มีการกรอกรหัสเลย
+	</p>
+{:else}
+	<Table class="font-krub">
+		<TableHeader>
+			<TableRow>
+				<TableHead class="text-white">รุ่น</TableHead>
+				<TableHead class="text-white">ชื่อเล่น</TableHead>
+				<TableHead class="text-white">สาขา</TableHead>
+				<TableHead class="text-white">เผ่า</TableHead>
 			</TableRow>
-		{/each}
-	</TableBody>
-</Table>
+		</TableHeader>
+		<TableBody>
+			{#each data as item}
+				<TableRow class="text-white">
+					<TableCell>{item.year}</TableCell>
+					<TableCell>{item.nickname}</TableCell>
+					<TableCell>{item.branch}</TableCell>
+					<TableCell>{item.family ?? '???'}</TableCell>
+				</TableRow>
+			{/each}
+		</TableBody>
+	</Table>
+{/if}
