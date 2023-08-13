@@ -145,7 +145,7 @@
 	<span
 		class="text-accent text-xs font-Pridi font-extralight decoration-solid bg-[#29436c2b] px-6 py-2 border-[1px] border-accent rounded-md mt-5"
 	>
-		{resinLeft} resin left
+		{resinLeft} Resin left
 	</span>
 	<input
 		minlength="6"
@@ -159,7 +159,7 @@
 	<div class="flex flex-col gap-y-4 py-8">
 		<p class="text-center font-Pridi text-sm text-white font-thin">
 			ปัจจุบันคุณมี Resin ทั้งหมด {resinLeft} โดยคุณสามารถนำ Resin ไปแปลงเป็น Bells ผ่านการกรอกรหัสผ่านจากภูตเพื่อนำไปซื้อคำใบ้ได้
-			โดยคุณจะได้เพิ่มวันละ 40 resin
+			โดยคุณจะได้เพิ่มวันละ 40 Resin
 		</p>
 		<p class="text-center font-Pridi text-sm text-white font-thin">
 			เมื่อได้รับรหัสจากภูตแล้ว เจ้าจะได้ Bells และ Spirit Shards
