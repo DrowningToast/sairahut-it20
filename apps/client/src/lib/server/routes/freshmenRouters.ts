@@ -403,6 +403,13 @@ export const freshmenRouters = createRouter({
 			id: freshmenId
 		});
 
+		const BELLS = 5;
+		let SHARDS = 1;
+
+		if (passcodeQuery.owner.user.faction?.handler === ctx.user?.faction?.handler) {
+			SHARDS = 2;
+		}
+
 		// mark the passcode as used
 		// increase the passcode point
 		await prisma.$transaction([
@@ -418,19 +425,19 @@ export const freshmenRouters = createRouter({
 				{
 					id: freshmenId
 				},
-				5
+				BELLS
 			),
 			FreshmenDetailsController(prisma).incrementFreshmenBalance(
 				{
 					id: freshmenId
 				},
-				1
+				SHARDS
 			)
 		]);
 
 		return {
 			success: true,
-			payload: passcodeQuery
+			payload: { ...passcodeQuery, bells: BELLS, shards: SHARDS }
 		};
 	}),
 
