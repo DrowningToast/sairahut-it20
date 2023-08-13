@@ -14,6 +14,13 @@ export const FreshmenDetailsController = (prisma: PrismaClient) => {
 		});
 	};
 
+	/**
+	 * Dangerous
+	 */
+	const getAllFreshmen = () => {
+		return prisma.freshmenDetails.findMany();
+	};
+
 	const incrementFreshmenBalance = (fresh: Prisma.FreshmenDetailsWhereUniqueInput, balance = 1) => {
 		// increment freshment balance
 		return prisma.freshmenDetails.update({
@@ -189,6 +196,7 @@ export const FreshmenDetailsController = (prisma: PrismaClient) => {
 	return {
 		createFreshmenDetails,
 		incrementFreshmenBalance,
+		getAllFreshmen,
 		getUsedPasscodeByFreshmenId,
 		getRevealedHints,
 		increasePasscodePoints,

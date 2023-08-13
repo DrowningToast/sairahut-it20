@@ -5,6 +5,8 @@
 	import SRHButton from '$lib/components/svelte/SRHButton.svelte';
 	import { trpc } from '$lib/trpc';
 	import { z } from 'zod';
+	import type { PageData } from './$types';
+	import { page } from '$app/stores';
 
 	interface IFound {
 		nickname: string;
@@ -15,16 +17,23 @@
 		faction: string;
 	}
 
+	const pageData = $page.data as PageData;
+
 	let readyToSubmit: boolean;
 	let found: IFound | undefined;
 	let passcodeRes;
 	let passcode = '';
+	let isDisabled = false;
+
+	let resinLeft = pageData.resinLeft;
+	$: resinLeft;
 
 	$: readyToSubmit = z.string().length(6).safeParse(passcode).success;
 	$: found = undefined;
 	$: passcodeRes = undefined;
 	$: success = false;
 	$: isLoading = false;
+	$: isDisabled = !!(!readyToSubmit || found?.hasScanned || found?.isExpired || resinLeft < 5);
 
 	const submitPasscode = async () => {
 		if (passcode === '') {
@@ -59,9 +68,18 @@
 			return alert('An error has occured, please try again.');
 		}
 
+		const newResinLeft = await trpc.resin.getMyQuota.query();
+
 		success = true;
 		passcodeRes = res.payload;
 		isLoading = false;
+		resinLeft = newResinLeft;
+		passcode = '';
+
+		// play sfx
+		const rewardSFX = new Audio();
+		rewardSFX.src = '/sfx/RewardSFX.ogg';
+		rewardSFX.play();
 
 		setTimeout(() => {
 			passcode = '';
@@ -72,7 +90,7 @@
 </script>
 
 {#if found && !success}
-	<div class="absolute inset-0 grid place-items-center z-20">
+	<div class="fixed inset-0 grid place-items-center z-20">
 		<div class="absolute inset-0 bg-gray-50/25" />
 		<div class="bg-neutral-900 mx-12 p-8 flex flex-col gap-y-2 z-10 rounded-lg">
 			<h1 class="text-accent text-lg font-semibold">รหัสถูกต้อง!</h1>
@@ -124,6 +142,11 @@
 
 <div class="flex flex-col items-center">
 	<h1 class="font-Pridi text-4xl font-thin text-white text-center">ใส่รหัสลับ</h1>
+	<span
+		class="text-accent text-xs font-Pridi font-extralight decoration-solid bg-[#29436c2b] px-6 py-2 border-[1px] border-accent rounded-md mt-5"
+	>
+		{resinLeft} resin left
+	</span>
 	<input
 		minlength="6"
 		maxlength="6"
@@ -135,8 +158,12 @@
 	/>
 	<div class="flex flex-col gap-y-4 py-8">
 		<p class="text-center font-Pridi text-sm text-white font-thin">
-			เมื่อได้รับรหัสจากภูตแล้ว เจ้าจะได้ Bells ตำนานเล่าขานกันว่าผู้ได้ครอบครอง Bells
-			เมื่อสะสมมากพอ จะสามารถฟังความลับของจักรวาลได้
+			ปัจจุบันคุณมี Resin ทั้งหมด {resinLeft} โดยคุณสามารถนำ Resin ไปแปลงเป็น Bells ผ่านการกรอกรหัสผ่านจากภูตเพื่อนำไปซื้อคำใบ้ได้
+			โดยคุณจะได้เพิ่มวันละ 40 resin
+		</p>
+		<p class="text-center font-Pridi text-sm text-white font-thin">
+			เมื่อได้รับรหัสจากภูตแล้ว เจ้าจะได้ Bells และ Spirit Shards
+			โดยตำนานเล่าขานกันว่าผู้ได้ครอบครอง Bells เมื่อสะสมมากพอ จะสามารถฟังความลับของจักรวาลได้
 		</p>
 		<p class="text-center font-Pridi text-sm text-white font-thin">
 			จอมเวทย์จะไม่สามารถกรอกรหัสของเหล่าภูตที่เคยกรอกรหัสไปแล้วซ้ำได้
@@ -148,7 +175,7 @@
 		>ดูประวัติการกรอกรหัส</a
 	>
 
-	<SRHButton {isLoading} disabled={!readyToSubmit} class="mt-20" on:click={submitPasscode}
+	<SRHButton {isLoading} disabled={isDisabled} class="mt-10" on:click={submitPasscode}
 		>ล้วงความลับ</SRHButton
 	>
 	<img src="./konnok-footer.png" alt="" class=" mt-10" />
