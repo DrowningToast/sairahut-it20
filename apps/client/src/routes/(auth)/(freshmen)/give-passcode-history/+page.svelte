@@ -1,4 +1,5 @@
 <script lang="ts">
+	import SRHButton from '$lib/components/svelte/SRHButton.svelte';
 	import {
 		Table,
 		TableHead,
@@ -11,6 +12,7 @@
 	import { page } from '$app/stores';
 	import type { PageData } from './$types';
 	import { determineYear } from '$lib/utils';
+	
 
 	interface Log {
 		year: number;
@@ -19,20 +21,7 @@
 		family: string | undefined;
 	}
 
-	let data: Log[] = [
-		{
-			year: 20,
-			nickname: 'อาร์ม',
-			branch: 'IT',
-			family: 'Black Dragon Horse'
-		},
-		{
-			year: 20,
-			nickname: 'สไป๊',
-			branch: 'IT',
-			family: 'Phoenix'
-		}
-	];
+	let data: Log[] = [];
 
 	onMount(() => {
 		const pageData = $page.data as PageData;
@@ -47,16 +36,16 @@
 	});
 </script>
 
-<a href="/enter-passcode" class="underline underline-offset-2 text-blue-500">กลับ</a>
+<!-- <a href="/enter-passcode" class="underline underline-offset-2 text-blue-500">กลับ</a> -->
 
 <div class="relative">
 	<div class="white-title">
 		<h1 class="font-bold text-2xl">ประวัติการกรอกรหัส</h1>
 		<p class="mt-2">รวมประวัติการกรอกรหัสลับล่าสุดของท่าน</p>
 	</div>
-	<!-- <a href="/enter-passcode" class="absolute -top-1 right-0"
+	<a href="/enter-passcode" class="absolute -top-1 right-0"
 		><SRHButton class="text-xs">BACK</SRHButton></a
-	> -->
+	>
 </div>
 <hr class="border border-white my-3" />
 <Table class="font-krub">

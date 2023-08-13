@@ -28,6 +28,7 @@
 	let resinLeft = pageData.resinLeft ?? 0;
 	$: resinLeft;
 
+	$: passcode = passcode.toUpperCase();
 	$: readyToSubmit = z.string().length(6).safeParse(passcode).success;
 	$: found = undefined;
 	$: passcodeRes = undefined;
