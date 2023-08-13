@@ -25,7 +25,7 @@
 	let passcode = '';
 	let isDisabled = false;
 
-	let resinLeft = pageData.resinLeft;
+	let resinLeft = pageData.resinLeft ?? 0;
 	$: resinLeft;
 
 	$: readyToSubmit = z.string().length(6).safeParse(passcode).success;
@@ -68,7 +68,7 @@
 			return alert('An error has occured, please try again.');
 		}
 
-		const newResinLeft = await trpc.resin.getMyQuota.query();
+		const newResinLeft = (await trpc.resin.getMyQuota.query()) ?? 0;
 
 		success = true;
 		passcodeRes = res.payload;
