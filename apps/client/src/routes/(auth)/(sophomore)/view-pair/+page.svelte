@@ -15,8 +15,9 @@
 		hidden: true
 	}));
 
-	$: confirmPrompt = '';
-	$: confirmReady = false;
+	let confirmPrompt = '';
+	$: confirmPrompt;
+	let confirmReady = false;
 	$: {
 		confirmReady = email === confirmPrompt;
 	}
