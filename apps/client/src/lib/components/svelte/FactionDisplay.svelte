@@ -37,7 +37,7 @@
 							isOpen = true;
 						}}><View size={72} color="#AF9E6E" strokeWidth={1} /></button
 					>
-					<p class="text-yellow-100 drop-shadow-[0px_0px_4px_#FFD130] text-xs">ดูภูติของท่าน</p>
+					<p class="text-yellow-100 drop-shadow-[0px_0px_4px_#FFD130] text-xs">ดูภูตของท่าน</p>
 				</div>
 			</div>
 		</div>
