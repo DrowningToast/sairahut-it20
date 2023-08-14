@@ -25,8 +25,6 @@
 			ost.currentTime = 0;
 		}
 	});
-
-	console.log(logs);
 </script>
 
 <SrhHeading class="text-accent text-center w-full text-4xl font-bold shadow-2xl font-krub">

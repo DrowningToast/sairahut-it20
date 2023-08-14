@@ -16,7 +16,8 @@
 	import { userType } from '$lib/store/userType';
 	import FactionDisplay from '$components/svelte/FactionDisplay.svelte';
 
-	const { session, homePageState, user, playerType, hasPair, vip } = $page.data as PageData;
+	const { session, homePageState, user, playerType, hasPair, vip, easterEgg } =
+		$page.data as PageData;
 
 	let isQrCodeActive = new Date() >= homePageState.qrCode.activateDate;
 	let isHintActive = new Date().getTime() >= homePageState.hints.activateDate.getTime();
@@ -82,10 +83,10 @@
 			link={homePageState.profile.href}
 		/>
 		<CardButtonMenu
-			isActived={$userType === 'FRESH' && (vip ?? false)}
+			isActived={$userType === 'FRESH' && ((easterEgg ?? false) || vip)}
 			img_active={'../sacred-active.png'}
-			img_inactive={'../sacred-inactive.png'}
-			text={$userType === 'FRESH' && (vip ?? false) ? 'เวทมนต์ต้องห้าม' : '???'}
+			img_inactive={'/sacred-inactive.png'}
+			text={$userType === 'FRESH' && ((easterEgg ?? false) || vip) ? 'เวทมนต์ต้องห้าม' : '???'}
 			link={'/sacred'}
 		/>
 	</div>
