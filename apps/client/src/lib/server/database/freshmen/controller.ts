@@ -1,6 +1,5 @@
 import type { Prisma, PrismaClient } from 'database';
 import { HINT_PRICES, HintsController } from '../hint/controller';
-import { factionIds } from '$lib/factionIds';
 
 export const FreshmenDetailsController = (prisma: PrismaClient) => {
 	const createFreshmenDetails = (fresh: Prisma.FreshmenDetailsCreateInput) => {
