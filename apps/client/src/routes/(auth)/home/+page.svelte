@@ -16,7 +16,7 @@
 	import { userType } from '$lib/store/userType';
 	import FactionDisplay from '$components/svelte/FactionDisplay.svelte';
 
-	const { session, homePageState, user, playerType, hasPair } = $page.data as PageData;
+	const { session, homePageState, user, playerType, hasPair, vip } = $page.data as PageData;
 
 	let isQrCodeActive = new Date() >= homePageState.qrCode.activateDate;
 	let isHintActive = new Date().getTime() >= homePageState.hints.activateDate.getTime();
@@ -80,6 +80,13 @@
 			img_inactive={'../profile-inactive.png'}
 			text={homePageState.profile.title}
 			link={homePageState.profile.href}
+		/>
+		<CardButtonMenu
+			isActived={$userType === 'FRESH' && (vip ?? false)}
+			img_active={'../sacred-active.png'}
+			img_inactive={'../sacred-inactive.png'}
+			text={$userType === 'FRESH' && (vip ?? false) ? 'คาถ่าศักดิ์สิทธิ์' : '???'}
+			link={'/sacred'}
 		/>
 	</div>
 	<Separator class="mt-12 bg-accent" />

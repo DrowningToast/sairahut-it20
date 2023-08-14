@@ -53,7 +53,8 @@ export const FreshmenDetailsController = (prisma: PrismaClient) => {
 							select: {
 								faction: {
 									select: {
-										name: true
+										name: true,
+										handler: true
 									}
 								}
 							}
