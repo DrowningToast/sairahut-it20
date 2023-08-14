@@ -102,7 +102,7 @@
 	};
 
 	$: searchQuery = createQuery({
-		queryKey: ['fetch-user-list', queryBy, queryTarget, queryString],
+		queryKey: ['fetch-user-list', queryBy, queryTarget, filterByFaction],
 		queryFn: search,
 		staleTime: Infinity,
 		cacheTime: 60 * 60 * 2 * 1000,
