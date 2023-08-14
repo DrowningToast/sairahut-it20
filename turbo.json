@@ -32,6 +32,9 @@
     },
     "db:studio": {
       "cache": true
+    },
+    "db:seed": {
+      "cache": false
     }
   }
 }

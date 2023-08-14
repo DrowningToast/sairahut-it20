@@ -190,7 +190,7 @@
 				<TableHead>รุ่น</TableHead>
 				<TableHead>ชื่อเล่น</TableHead>
 				<TableHead>ชื่อจริง</TableHead>
-				<TableHead>{queryTarget === 'SOP' ? 'ภูต' : { targetPointTitle }}</TableHead>
+				<TableHead>{queryTarget === 'SOP' ? 'ภูต' : targetPointTitle}</TableHead>
 				<TableHead>Contact</TableHead>
 			</TableRow>
 		</TableHeader>
