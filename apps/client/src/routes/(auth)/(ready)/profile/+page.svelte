@@ -33,7 +33,7 @@
 	<div class="flex flex-col gap-y-3 border border-solid border-accent-alt pt-8 pb-24 px-5">
 		{#if $userType === 'SOPHOMORE'}
 			<div class="font-krub text-white text-xs text-center">
-				<h2>ภูตประจำตัวของท่านอยู่เผ่า : {faction.family?.toUpperCase()}</h2>
+				<h2>ท่านคือภูตประจำเผ่า {faction.family?.toUpperCase()}</h2>
 				<div class="w-full grid place-items-center object-contain">
 					<img class="h-32" src={`${faction.img}`} alt={user.faction?.name} />
 				</div>
