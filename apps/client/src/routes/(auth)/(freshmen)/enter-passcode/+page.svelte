@@ -81,10 +81,17 @@
 		passcode = '';
 		shardsEarned = res.payload.shards;
 
-		// play sfx
-		const rewardSFX = new Audio();
-		rewardSFX.src = '/sfx/RewardSFX.ogg';
-		rewardSFX.play();
+		if (!res.payload.easterEgg) {
+			// play sfx
+			const rewardSFX = new Audio();
+			rewardSFX.src = '/sfx/RewardSFX.ogg';
+			rewardSFX.play();
+		} else {
+			// play murmur sfx, notifying the user has completed the challenge
+			const rewardSFX = new Audio();
+			rewardSFX.src = '/sfx/Murmur.ogg';
+			rewardSFX.play();
+		}
 
 		setTimeout(() => {
 			passcode = '';

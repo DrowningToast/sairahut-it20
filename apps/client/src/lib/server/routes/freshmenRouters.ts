@@ -435,12 +435,20 @@ export const freshmenRouters = createRouter({
 			)
 		]);
 
-		const easterEgg = await FreshmenDetailsController(prisma)
-			.updateEasterEggStatusById(freshmenId)
+		// check prior easter status
+		// if the user already unlocked the easteregg, don't trigger it again
+		const priorEasterEgg = !!ctx.user?.freshmenDetails?.easterEgg;
+
+		const easterEgg = await FreshmenDetailsController(prisma).updateEasterEggStatusById(freshmenId);
 
 		return {
 			success: true,
-			payload: { ...passcodeQuery, bells: BELLS, shards: SHARDS, easterEgg }
+			payload: {
+				...passcodeQuery,
+				bells: BELLS,
+				shards: SHARDS,
+				easterEgg: priorEasterEgg ? false : easterEgg
+			}
 		};
 	}),
 
@@ -582,7 +590,7 @@ export const freshmenRouters = createRouter({
 			take: 8
 		});
 
-		const AMOUNT_THRESHOLD = 8;
+		const AMOUNT_THRESHOLD = 6;
 
 		if (logs.length >= AMOUNT_THRESHOLD) {
 			// get the result
