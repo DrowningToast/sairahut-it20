@@ -9,6 +9,7 @@
     "db:force-push": "turbo run pg:force-push",
     "db:force-reset": "turbo run pg:force-reset",
     "db:generate": "turbo run pg:generate",
+    "db:seed": "turbo run db:seed",
     "studio": "turbo run db:studio",
     "postinstall": "pnpm db:push"
   },
