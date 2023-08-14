@@ -41,10 +41,13 @@ export const ResinController = (prisma: PrismaClient) => {
 	};
 
 	const decrementResin = async (instance: Prisma.FreshmenDetailsWhereUniqueInput) => {
-		const target = await prisma.todayResin.findMany({
+		const target = await prisma.todayResin.findFirst({
 			where: {
 				freshmen: {
 					id: instance.id
+				},
+				quota: {
+					gt: 0
 				}
 			},
 			orderBy: {
@@ -52,11 +55,9 @@ export const ResinController = (prisma: PrismaClient) => {
 			}
 		});
 
-		const notZeroQuotaTarget = target.find((value) => value.quota > 0)
-
 		// decrease the target quota
 		await prisma.todayResin.update({
-			where: { id: notZeroQuotaTarget?.id },
+			where: { id: target?.id },
 			data: {
 				quota: {
 					decrement: 5
