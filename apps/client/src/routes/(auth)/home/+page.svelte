@@ -89,6 +89,13 @@
 			text={$userType === 'FRESH' && ((easterEgg ?? false) || vip) ? 'เวทมนต์ต้องห้าม' : '???'}
 			link={'/sacred'}
 		/>
+		<CardButtonMenu
+			isActived={false}
+			img_active={'../sacred-active.png'}
+			img_inactive={'/sacred-inactive.png'}
+			text={'Placeholder text'}
+			link={'/showdown'}
+		/>
 	</div>
 	<Separator class="mt-12 bg-accent" />
 
