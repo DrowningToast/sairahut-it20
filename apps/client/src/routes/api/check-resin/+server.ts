@@ -18,7 +18,5 @@ export const GET: RequestHandler = async ({ fetch }) => {
 		})
 	);
 
-	console.log('fuck you 2');
-
 	return new Response('Done generating!');
 };
