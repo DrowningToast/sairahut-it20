@@ -77,8 +77,10 @@
 	</div>
 </div>
 <div class=" w-full flex flex-col items-center">
-	<button on:click={handleLoadPasscode} class="drop-shadow-[0px_0px_10px_#FFD130] mt-5">
-		<RotateCcw size={36} color="white" strokeWidth={1.5} />
-	</button>
+	{#if !isLoading}
+		<button on:click={handleLoadPasscode} class="drop-shadow-[0px_0px_10px_#FFD130] mt-5">
+			<RotateCcw size={36} color="white" strokeWidth={1.5} />
+		</button>
+	{/if}
 	<img src="./konnok-footer.png" alt="" class=" my-2" />
 </div>
