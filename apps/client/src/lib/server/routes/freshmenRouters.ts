@@ -435,9 +435,20 @@ export const freshmenRouters = createRouter({
 			)
 		]);
 
+		// check prior easter status
+		// if the user already unlocked the easteregg, don't trigger it again
+		const priorEasterEgg = !!ctx.user?.freshmenDetails?.easterEgg;
+
+		const easterEgg = await FreshmenDetailsController(prisma).updateEasterEggStatusById(freshmenId);
+
 		return {
 			success: true,
-			payload: { ...passcodeQuery, bells: BELLS, shards: SHARDS }
+			payload: {
+				...passcodeQuery,
+				bells: BELLS,
+				shards: SHARDS,
+				easterEgg: priorEasterEgg ? false : easterEgg
+			}
 		};
 	}),
 
@@ -524,5 +535,92 @@ export const freshmenRouters = createRouter({
 		const revealed = await freshmenController.revealNextHint({ id: freshId });
 
 		return revealed;
+	}),
+
+	checkReachMilestone: freshmenProcedure.query(async ({ ctx }) => {
+		const freshId = ctx.user?.freshmenDetails?.id;
+
+		if (!freshId)
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: "The user doesn't have freshmen id"
+			});
+
+		const freshFactionHandler = ctx.user?.faction?.handler;
+
+		if (!freshFactionHandler)
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: "The user doesn't have a faction"
+			});
+
+		if (!ctx.user?.faction?.handler)
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: "The user doesn't have a faction"
+			});
+
+		// query the same faction who has scanned
+		const logs = await prisma.passcodeInstances.findMany({
+			where: {
+				usedBy: {
+					id: freshId
+				},
+				owner: {
+					user: {
+						faction: {
+							handler: freshFactionHandler
+						}
+					}
+				}
+			},
+			orderBy: {
+				update_at: 'asc'
+			},
+			select: {
+				owner: {
+					select: {
+						fullname: true,
+						nickname: true,
+						student_id: true,
+						branch: true
+					}
+				}
+			},
+			take: 8
+		});
+
+		const AMOUNT_THRESHOLD = 6;
+
+		if (logs.length >= AMOUNT_THRESHOLD) {
+			// get the result
+			const pair = await prisma.pair.findUnique({
+				where: {
+					freshmenDetailsId: freshId
+				},
+				select: {
+					sophomore: {
+						select: {
+							student_id: true
+						}
+					}
+				}
+			});
+
+			const detectPair = !!logs.find((log) => log.owner.student_id === pair?.sophomore.student_id);
+
+			return {
+				reached: true,
+				detectPair,
+				threshold: AMOUNT_THRESHOLD,
+				logs
+			};
+		} else {
+			return {
+				reached: false,
+				threshold: AMOUNT_THRESHOLD,
+				logs
+			};
+		}
 	})
 });

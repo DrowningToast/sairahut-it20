@@ -81,10 +81,17 @@
 		passcode = '';
 		shardsEarned = res.payload.shards;
 
-		// play sfx
-		const rewardSFX = new Audio();
-		rewardSFX.src = '/sfx/RewardSFX.ogg';
-		rewardSFX.play();
+		if (!res.payload.easterEgg) {
+			// play sfx
+			const rewardSFX = new Audio();
+			rewardSFX.src = '/sfx/RewardSFX.ogg';
+			rewardSFX.play();
+		} else {
+			// play murmur sfx, notifying the user has completed the challenge
+			const rewardSFX = new Audio();
+			rewardSFX.src = '/sfx/Murmur.ogg';
+			rewardSFX.play();
+		}
 
 		setTimeout(() => {
 			passcode = '';
@@ -173,7 +180,8 @@
 		</p>
 		<p class="text-center font-Pridi text-sm text-white font-thin">
 			โดยที่หากได้รับรู้ถึงความลับของเผ่าภูตเดียวกันกับภูตของจอมเวทย์ ตัวเจ้าจะได้ Spirit Shards
-			มากกว่าปกติ
+			มากกว่าปกติ โดยตำนานได้ยังเคยเล่าขานกันว่าไม่เคยมีจอมเวทย์คนไหนล้วงความลับของภูตได้ครบทั้ง 12
+			มาก่อน ใครจะไปรู้ว่าถ้ารวบรวมความลับของทั้ง 12 เผ่าได้ จะเกิดอะไรขึ้น?
 		</p>
 		<p class="text-center font-Pridi text-sm text-white font-thin">
 			จอมเวทย์จะไม่สามารถกรอกรหัสของเหล่าภูตที่เคยกรอกรหัสไปแล้วซ้ำได้

@@ -147,6 +147,9 @@ model FreshmenDetails {
 
   passcodePoints Int @default(0)
 
+  // trigger secret, แสกนครบ 12 เผ่า และต้องเก็บรหัสจากอีก 8 คน
+  easterEgg Boolean @default(false)
+
   // จะเป็น true เมื่อได้เข้าร่วมกิจกรรม ITGG เท่านั้น
   vip Boolean @default(false)
 

@@ -16,7 +16,8 @@
 	import { userType } from '$lib/store/userType';
 	import FactionDisplay from '$components/svelte/FactionDisplay.svelte';
 
-	const { session, homePageState, user, playerType, hasPair } = $page.data as PageData;
+	const { session, homePageState, user, playerType, hasPair, vip, easterEgg } =
+		$page.data as PageData;
 
 	let isQrCodeActive = new Date() >= homePageState.qrCode.activateDate;
 	let isHintActive = new Date().getTime() >= homePageState.hints.activateDate.getTime();
@@ -80,6 +81,20 @@
 			img_inactive={'../profile-inactive.png'}
 			text={homePageState.profile.title}
 			link={homePageState.profile.href}
+		/>
+		<CardButtonMenu
+			isActived={$userType === 'FRESH' && ((easterEgg ?? false) || vip)}
+			img_active={'../sacred-active.png'}
+			img_inactive={'/sacred-inactive.png'}
+			text={$userType === 'FRESH' && ((easterEgg ?? false) || vip) ? 'เวทมนต์ต้องห้าม' : '???'}
+			link={'/sacred'}
+		/>
+		<CardButtonMenu
+			isActived={false}
+			img_active={'../showndown-active.png'}
+			img_inactive={'/showdown-inactive.png'}
+			text={'Placeholder text'}
+			link={'/showdown'}
 		/>
 	</div>
 	<Separator class="mt-12 bg-accent" />
