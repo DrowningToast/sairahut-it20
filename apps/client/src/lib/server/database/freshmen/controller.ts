@@ -1,8 +1,6 @@
-import { hintSlugIds } from '$lib/hintSlugIds';
-import { TRPCError } from '@trpc/server';
 import type { Prisma, PrismaClient } from 'database';
-import { HINT_PRICES, HintsController, hintController } from '../hint/controller';
-import { PasscodeController } from '../passcode/controller';
+import { HINT_PRICES, HintsController } from '../hint/controller';
+import { factionIds } from '$lib/factionIds';
 
 export const FreshmenDetailsController = (prisma: PrismaClient) => {
 	const createFreshmenDetails = (fresh: Prisma.FreshmenDetailsCreateInput) => {
@@ -194,6 +192,36 @@ export const FreshmenDetailsController = (prisma: PrismaClient) => {
 		return revealed;
 	};
 
+	const updateEasterEggStatusById = async (freshmenId: string) => {
+		for (const factionId in factionIds) {
+			const count = await prisma.passcodeInstances.count({
+				where: {
+					usedById: freshmenId,
+					owner: {
+						user: {
+							factionId
+						}
+					}
+				}
+			})
+
+			if (count == 0) {
+				return false
+			}
+		}
+
+		await prisma.freshmenDetails.update({
+			where: {
+				id: freshmenId,
+			},
+			data: {
+				easterEgg: true
+			}
+		})
+		
+		return true
+	}
+
 	return {
 		createFreshmenDetails,
 		incrementFreshmenBalance,
@@ -205,6 +233,7 @@ export const FreshmenDetailsController = (prisma: PrismaClient) => {
 		getFreshmenById,
 		getNextHintPrice,
 		decrementPasscodePoint,
-		revealNextHint
+		revealNextHint,
+		updateEasterEggStatusById
 	};
 };

@@ -435,9 +435,12 @@ export const freshmenRouters = createRouter({
 			)
 		]);
 
+		const easterEgg = await FreshmenDetailsController(prisma)
+			.updateEasterEggStatusById(freshmenId)
+
 		return {
 			success: true,
-			payload: { ...passcodeQuery, bells: BELLS, shards: SHARDS }
+			payload: { ...passcodeQuery, bells: BELLS, shards: SHARDS, easterEgg }
 		};
 	}),
 
