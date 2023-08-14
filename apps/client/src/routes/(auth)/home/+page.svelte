@@ -93,7 +93,7 @@
 			isActived={false}
 			img_active={'../sacred-active.png'}
 			img_inactive={'/sacred-inactive.png'}
-			text={'Placeholder text'}
+			text={'ภูตของตนเอง'}
 			link={'/showdown'}
 		/>
 	</div>
