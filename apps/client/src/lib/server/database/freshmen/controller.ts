@@ -193,34 +193,48 @@ export const FreshmenDetailsController = (prisma: PrismaClient) => {
 	};
 
 	const updateEasterEggStatusById = async (freshmenId: string) => {
-		for (const factionId in factionIds) {
-			const count = await prisma.passcodeInstances.count({
-				where: {
-					usedById: freshmenId,
-					owner: {
+		const instances = await prisma.passcodeInstances.findMany({
+			where: {
+				usedById: freshmenId
+			},
+			select: {
+				owner: {
+					select: {
 						user: {
-							factionId
+							select: {
+								factionId: true
+							}
 						}
 					}
 				}
-			})
-
-			if (count == 0) {
-				return false
-			}
-		}
-
-		await prisma.freshmenDetails.update({
-			where: {
-				id: freshmenId,
-			},
-			data: {
-				easterEgg: true
 			}
 		})
+
+		const factions: string[] = []
+
+		instances.forEach(({ owner }) => {
+			const factionId = owner?.user?.factionId
 		
-		return true
-	}
+			if (!(factions.includes(factionId!))) {
+				factions.push(factionId!)
+			}
+		});
+		
+		if (factions.length >= 12) {
+			await prisma.freshmenDetails.update({
+				where: {
+					id: freshmenId
+				},
+				data: {
+					easterEgg: true
+				}
+			})
+			
+			return true
+		}
+
+		return false
+	};
 
 	return {
 		createFreshmenDetails,
