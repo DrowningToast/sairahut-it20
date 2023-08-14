@@ -17,9 +17,9 @@
 		TableHeader
 	} from '$components/ui/table';
 	import { trpc } from '$lib/trpc';
-	import { determineYear } from '$lib/utils';
+	import { determineYear, shuffle } from '$lib/utils';
 	import { createQuery } from '@tanstack/svelte-query';
-	import { FacebookIcon, InstagramIcon } from 'lucide-svelte';
+	import { FacebookIcon, InstagramIcon, Shuffle } from 'lucide-svelte';
 	import { z } from 'zod';
 	import type { PageData } from './$types';
 
@@ -92,7 +92,11 @@
 			})
 		]);
 
-		data.sort((a, b) => a.user.balance - b.user.balance).reverse();
+		if (queryTarget === 'FRESH') {
+			data.sort((a, b) => a.user.balance - b.user.balance).reverse();
+		} else {
+			data = shuffle(data);
+		}
 
 		return data;
 	};
@@ -185,8 +189,8 @@
 			<TableRow class="gap-x-6">
 				<TableHead>รุ่น</TableHead>
 				<TableHead>ชื่อเล่น</TableHead>
-				<TableHead>{queryTarget === 'SOP' ? 'ภูต' : 'ชื่อจริง'}</TableHead>
-				<TableHead>{targetPointTitle}</TableHead>
+				<TableHead>ชื่อจริง</TableHead>
+				<TableHead>{queryTarget === 'SOP' ? 'ภูต' : { targetPointTitle }}</TableHead>
 				<TableHead>Contact</TableHead>
 			</TableRow>
 		</TableHeader>
@@ -196,12 +200,10 @@
 					<TableRow class="gap-x-1 h-6">
 						<TableCell>{determineYear(d.student_id)}</TableCell>
 						<TableCell>{d.nickname}</TableCell>
-						<TableCell
-							>{queryTarget === 'SOP'
-								? d.user.faction.name
-								: d.fullname?.split(' ')[0] ?? `${d.first_name}`}</TableCell
+						<TableCell>
+							{d.fullname?.split(' ')[0] ?? `${d.first_name}`}</TableCell
 						>
-						<TableCell>{d.user.balance}</TableCell>
+						<TableCell>{queryTarget === 'SOP' ? d.user.faction.name : d.user.balance}</TableCell>
 						<TableCell class="flex flex-row gap-1">
 							{#if z.string().url().safeParse(d.facebook_link).success}
 								<a href={d.facebook_link} target="_blank" rel="noreferrer">
