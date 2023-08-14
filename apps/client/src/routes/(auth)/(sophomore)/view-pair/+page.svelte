@@ -29,8 +29,6 @@
 	};
 
 	const handleConfirmReveal = (index: number) => () => confirmReveal(index);
-
-	console.log(pairs);
 </script>
 
 <SRHHeading class="text-center">จอมเวทย์ของฉัน</SRHHeading>

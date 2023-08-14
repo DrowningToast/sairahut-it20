@@ -110,10 +110,6 @@ export const HintsController = (prisma: PrismaClient) => {
 			}
 		});
 
-		console.log(pair);
-		console.log(hintSlug);
-		console.log(_);
-
 		if (!_) throw new Error('PAIR NOT FOUND');
 
 		const { id: pairId, sophomoreDetailsId } = _;

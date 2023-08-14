@@ -20,6 +20,11 @@ interface SearchQuery {
 		fullname?: {
 			contains: string | undefined;
 		};
+		user?: {
+			faction?: {
+				handler?: string | undefined;
+			};
+		};
 	};
 }
 
@@ -146,7 +151,8 @@ export const sophomoreRouters = createRouter({
 				queryBy: z.enum(['STUDENT_ID', 'FIRSTNAME', 'NICKNAME']),
 				q: z.string().optional(),
 				first: z.number(),
-				last: z.number()
+				last: z.number(),
+				faction: z.string().optional()
 			})
 		)
 		.query(async ({ input }) => {
@@ -181,6 +187,15 @@ export const sophomoreRouters = createRouter({
 					}
 				};
 			}
+
+			if (input.faction && searchQuery) {
+				searchQuery.where.user = {
+					faction: {
+						handler: input.faction
+					}
+				};
+			}
+
 			data = await SophomoreDetailsController(prisma).findMany({
 				...searchQuery,
 				select: {
@@ -191,7 +206,13 @@ export const sophomoreRouters = createRouter({
 					fullname: true,
 					user: {
 						select: {
-							balance: true
+							balance: true,
+							faction: {
+								select: {
+									handler: true,
+									name: true
+								}
+							}
 						}
 					}
 				},
