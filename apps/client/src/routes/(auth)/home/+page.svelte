@@ -90,10 +90,10 @@
 			link={'/sacred'}
 		/>
 		<CardButtonMenu
-			isActived={false}
-			img_active={'../showndown-active.png'}
+			isActived={true}
+			img_active={'../showdown-active.png'}
 			img_inactive={'/showdown-inactive.png'}
-			text={'Placeholder text'}
+			text={'ภูตของฉัน'}
 			link={'/showdown'}
 		/>
 	</div>
