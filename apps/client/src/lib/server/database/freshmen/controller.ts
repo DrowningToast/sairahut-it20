@@ -1,8 +1,5 @@
-import { hintSlugIds } from '$lib/hintSlugIds';
-import { TRPCError } from '@trpc/server';
 import type { Prisma, PrismaClient } from 'database';
-import { HINT_PRICES, HintsController, hintController } from '../hint/controller';
-import { PasscodeController } from '../passcode/controller';
+import { HINT_PRICES, HintsController } from '../hint/controller';
 
 export const FreshmenDetailsController = (prisma: PrismaClient) => {
 	const createFreshmenDetails = (fresh: Prisma.FreshmenDetailsCreateInput) => {
