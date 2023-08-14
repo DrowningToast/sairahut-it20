@@ -20,7 +20,7 @@
 		<div
 			class="w-full overflow-visible flex justify-center gap-x-2 items-center py-4 bg-cover object-cover relative h-36"
 		>
-			<img src="/bg_seirei.webp" class="absolute inset-0" alt="background cover" />
+			<img src="/bg_seirei.webp" class="absolute inset-0 mx-auto" alt="background cover" />
 			<div class={`${!isOpen ? 'blur-md' : ''} grid place-items-center`}>
 				<img class="w-20 h-20" src={sophomorePair.img} alt="" />
 			</div>
@@ -37,7 +37,7 @@
 							isOpen = true;
 						}}><View size={72} color="#AF9E6E" strokeWidth={1} /></button
 					>
-					<p class="text-yellow-100 drop-shadow-[0px_0px_4px_#FFD130] text-xs">ดูภูติของท่าน</p>
+					<p class="text-yellow-100 drop-shadow-[0px_0px_4px_#FFD130] text-xs">ดูภูตของท่าน</p>
 				</div>
 			</div>
 		</div>

@@ -50,8 +50,6 @@
 	let price = pageData.price ?? Infinity;
 	$: price;
 	let hints: IHint[] = pageData.hints ?? [];
-
-	console.log(hints);
 </script>
 
 <div class="font-krub text-white drop-shadow-[0px_0px_10px_#FFAEBD]">

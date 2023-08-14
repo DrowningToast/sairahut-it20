@@ -36,6 +36,9 @@
 	$: isLoading = false;
 	$: isDisabled = !!(!readyToSubmit || found?.hasScanned || found?.isExpired || resinLeft < 5);
 
+	let shardsEarned = 1;
+	$: shardsEarned;
+
 	const submitPasscode = async () => {
 		if (passcode === '') {
 			found = undefined;
@@ -76,6 +79,7 @@
 		isLoading = false;
 		resinLeft = newResinLeft;
 		passcode = '';
+		shardsEarned = res.payload.shards;
 
 		// play sfx
 		const rewardSFX = new Audio();
@@ -86,6 +90,7 @@
 			passcode = '';
 			found = undefined;
 			success = false;
+			shardsEarned = 1;
 		}, 5000);
 	};
 </script>
@@ -135,8 +140,8 @@
 	<Alert class="bg-neutral-900/25 text-accent border-accent mb-6">
 		<AlertTitle>สำเร็จ!</AlertTitle>
 		<AlertDescription
-			>คุณได้ล้วงความลับของภูต <span class="font-semibold">{found?.nickname}</span> เรียบร้อยแล้ว! เจ้าได้
-			5 Bells กับ 1 Spirit Shards</AlertDescription
+			>คุณได้ล้วงความลับของภูต <span class="font-semibold">{found?.nickname}</span> เรียบร้อยแล้ว!
+			เจ้าได้ 5 Bells กับ {shardsEarned} Spirit Shards</AlertDescription
 		>
 	</Alert>
 {/if}
@@ -146,7 +151,7 @@
 	<span
 		class="text-accent text-xs font-Pridi font-extralight decoration-solid bg-[#29436c2b] px-6 py-2 border-[1px] border-accent rounded-md mt-5"
 	>
-		{resinLeft} resin left
+		{resinLeft} Resin left
 	</span>
 	<input
 		minlength="6"
@@ -160,11 +165,15 @@
 	<div class="flex flex-col gap-y-4 py-8">
 		<p class="text-center font-Pridi text-sm text-white font-thin">
 			ปัจจุบันคุณมี Resin ทั้งหมด {resinLeft} โดยคุณสามารถนำ Resin ไปแปลงเป็น Bells ผ่านการกรอกรหัสผ่านจากภูตเพื่อนำไปซื้อคำใบ้ได้
-			โดยคุณจะได้เพิ่มวันละ 40 resin
+			โดยคุณจะได้เพิ่มวันละ 40 Resin
 		</p>
 		<p class="text-center font-Pridi text-sm text-white font-thin">
 			เมื่อได้รับรหัสจากภูตแล้ว เจ้าจะได้ Bells และ Spirit Shards
 			โดยตำนานเล่าขานกันว่าผู้ได้ครอบครอง Bells เมื่อสะสมมากพอ จะสามารถฟังความลับของจักรวาลได้
+		</p>
+		<p class="text-center font-Pridi text-sm text-white font-thin">
+			โดยที่หากได้รับรู้ถึงความลับของเผ่าภูตเดียวกันกับภูตของจอมเวทย์ ตัวเจ้าจะได้ Spirit Shards
+			มากกว่าปกติ
 		</p>
 		<p class="text-center font-Pridi text-sm text-white font-thin">
 			จอมเวทย์จะไม่สามารถกรอกรหัสของเหล่าภูตที่เคยกรอกรหัสไปแล้วซ้ำได้
