@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { userType } from '$lib/store/userType';
 	import { page } from '$app/stores';
 	import { z } from 'zod';
 	import type { PageServerData } from './$types';
@@ -9,11 +10,17 @@
 		{ title: 'ชื่อจริง', value: user.first_name ?? user.fullname?.split(' ')[0] },
 		{ title: 'นามสกุล', value: user.last_name ?? user.fullname?.split(' ')[1] },
 		{ title: 'ชื่อเล่น', value: user.nickname },
-		{ title: 'สาขา', value: user.branch }
+		{ title: 'สาขา', value: user.branch },
+		{ title: 'เผ่าของภูต', value: user.faction?.name ?? '???' }
 	];
 
 	const facebook = { title: 'Facebook Profile', value: user.facebook_link ?? '-' };
 	const instagram = { title: 'Instagram Profile', value: user.instagram_link ?? '-' };
+
+	const faction = {
+		img: `/factions/${user.faction?.handler}.webp`,
+		family: user.faction?.name
+	};
 </script>
 
 <h1 class="text-center text-3xl font-krub font-bold text-white drop-shadow-[0px_0px_10px_#FFD130]">
@@ -23,7 +30,16 @@
 <div
 	class="border border-solid border-accent-alt px-4 py-6 rounded-3xl bg-gradient-to-b from-[#f58cb71a] to-[#ffffff05] mx-6 mt-1"
 >
-	<div class="flex flex-col gap-y-3 border border-solid border-accent-alt pt-10 pb-24 px-5">
+	<div class="flex flex-col gap-y-3 border border-solid border-accent-alt pt-8 pb-24 px-5">
+		{#if $userType === 'SOPHOMORE'}
+			<div class="font-krub text-white text-xs text-center">
+				<h2>ภูตประจำตัวของท่านอยู่เผ่า : {faction.family?.toUpperCase()}</h2>
+				<div class="w-full grid place-items-center object-contain">
+					<img class="h-32" src={`${faction.img}`} alt={user.faction?.name} />
+				</div>
+			</div>
+		{/if}
+
 		{#each data as item}
 			<div class="flex flex-col gap-y-1">
 				<p class="text-sm font-krub font-thin text-white">{item.title}</p>

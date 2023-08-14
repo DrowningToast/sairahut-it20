@@ -85,6 +85,8 @@ model PasscodeInstances {
   ownerId   String
   owner     SophomoreDetails @relation(fields: [ownerId], references: [id])
   usedBy    FreshmenDetails? @relation(fields: [usedById], references: [id])
+
+  content String @unique
 }
 
 model Factions {
@@ -92,6 +94,33 @@ model Factions {
   name    String
   handler String
   users   User[]
+
+  create_at DateTime @default(now())
+  update_at DateTime @default(now()) @updatedAt
+}
+
+model RevealedHintInstances {
+  create_at DateTime @default(now())
+  update_at DateTime @default(now()) @updatedAt
+
+  hint             Hints  @relation(fields: [hintsHintSlugId, hintsSophomoreId], references: [hintSlugId, sophomoreId])
+  hintsHintSlugId  String
+  hintsSophomoreId String
+  pair             Pair   @relation(fields: [pairId], references: [id])
+  pairId           String
+
+  @@id([hintsHintSlugId, hintsSophomoreId, pairId])
+}
+
+model Pair {
+  id        String           @id @unique @default(cuid())
+  freshmen  FreshmenDetails  @relation(fields: [freshmenDetailsId], references: [id])
+  sophomore SophomoreDetails @relation(fields: [sophomoreDetailsId], references: [id])
+
+  revealedHints RevealedHintInstances[]
+
+  freshmenDetailsId  String @unique
+  sophomoreDetailsId String
 }
 
 model FreshmenDetails {
@@ -113,20 +142,33 @@ model FreshmenDetails {
   user            User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   usedPasscodes   PasscodeInstances[]
   scannedQrs      QRInstances[]
+  pair            Pair?
+  todayResin      TodayResin[]
+
+  passcodePoints Int @default(0)
+
+  // จะเป็น true เมื่อได้เข้าร่วมกิจกรรม ITGG เท่านั้น
+  vip Boolean @default(false)
+
+  // Freshmen quota of guessing their pair for free
+  quota Int @default(3)
 }
 
 model HintSlugs {
   slug        String  @id @unique
   displayName String
   Hints       Hints[]
+
+  index Int? @unique
 }
 
 model Hints {
-  hintSlugId  String
-  content     String
-  sophomoreId String
-  slug        HintSlugs        @relation(fields: [hintSlugId], references: [slug])
-  sophomore   SophomoreDetails @relation(fields: [sophomoreId], references: [id], onDelete: Cascade)
+  hintSlugId            String
+  content               String
+  sophomoreId           String
+  slug                  HintSlugs               @relation(fields: [hintSlugId], references: [slug])
+  sophomore             SophomoreDetails        @relation(fields: [sophomoreId], references: [id], onDelete: Cascade)
+  revealedHintInstances RevealedHintInstances[]
 
   craete_at DateTime @default(now())
   update_at DateTime @default(now()) @updatedAt
@@ -156,6 +198,15 @@ model SophomoreDetails {
   PasscodeInstances PasscodeInstances[]
   QRInstances       QRInstances[]
   user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pair              Pair[]
+}
+
+model TodayResin {
+  id                String          @id @unique @default(cuid())
+  create_at         DateTime        @default(now())
+  quota             Int             @default(40)
+  freshmen          FreshmenDetails @relation(fields: [freshmenDetailsId], references: [id])
+  freshmenDetailsId String
 }
 
 enum PlayerType {

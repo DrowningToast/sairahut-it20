@@ -5,8 +5,11 @@ import { prisma } from '$lib/serverUtils';
 import { TRPCError } from '@trpc/server';
 import { freshmenRegister } from '$lib/zod';
 import { AirtableController } from '$lib/airtable-api/controller';
-import type { FreshmenDetails, User } from 'database';
+import type { FreshmenDetails, Prisma, User } from 'database';
 import { FreshmenDetailsController } from '../database/freshmen/controller';
+import { determineYear } from '$lib/utils';
+import { PasscodeController } from '../database/passcode/controller';
+import { ResinController } from '../database/resin/controller';
 
 interface SearchQuery {
 	where: {
@@ -43,6 +46,26 @@ export const checkIfAlreadyScanThisSophomore = async (freshmen: User, secret: st
 	return !!alreadyScanned.find((scanned) => scanned.ownerId === targetQRCode?.ownerId);
 
 	// return !!alreadyScanned.find((scanned) => scanned.secret === secret);
+};
+
+export const checkIfAlreadyUsePasscodeThisSophomore = async (
+	freshmen: Prisma.FreshmenDetailsWhereUniqueInput,
+	secret: string
+) => {
+	const [targetPasscode, scannedPasscode] = await Promise.all([
+		prisma.passcodeInstances.findUnique({
+			where: {
+				content: secret
+			}
+		}),
+		prisma.passcodeInstances.findMany({
+			where: {
+				usedBy: freshmen
+			}
+		})
+	]);
+
+	return !!scannedPasscode.find((scanned) => scanned.ownerId === targetPasscode?.ownerId);
 };
 
 export const freshmenRouters = createRouter({
@@ -100,6 +123,12 @@ export const freshmenRouters = createRouter({
 
 		return 'OK';
 	}),
+
+	// get the requester latest information
+	getMyInfo: freshmenProcedure.query(async ({ ctx }) => {
+		return ctx.user?.freshmenDetails;
+	}),
+
 	// Get the owner information of this qr code
 	getQRInfo: freshmenProcedure.input(z.string().length(6)).query(async ({ ctx, input }) => {
 		const data = await prisma.qRInstances.findUnique({
@@ -288,5 +317,212 @@ export const freshmenRouters = createRouter({
 			return {
 				data
 			};
-		})
+		}),
+	getPasscodeInfo: freshmenProcedure.input(z.string()).query(async ({ ctx, input }) => {
+		const res = await PasscodeController(prisma).getPasscode({
+			content: input
+		});
+
+		if (!res) {
+			return {
+				success: false,
+				payload: `Passcode with passcode: "${input}" not found`
+			};
+		} else {
+			const samePerson = await checkIfAlreadyUsePasscodeThisSophomore(
+				{ id: ctx.user!.freshmenDetails!.id! },
+				input
+			);
+
+			return {
+				success: true,
+				payload: {
+					passcode: res?.content,
+					nickname: res?.owner.nickname,
+					fullname: res?.owner.fullname,
+					faction: res?.owner.user.faction?.name,
+					/**
+					 * has the code already been used by someone else?
+					 */
+					isExpired: res?.usedById !== null,
+					/**
+					 * Already scanned this sophomore
+					 */
+					hasScanned: samePerson,
+					gen: determineYear(res?.owner.student_id as string)
+				}
+			};
+		}
+	}),
+	submitPasscode: freshmenProcedure.input(z.string()).mutation(async ({ ctx, input }) => {
+		const freshmenId = ctx.user?.freshmenDetails?.id as string;
+
+		const passcodeQuery = await PasscodeController(prisma).getPasscode({
+			content: input
+		});
+
+		if (!passcodeQuery) {
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'Passcode not found'
+			});
+		}
+
+		// check if expires
+		if (passcodeQuery.usedBy) {
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'Passcode already used'
+			});
+		}
+
+		// check using passcode of the same person
+		const alreadyScanned = await checkIfAlreadyUsePasscodeThisSophomore(
+			{
+				id: freshmenId
+			},
+			input
+		);
+
+		if (alreadyScanned)
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'Already scanned this member'
+			});
+
+		// check if the user has enough resin or not
+		const resinQuota = (await ResinController(prisma).getTotalResin({ id: freshmenId })) ?? 0;
+		if (resinQuota < 5)
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'Not enough resin'
+			});
+
+		// decrease resin quota
+		await ResinController(prisma).decrementResin({
+			id: freshmenId
+		});
+
+		const BELLS = 5;
+		let SHARDS = 1;
+
+		if (passcodeQuery.owner.user.faction?.handler === ctx.user?.faction?.handler) {
+			SHARDS = 2;
+		}
+
+		// mark the passcode as used
+		// increase the passcode point
+		await prisma.$transaction([
+			PasscodeController(prisma).setAsUsed(
+				{
+					id: passcodeQuery.id
+				},
+				{
+					id: freshmenId
+				}
+			),
+			FreshmenDetailsController(prisma).increasePasscodePoints(
+				{
+					id: freshmenId
+				},
+				BELLS
+			),
+			FreshmenDetailsController(prisma).incrementFreshmenBalance(
+				{
+					id: freshmenId
+				},
+				SHARDS
+			)
+		]);
+
+		return {
+			success: true,
+			payload: { ...passcodeQuery, bells: BELLS, shards: SHARDS }
+		};
+	}),
+
+	getRevealedHints: freshmenProcedure.query(async ({ ctx }) => {
+		return await FreshmenDetailsController(prisma).getRevealedHints({
+			id: ctx.user!.freshmenDetails!.id
+		});
+	}),
+
+	getScannedQRs: freshmenProcedure.query(async ({ ctx }) => {
+		const { user } = ctx;
+
+		const res = await FreshmenDetailsController(prisma).getFreshmenById(
+			user?.freshmenDetails?.id as string
+		);
+
+		return {
+			success: true,
+			payload: res?.scannedQrs
+		};
+	}),
+
+	getUsedPasscodes: freshmenProcedure.query(async ({ ctx }) => {
+		const { user } = ctx;
+
+		const res = await FreshmenDetailsController(prisma).getFreshmenById(
+			user?.freshmenDetails?.id as string
+		);
+
+		return {
+			success: true,
+			payload: res?.usedPasscodes
+		};
+	}),
+
+	getNextHintPrice: freshmenProcedure.query(async ({ ctx }) => {
+		const freshId = ctx.user?.freshmenDetails!.id;
+		const freshmenController = FreshmenDetailsController(prisma);
+		return await freshmenController.getNextHintPrice({ id: freshId });
+	}),
+
+	buyHint: freshmenProcedure.query(async ({ ctx }) => {
+		// check if the user has pair or not
+		const pair = await prisma.pair.findUnique({
+			where: {
+				freshmenDetailsId: ctx.user?.freshmenDetails?.id
+			}
+		});
+		if (!pair) {
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'Pair not found'
+			});
+		}
+
+		const freshId = ctx.user?.freshmenDetails!.id;
+		const freshmenController = FreshmenDetailsController(prisma);
+		const hints =
+			(await freshmenController.getRevealedHints({
+				id: freshId
+			})) ?? [];
+
+		// check if already unlock all hint
+		if (hints?.length >= 10)
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'Already have unlocked all the hints'
+			});
+
+		// get the money the user has
+		const money = ctx.user!.freshmenDetails!.passcodePoints;
+
+		const cost = await freshmenController.getNextHintPrice({ id: freshId });
+
+		if (cost > money)
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'Not enough money'
+			});
+
+		// begin buying hint
+		await prisma.$transaction([freshmenController.decrementPasscodePoint({ id: freshId }, cost)]);
+
+		const revealed = await freshmenController.revealNextHint({ id: freshId });
+
+		return revealed;
+	})
 });

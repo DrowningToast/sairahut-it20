@@ -1,7 +1,9 @@
 <script lang="ts">
+	import { page } from '$app/stores';
 	import DynamicLoginButton from '$components/svelte/DynamicLoginButton.svelte';
 	import LandingFooter from '$components/svelte/LandingFooter.svelte';
 	import SrhHeading from '$components/svelte/SRHHeading.svelte';
+	import { AuthController } from '$lib/auth/AuthController';
 </script>
 
 <svelte:head>

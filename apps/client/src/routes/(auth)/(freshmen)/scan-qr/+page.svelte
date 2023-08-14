@@ -55,6 +55,12 @@
 
 			success = true;
 			qrScanner.start();
+
+			// play sfx
+			const rewardSFX = new Audio();
+			rewardSFX.src = '/sfx/RewardSFX.ogg';
+			rewardSFX.play();
+
 			setTimeout(() => {
 				found = undefined;
 				success = false;
@@ -97,7 +103,7 @@
 </script>
 
 {#if found && !success}
-	<div class="absolute inset-0 grid place-items-center z-20">
+	<div class="fixed inset-0 grid place-items-center z-20">
 		<div class="absolute inset-0 bg-gray-50/25" />
 		<div class="bg-neutral-900 mx-12 p-8 flex flex-col gap-y-2 z-10 rounded-lg">
 			<h1 class="text-accent text-lg font-semibold">เจอภูตแล้ว!</h1>

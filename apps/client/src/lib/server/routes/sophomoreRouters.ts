@@ -6,7 +6,7 @@ import { prisma } from '$lib/serverUtils';
 import { databaseController } from '../controllers';
 import { TRPCError } from '@trpc/server';
 import type { SophomoreDetails } from 'database';
-import { determineYear } from '$lib/utils';
+import { determineYear, generateRandomString } from '$lib/utils';
 import { SophomoreDetailsController } from '../database/sophomore/controller';
 
 interface SearchQuery {
@@ -20,20 +20,13 @@ interface SearchQuery {
 		fullname?: {
 			contains: string | undefined;
 		};
+		user?: {
+			faction?: {
+				handler?: string | undefined;
+			};
+		};
 	};
 }
-
-export const generateRandomString = (length: number) => {
-	let result = '';
-	const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-	const charactersLength = characters.length;
-	let counter = 0;
-	while (counter < length) {
-		result += characters.charAt(Math.floor(Math.random() * charactersLength));
-		counter += 1;
-	}
-	return result;
-};
 
 export const sophomoreRouters = createRouter({
 	getAirtableParticipantByStudentId: oldProcedure
@@ -158,7 +151,8 @@ export const sophomoreRouters = createRouter({
 				queryBy: z.enum(['STUDENT_ID', 'FIRSTNAME', 'NICKNAME']),
 				q: z.string().optional(),
 				first: z.number(),
-				last: z.number()
+				last: z.number(),
+				faction: z.string().optional()
 			})
 		)
 		.query(async ({ input }) => {
@@ -193,6 +187,15 @@ export const sophomoreRouters = createRouter({
 					}
 				};
 			}
+
+			if (input.faction && searchQuery) {
+				searchQuery.where.user = {
+					faction: {
+						handler: input.faction
+					}
+				};
+			}
+
 			data = await SophomoreDetailsController(prisma).findMany({
 				...searchQuery,
 				select: {
@@ -203,7 +206,13 @@ export const sophomoreRouters = createRouter({
 					fullname: true,
 					user: {
 						select: {
-							balance: true
+							balance: true,
+							faction: {
+								select: {
+									handler: true,
+									name: true
+								}
+							}
 						}
 					}
 				},
@@ -214,5 +223,45 @@ export const sophomoreRouters = createRouter({
 			return {
 				data
 			};
-		})
+		}),
+	getUsedQRs: oldProcedure.query(async ({ ctx }) => {
+		const { user } = ctx;
+
+		const res = await SophomoreDetailsController(prisma).getUsedQRsByOwnerId(
+			user?.sophomoreDetails?.id as string
+		);
+
+		return {
+			success: true,
+			payload: res
+		};
+	}),
+	getUsedPasscodes: oldProcedure.query(async ({ ctx }) => {
+		const { user } = ctx;
+
+		const res = await SophomoreDetailsController(prisma).getUsedPasscodesByOwnerId(
+			user?.sophomoreDetails?.id as string
+		);
+
+		return {
+			success: true,
+			payload: res
+		};
+	}),
+	/**
+	 * Return a 6 characters passcode, return the last one if it still hasn't been claimed
+	 * generate a new one, if the last one expires
+	 */
+	getPasscode: oldProcedure.query(async ({ ctx }) => {
+		const { user } = ctx;
+
+		const res = await SophomoreDetailsController(prisma).getSophomorePasscode({
+			id: user?.sophomoreDetails!.id
+		});
+
+		return {
+			success: true,
+			payload: res
+		};
+	})
 });
