@@ -215,11 +215,7 @@ model SophomoreDetails {
   user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   pair              Pair[]
 
-  verseA MagicVerse?
-  verseB MagicVerse?
-  verseC MagicVerse?
-
-  @@unique([verseA, verseB, verseC])
+  verses MagicVerse[]
 }
 
 model TodayResin {
