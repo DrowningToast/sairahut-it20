@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { page } from '$app/stores';
+	import Dropdown from '$components/svelte/Dropdown.svelte';
 	import SrhButton from '$components/svelte/SRHButton.svelte';
 	import Input from '$components/ui/input/Input.svelte';
 	import Label from '$components/ui/label/Label.svelte';
@@ -19,6 +21,7 @@
 	import { createQuery } from '@tanstack/svelte-query';
 	import { FacebookIcon, InstagramIcon } from 'lucide-svelte';
 	import { z } from 'zod';
+	import type { PageData } from './$types';
 
 	const PAGINATION_SIZE = 600;
 	let queryBy: 'STUDENT_ID' | 'FIRSTNAME' | 'NICKNAME';
@@ -29,8 +32,9 @@
 	$: queryBy = 'NICKNAME';
 	$: bindedQueryString = '' as string | undefined;
 	$: queryString = '' as string | undefined;
-	$: bindedQueryTarget = 'SOP' as typeof queryTarget;
-	$: queryTarget = 'SOP';
+	$: queryTarget = 'SOP' as typeof queryTarget;
+	let filterByFaction: undefined | string;
+	$: filterByFaction = undefined;
 
 	$: {
 		switch (queryTarget) {
@@ -48,7 +52,7 @@
 	const handleSearch = () => () => {
 		queryBy = bindedQueryBy;
 		queryString = bindedQueryString;
-		queryTarget = bindedQueryTarget;
+		queryTarget = queryTarget;
 		$searchQuery.refetch();
 	};
 
@@ -78,7 +82,8 @@
 						first: 0,
 						last: PAGINATION_SIZE,
 						queryBy,
-						q: queryString
+						q: queryString,
+						faction: filterByFaction
 					});
 
 					data = [...data, ...res.data];
@@ -107,6 +112,8 @@
 			queryString = undefined;
 		}
 	}
+
+	const data = $page.data as PageData;
 </script>
 
 <div class="font-krub text-white drop-shadow-[0px_0px_10px_#FFAEBD] flex gap-y-2 flex-col">
@@ -114,7 +121,7 @@
 	<p class="text-base">บัญชีรวบรวมรายชื่อจอมเวทย์ฝึกหัดทุกท่านและของเหล่าภูตมากมาย</p>
 </div>
 
-<RadioGroup class="flex gap-x-2 ml-auto mt-8 text-accent" bind:value={bindedQueryTarget}>
+<RadioGroup class="flex gap-x-2 ml-auto mt-8 text-accent" bind:value={queryTarget}>
 	<div class="flex items-center space-x-2">
 		<RadioGroupItem value="SOP" id="SOP" />
 		<Label for="SOP">เหล่าภูต</Label>
@@ -139,6 +146,21 @@
 		<Label for="STUDENT_ID">รหัสนักศึกษา</Label>
 	</div>
 </RadioGroup>
+
+<div class="mt-2">
+	{#if data.factions && queryTarget === 'SOP'}
+		<p class=" text-right text-sm text-accent font-semibold">เลือกเผ่า</p>
+		<Dropdown
+			class="text-white mt-1 outline-2 outline-white bg-neutral-900/25"
+			bind:value={filterByFaction}
+		>
+			{#each data.factions as faction}
+				<option class="text-white" value={faction.handler}>{faction.name}</option>
+			{/each}
+		</Dropdown>
+	{/if}
+</div>
+
 <div class="grid grid-cols-12 gap-x-2 mt-2">
 	<Input
 		placeholder="ค้นหา"
@@ -162,8 +184,8 @@
 		<TableHeader>
 			<TableRow class="gap-x-6">
 				<TableHead>รุ่น</TableHead>
-				<TableHead>ชื่อจริง</TableHead>
 				<TableHead>ชื่อเล่น</TableHead>
+				<TableHead>{queryTarget === 'SOP' ? 'ภูต' : 'ชื่อจริง'}</TableHead>
 				<TableHead>{targetPointTitle}</TableHead>
 				<TableHead>Contact</TableHead>
 			</TableRow>
@@ -173,8 +195,12 @@
 				{#each $searchQuery.data as d}
 					<TableRow class="gap-x-1 h-6">
 						<TableCell>{determineYear(d.student_id)}</TableCell>
-						<TableCell>{d.fullname?.split(' ')[0] ?? `${d.first_name}`}</TableCell>
 						<TableCell>{d.nickname}</TableCell>
+						<TableCell
+							>{queryTarget === 'SOP'
+								? d.user.faction.name
+								: d.fullname?.split(' ')[0] ?? `${d.first_name}`}</TableCell
+						>
 						<TableCell>{d.user.balance}</TableCell>
 						<TableCell class="flex flex-row gap-1">
 							{#if z.string().url().safeParse(d.facebook_link).success}
