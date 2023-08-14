@@ -121,9 +121,6 @@ importers:
       '@types/cookie':
         specifier: ^0.5.1
         version: 0.5.1
-      '@types/gtag.js':
-        specifier: ^0.0.13
-        version: 0.0.13
       '@typescript-eslint/eslint-plugin':
         specifier: ^5.45.0
         version: 5.60.1(@typescript-eslint/parser@5.59.2)(eslint@8.39.0)(typescript@5.0.4)
@@ -2234,10 +2231,6 @@ packages:
     dependencies:
       '@types/minimatch': 5.1.2
       '@types/node': 17.0.45
-    dev: true
-
-  /@types/gtag.js@0.0.13:
-    resolution: {integrity: sha512-yOXFkfnt1DQr1v9B4ERulJOGnbdVqnPHV8NG4nkQhnu4qbrJecQ06DlaKmSjI3nzIwBj5U9/X61LY4sTc2KbaQ==}
     dev: true
 
   /@types/inquirer@6.5.0:
