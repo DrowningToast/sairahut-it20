@@ -15,6 +15,7 @@
 		ost = new Audio('/sfx/Old_Friend.ogg');
 		ost.loop = true;
 		ost.volume = 0.7;
+		ost.loop = true;
 		ost.play();
 	});
 

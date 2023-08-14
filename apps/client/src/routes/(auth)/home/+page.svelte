@@ -91,9 +91,9 @@
 		/>
 		<CardButtonMenu
 			isActived={false}
-			img_active={'../sacred-active.png'}
-			img_inactive={'/sacred-inactive.png'}
-			text={'ภูตของตนเอง'}
+			img_active={'../showndown-active.png'}
+			img_inactive={'/showdown-inactive.png'}
+			text={'Placeholder text'}
 			link={'/showdown'}
 		/>
 	</div>
