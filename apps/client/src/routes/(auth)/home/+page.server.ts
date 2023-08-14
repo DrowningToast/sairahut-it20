@@ -110,6 +110,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 		playerType: type,
 		session,
 		user,
-		hasPair
+		hasPair,
+		vip: user.freshmenDetails?.vip,
+		easterEgg: user.freshmenDetails?.easterEgg
 	};
 };

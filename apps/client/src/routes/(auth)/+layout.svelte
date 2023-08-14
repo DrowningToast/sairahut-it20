@@ -3,6 +3,7 @@
 	import Navbar from '$components/svelte/Navbar.svelte';
 	import type { LayoutServerData } from './$types';
 	import { userType } from '$lib/store/userType';
+	import { secretMode } from '$lib/store/secret';
 
 	let data: LayoutServerData;
 	export { data };
@@ -12,7 +13,7 @@
 
 <div
 	class={`min-h-screen overflow-x-hidden flex flex-col bg-gradient-to-b ${
-		$userType === 'SOPHOMORE' ? 'from-primary' : 'from-primary-alt'
+		$secretMode ? 'from-red-800' : $userType === 'SOPHOMORE' ? 'from-primary' : 'from-primary-alt'
 	} to-black md:hidden`}
 >
 	<Navbar />
