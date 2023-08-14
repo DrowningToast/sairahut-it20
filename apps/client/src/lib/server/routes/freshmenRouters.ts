@@ -599,14 +599,14 @@ export const freshmenRouters = createRouter({
 			const detectPair = !!logs.find((log) => log.owner.student_id === pair?.sophomore.student_id);
 
 			return {
-				pass: true,
+				reached: true,
 				detectPair,
 				threshold: AMOUNT_THRESHOLD,
 				logs
 			};
 		} else {
 			return {
-				pass: false,
+				reached: false,
 				threshold: AMOUNT_THRESHOLD,
 				logs
 			};

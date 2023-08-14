@@ -9,7 +9,7 @@ export const load = (async ({ locals, fetch }) => {
 
 	const trpc = trpcOnServer(fetch);
 
-	const res = trpc.freshmens.checkReachMilestone.query();
+	const res = await trpc.freshmens.checkReachMilestone.query();
 
-	return { ...res };
+	return { ...res, user: locals.user };
 }) satisfies PageServerLoad;

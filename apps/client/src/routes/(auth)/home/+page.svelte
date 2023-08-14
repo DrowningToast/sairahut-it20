@@ -85,7 +85,7 @@
 			isActived={$userType === 'FRESH' && (vip ?? false)}
 			img_active={'../sacred-active.png'}
 			img_inactive={'../sacred-inactive.png'}
-			text={$userType === 'FRESH' && (vip ?? false) ? 'คาถ่าศักดิ์สิทธิ์' : '???'}
+			text={$userType === 'FRESH' && (vip ?? false) ? 'เวทมนต์ต้องห้าม' : '???'}
 			link={'/sacred'}
 		/>
 	</div>
