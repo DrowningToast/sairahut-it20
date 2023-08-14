@@ -69,7 +69,9 @@
 
 		<div>
 			<h1 class="text-lg font-semibold">
-				{`${pair.freshmen.first_name} ${pair.freshmen.last_name} (สาขา : ${pair.freshmen.branch})`}
+				{`${pair.freshmen.title === 'MRS' ? 'นางสาว' : 'นาย'} ${pair.freshmen.first_name} ${
+					pair.freshmen.last_name
+				} (สาขา : ${pair.freshmen.branch})`}
 			</h1>
 			<h1 class="text-4xl font-bold mt-5">{pair.freshmen.nickname}</h1>
 		</div>
