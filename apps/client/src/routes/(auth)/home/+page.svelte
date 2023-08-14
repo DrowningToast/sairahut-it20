@@ -94,7 +94,7 @@
 			img_active={'../showdown-active.png'}
 			img_inactive={'/showdown-inactive.png'}
 			text={'ภูตของฉัน'}
-			link={'/showdown'}
+			link={$userType === 'SOPHOMORE' ? '/verses' : '/showdown'}
 		/>
 	</div>
 	<Separator class="mt-12 bg-accent" />
