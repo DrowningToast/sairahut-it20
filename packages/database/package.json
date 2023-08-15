@@ -16,11 +16,15 @@
         "pg:generate": " dotenv -e ../../.env -- prisma generate",
         "pg:force-reset": "dotenv -e ../../.env -- prisma db push --force-reset",
         "pg:pull": "dotenv -e ../../.env -- prisma db pull",
-        "db:studio": "dotenv -e ../../.env -- prisma studio"
+        "db:studio": "dotenv -e ../../.env -- prisma studio",
+        "db:seed": "dotenv -e ../../.env -- prisma db seed"
     },
     "devDependencies": {
         "prisma": "^4.16.2"
     },
+    "prisma": {
+        "seed": "ts-node prisma/seed.ts"
+      },
     "main": "./index.ts",
     "types": "./index.ts"
 }

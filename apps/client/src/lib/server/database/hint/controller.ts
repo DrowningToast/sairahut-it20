@@ -65,7 +65,7 @@ export const hintController = {
  * V2
  */
 
-export const HINT_PRICES = [0, 5, 10, 10, 15, 15, 20, 20, 25, 30, Infinity];
+export const HINT_PRICES = [0, 10, 10, 15, 15, 15, 20, 20, 25, 30, Infinity];
 // export const HINT_PRICES = [0, 1, 2, 2, 3, 3, 3, 3, 3, 3, 999];
 
 export const HintsController = (prisma: PrismaClient) => {

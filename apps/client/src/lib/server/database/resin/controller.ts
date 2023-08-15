@@ -45,6 +45,9 @@ export const ResinController = (prisma: PrismaClient) => {
 			where: {
 				freshmen: {
 					id: instance.id
+				},
+				quota: {
+					gt: 0
 				}
 			},
 			orderBy: {

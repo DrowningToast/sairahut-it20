@@ -7,7 +7,7 @@
 <hr class="border border-[#AB9F7E]" />
 <div class="flex flex-col justify-center gap-y-7 mt-5">
 	<CalendarTemplate day="Mon. - Fri." date="7 August">
-		<p>ลงทะเบียนเข้าสู่โลกเวทมนต์​<br />และเล่น Mystic Choice</p>
+		<p>ลงทะเบียนเข้าสู่โลกเวทมนตร์<br />และเล่น Mystic Choice</p>
 	</CalendarTemplate>
 
 	<!-- <CalendarTemplate day="วันศุกร์" date="11 สิงหาคม">
