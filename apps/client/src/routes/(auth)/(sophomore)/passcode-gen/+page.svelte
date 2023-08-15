@@ -44,7 +44,7 @@
 	>
 		<img src="./konnok.png" alt="" class=" absolute left-5 h-3/5 transform -scale-x-100" />
 		{#if isLoading}
-			<h1 class="text-gray-500 font-Pridi font-thin text-3xl">
+			<h1 class="text-gray-500 font-sans font-thin text-3xl">
 				{passcodeViewModel}
 			</h1>
 		{:else}
