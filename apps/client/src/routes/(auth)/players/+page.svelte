@@ -187,7 +187,7 @@
 						<TableCell>
 							{d.fullname?.split(' ')[0] ?? `${d.first_name}`}</TableCell
 						>
-						<TableCell>{d.user.balance}</TableCell>
+						<TableCell>{d.fullname ? '???' : d.user.balance}</TableCell>
 						<TableCell class="flex flex-row gap-1">
 							{#if z.string().url().safeParse(d.facebook_link).success}
 								<a href={d.facebook_link} target="_blank" rel="noreferrer">
