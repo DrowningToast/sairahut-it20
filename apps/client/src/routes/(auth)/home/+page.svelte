@@ -36,8 +36,7 @@
 			ยินดีต้อนรับ {session?.user?.name?.split(' ')[0]} เข้าสู่โลกเวทมนตร์
 		</p>
 		<p class="font-Pridi text-gray-200 text-sm">
-			ตอนนี้คุณมีอยู่ {user.balance}
-			{playerType === 'FRESHMEN' ? 'Spirit Shards' : 'Humanity'}
+			{playerType === 'FRESHMEN' ? 'Spirit Shards' : 'Humanity'} : {user.balance}
 		</p>
 	</div>
 	<Separator class="my-6" />

@@ -113,6 +113,18 @@
 			/>
 		</div>
 	{/each}
+	{#if alreadySetHints}
+		<div class="flex flex-col items-center gap-y-4">
+			<div class="flex flex-col items-center gap-y-2">
+				<EyeOff opacity={0.5} />
+				<p>บ่งบอกถึงว่าน้องรหัสนั้นยังไม่เห็นคำใบ้นี้</p>
+			</div>
+			<div class="flex flex-col items-center gap-y-2">
+				<Eye opacity={0.5} />
+				<p>บ่งบอกว่าน้องนั้นเห็นคำใบ้นี้แล้ว</p>
+			</div>
+		</div>
+	{/if}
 	<div class="flex justify-between mt-2">
 		<!-- Inform the user about the icon's meaning -->
 

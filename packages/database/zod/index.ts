@@ -1222,7 +1222,16 @@ export const PairOrderByWithRelationInputSchema: z.ZodType<Prisma.PairOrderByWit
 
 export const PairWhereUniqueInputSchema: z.ZodType<Prisma.PairWhereUniqueInput> = z.object({
   id: z.string().cuid().optional(),
+<<<<<<< HEAD
+  freshmenDetailsId: z.string().optional(),
+  sophomoreDetailsId: z.string().optional()
+=======
   freshmenDetailsId: z.string().optional()
+<<<<<<< HEAD
+
+>>>>>>> dev/1.1
+=======
+>>>>>>> dev/1.1
 }).strict();
 
 export const PairOrderByWithAggregationInputSchema: z.ZodType<Prisma.PairOrderByWithAggregationInput> = z.object({
