@@ -30,11 +30,13 @@ export const RevealedHintInstancesScalarFieldEnumSchema = z.enum(['create_at','u
 
 export const PairScalarFieldEnumSchema = z.enum(['id','freshmenDetailsId','sophomoreDetailsId']);
 
-export const FreshmenDetailsScalarFieldEnumSchema = z.enum(['create_at','update_at','id','userId','thisOrThat','thisOrThatReady','student_id','title','first_name','last_name','nickname','branch','facebook_link','instagram_link','phone','passcodePoints','easterEgg','vip','quota']);
+export const FreshmenDetailsScalarFieldEnumSchema = z.enum(['create_at','update_at','id','userId','thisOrThat','thisOrThatReady','student_id','title','first_name','last_name','nickname','branch','facebook_link','instagram_link','phone','passcodePoints','easterEgg','vip']);
 
 export const HintSlugsScalarFieldEnumSchema = z.enum(['slug','displayName','index']);
 
 export const HintsScalarFieldEnumSchema = z.enum(['hintSlugId','content','sophomoreId','craete_at','update_at']);
+
+export const MagicVerseCastScalarFieldEnumSchema = z.enum(['id','result']);
 
 export const MagicVersesScalarFieldEnumSchema = z.enum(['handler','name','wildcard','cost','sophomoreDetailsId']);
 
@@ -228,7 +230,6 @@ export const FreshmenDetailsSchema = z.object({
   passcodePoints: z.number().int(),
   easterEgg: z.boolean(),
   vip: z.boolean(),
-  quota: z.number().int(),
 })
 
 export type FreshmenDetails = z.infer<typeof FreshmenDetailsSchema>
@@ -258,6 +259,17 @@ export const HintsSchema = z.object({
 })
 
 export type Hints = z.infer<typeof HintsSchema>
+
+/////////////////////////////////////////
+// MAGIC VERSE CAST SCHEMA
+/////////////////////////////////////////
+
+export const MagicVerseCastSchema = z.object({
+  id: z.string().cuid(),
+  result: z.boolean().array(),
+})
+
+export type MagicVerseCast = z.infer<typeof MagicVerseCastSchema>
 
 /////////////////////////////////////////
 // MAGIC VERSES SCHEMA
@@ -611,7 +623,6 @@ export const FreshmenDetailsSelectSchema: z.ZodType<Prisma.FreshmenDetailsSelect
   passcodePoints: z.boolean().optional(),
   easterEgg: z.boolean().optional(),
   vip: z.boolean().optional(),
-  quota: z.boolean().optional(),
   user: z.union([z.boolean(),z.lazy(() => UserArgsSchema)]).optional(),
   usedPasscodes: z.union([z.boolean(),z.lazy(() => PasscodeInstancesFindManyArgsSchema)]).optional(),
   scannedQrs: z.union([z.boolean(),z.lazy(() => QRInstancesFindManyArgsSchema)]).optional(),
@@ -684,16 +695,54 @@ export const HintsSelectSchema: z.ZodType<Prisma.HintsSelect> = z.object({
   _count: z.union([z.boolean(),z.lazy(() => HintsCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
+// MAGIC VERSE CAST
+//------------------------------------------------------
+
+export const MagicVerseCastIncludeSchema: z.ZodType<Prisma.MagicVerseCastInclude> = z.object({
+  verses: z.union([z.boolean(),z.lazy(() => MagicVersesFindManyArgsSchema)]).optional(),
+  _count: z.union([z.boolean(),z.lazy(() => MagicVerseCastCountOutputTypeArgsSchema)]).optional(),
+}).strict()
+
+export const MagicVerseCastArgsSchema: z.ZodType<Prisma.MagicVerseCastArgs> = z.object({
+  select: z.lazy(() => MagicVerseCastSelectSchema).optional(),
+  include: z.lazy(() => MagicVerseCastIncludeSchema).optional(),
+}).strict();
+
+export const MagicVerseCastCountOutputTypeArgsSchema: z.ZodType<Prisma.MagicVerseCastCountOutputTypeArgs> = z.object({
+  select: z.lazy(() => MagicVerseCastCountOutputTypeSelectSchema).nullish(),
+}).strict();
+
+export const MagicVerseCastCountOutputTypeSelectSchema: z.ZodType<Prisma.MagicVerseCastCountOutputTypeSelect> = z.object({
+  verses: z.boolean().optional(),
+}).strict();
+
+export const MagicVerseCastSelectSchema: z.ZodType<Prisma.MagicVerseCastSelect> = z.object({
+  id: z.boolean().optional(),
+  result: z.boolean().optional(),
+  verses: z.union([z.boolean(),z.lazy(() => MagicVersesFindManyArgsSchema)]).optional(),
+  _count: z.union([z.boolean(),z.lazy(() => MagicVerseCastCountOutputTypeArgsSchema)]).optional(),
+}).strict()
+
 // MAGIC VERSES
 //------------------------------------------------------
 
 export const MagicVersesIncludeSchema: z.ZodType<Prisma.MagicVersesInclude> = z.object({
   SophomoreDetails: z.union([z.boolean(),z.lazy(() => SophomoreDetailsArgsSchema)]).optional(),
+  casts: z.union([z.boolean(),z.lazy(() => MagicVerseCastFindManyArgsSchema)]).optional(),
+  _count: z.union([z.boolean(),z.lazy(() => MagicVersesCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
 export const MagicVersesArgsSchema: z.ZodType<Prisma.MagicVersesArgs> = z.object({
   select: z.lazy(() => MagicVersesSelectSchema).optional(),
   include: z.lazy(() => MagicVersesIncludeSchema).optional(),
+}).strict();
+
+export const MagicVersesCountOutputTypeArgsSchema: z.ZodType<Prisma.MagicVersesCountOutputTypeArgs> = z.object({
+  select: z.lazy(() => MagicVersesCountOutputTypeSelectSchema).nullish(),
+}).strict();
+
+export const MagicVersesCountOutputTypeSelectSchema: z.ZodType<Prisma.MagicVersesCountOutputTypeSelect> = z.object({
+  casts: z.boolean().optional(),
 }).strict();
 
 export const MagicVersesSelectSchema: z.ZodType<Prisma.MagicVersesSelect> = z.object({
@@ -703,6 +752,8 @@ export const MagicVersesSelectSchema: z.ZodType<Prisma.MagicVersesSelect> = z.ob
   cost: z.boolean().optional(),
   sophomoreDetailsId: z.boolean().optional(),
   SophomoreDetails: z.union([z.boolean(),z.lazy(() => SophomoreDetailsArgsSchema)]).optional(),
+  casts: z.union([z.boolean(),z.lazy(() => MagicVerseCastFindManyArgsSchema)]).optional(),
+  _count: z.union([z.boolean(),z.lazy(() => MagicVersesCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
 // SOPHOMORE DETAILS
@@ -1305,7 +1356,6 @@ export const FreshmenDetailsWhereInputSchema: z.ZodType<Prisma.FreshmenDetailsWh
   passcodePoints: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   easterEgg: z.union([ z.lazy(() => BoolFilterSchema),z.boolean() ]).optional(),
   vip: z.union([ z.lazy(() => BoolFilterSchema),z.boolean() ]).optional(),
-  quota: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   user: z.union([ z.lazy(() => UserRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),
   usedPasscodes: z.lazy(() => PasscodeInstancesListRelationFilterSchema).optional(),
   scannedQrs: z.lazy(() => QRInstancesListRelationFilterSchema).optional(),
@@ -1332,7 +1382,6 @@ export const FreshmenDetailsOrderByWithRelationInputSchema: z.ZodType<Prisma.Fre
   passcodePoints: z.lazy(() => SortOrderSchema).optional(),
   easterEgg: z.lazy(() => SortOrderSchema).optional(),
   vip: z.lazy(() => SortOrderSchema).optional(),
-  quota: z.lazy(() => SortOrderSchema).optional(),
   user: z.lazy(() => UserOrderByWithRelationInputSchema).optional(),
   usedPasscodes: z.lazy(() => PasscodeInstancesOrderByRelationAggregateInputSchema).optional(),
   scannedQrs: z.lazy(() => QRInstancesOrderByRelationAggregateInputSchema).optional(),
@@ -1365,7 +1414,6 @@ export const FreshmenDetailsOrderByWithAggregationInputSchema: z.ZodType<Prisma.
   passcodePoints: z.lazy(() => SortOrderSchema).optional(),
   easterEgg: z.lazy(() => SortOrderSchema).optional(),
   vip: z.lazy(() => SortOrderSchema).optional(),
-  quota: z.lazy(() => SortOrderSchema).optional(),
   _count: z.lazy(() => FreshmenDetailsCountOrderByAggregateInputSchema).optional(),
   _avg: z.lazy(() => FreshmenDetailsAvgOrderByAggregateInputSchema).optional(),
   _max: z.lazy(() => FreshmenDetailsMaxOrderByAggregateInputSchema).optional(),
@@ -1395,7 +1443,6 @@ export const FreshmenDetailsScalarWhereWithAggregatesInputSchema: z.ZodType<Pris
   passcodePoints: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
   easterEgg: z.union([ z.lazy(() => BoolWithAggregatesFilterSchema),z.boolean() ]).optional(),
   vip: z.union([ z.lazy(() => BoolWithAggregatesFilterSchema),z.boolean() ]).optional(),
-  quota: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
 }).strict();
 
 export const HintSlugsWhereInputSchema: z.ZodType<Prisma.HintSlugsWhereInput> = z.object({
@@ -1491,6 +1538,41 @@ export const HintsScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.HintsSc
   update_at: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
 }).strict();
 
+export const MagicVerseCastWhereInputSchema: z.ZodType<Prisma.MagicVerseCastWhereInput> = z.object({
+  AND: z.union([ z.lazy(() => MagicVerseCastWhereInputSchema),z.lazy(() => MagicVerseCastWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => MagicVerseCastWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => MagicVerseCastWhereInputSchema),z.lazy(() => MagicVerseCastWhereInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  result: z.lazy(() => BoolNullableListFilterSchema).optional(),
+  verses: z.lazy(() => MagicVersesListRelationFilterSchema).optional()
+}).strict();
+
+export const MagicVerseCastOrderByWithRelationInputSchema: z.ZodType<Prisma.MagicVerseCastOrderByWithRelationInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  result: z.lazy(() => SortOrderSchema).optional(),
+  verses: z.lazy(() => MagicVersesOrderByRelationAggregateInputSchema).optional()
+}).strict();
+
+export const MagicVerseCastWhereUniqueInputSchema: z.ZodType<Prisma.MagicVerseCastWhereUniqueInput> = z.object({
+  id: z.string().cuid().optional()
+}).strict();
+
+export const MagicVerseCastOrderByWithAggregationInputSchema: z.ZodType<Prisma.MagicVerseCastOrderByWithAggregationInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  result: z.lazy(() => SortOrderSchema).optional(),
+  _count: z.lazy(() => MagicVerseCastCountOrderByAggregateInputSchema).optional(),
+  _max: z.lazy(() => MagicVerseCastMaxOrderByAggregateInputSchema).optional(),
+  _min: z.lazy(() => MagicVerseCastMinOrderByAggregateInputSchema).optional()
+}).strict();
+
+export const MagicVerseCastScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.MagicVerseCastScalarWhereWithAggregatesInput> = z.object({
+  AND: z.union([ z.lazy(() => MagicVerseCastScalarWhereWithAggregatesInputSchema),z.lazy(() => MagicVerseCastScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  OR: z.lazy(() => MagicVerseCastScalarWhereWithAggregatesInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => MagicVerseCastScalarWhereWithAggregatesInputSchema),z.lazy(() => MagicVerseCastScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  result: z.lazy(() => BoolNullableListFilterSchema).optional()
+}).strict();
+
 export const MagicVersesWhereInputSchema: z.ZodType<Prisma.MagicVersesWhereInput> = z.object({
   AND: z.union([ z.lazy(() => MagicVersesWhereInputSchema),z.lazy(() => MagicVersesWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => MagicVersesWhereInputSchema).array().optional(),
@@ -1501,6 +1583,7 @@ export const MagicVersesWhereInputSchema: z.ZodType<Prisma.MagicVersesWhereInput
   cost: z.union([ z.lazy(() => FloatFilterSchema),z.number() ]).optional(),
   sophomoreDetailsId: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   SophomoreDetails: z.union([ z.lazy(() => SophomoreDetailsRelationFilterSchema),z.lazy(() => SophomoreDetailsWhereInputSchema) ]).optional().nullable(),
+  casts: z.lazy(() => MagicVerseCastListRelationFilterSchema).optional()
 }).strict();
 
 export const MagicVersesOrderByWithRelationInputSchema: z.ZodType<Prisma.MagicVersesOrderByWithRelationInput> = z.object({
@@ -1509,7 +1592,8 @@ export const MagicVersesOrderByWithRelationInputSchema: z.ZodType<Prisma.MagicVe
   wildcard: z.lazy(() => SortOrderSchema).optional(),
   cost: z.lazy(() => SortOrderSchema).optional(),
   sophomoreDetailsId: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
-  SophomoreDetails: z.lazy(() => SophomoreDetailsOrderByWithRelationInputSchema).optional()
+  SophomoreDetails: z.lazy(() => SophomoreDetailsOrderByWithRelationInputSchema).optional(),
+  casts: z.lazy(() => MagicVerseCastOrderByRelationAggregateInputSchema).optional()
 }).strict();
 
 export const MagicVersesWhereUniqueInputSchema: z.ZodType<Prisma.MagicVersesWhereUniqueInput> = z.object({
@@ -2306,7 +2390,6 @@ export const FreshmenDetailsCreateInputSchema: z.ZodType<Prisma.FreshmenDetailsC
   passcodePoints: z.number().int().optional(),
   easterEgg: z.boolean().optional(),
   vip: z.boolean().optional(),
-  quota: z.number().int().optional(),
   user: z.lazy(() => UserCreateNestedOneWithoutFreshmenDetailsInputSchema),
   usedPasscodes: z.lazy(() => PasscodeInstancesCreateNestedManyWithoutUsedByInputSchema).optional(),
   scannedQrs: z.lazy(() => QRInstancesCreateNestedManyWithoutScannedByInputSchema).optional(),
@@ -2333,7 +2416,6 @@ export const FreshmenDetailsUncheckedCreateInputSchema: z.ZodType<Prisma.Freshme
   passcodePoints: z.number().int().optional(),
   easterEgg: z.boolean().optional(),
   vip: z.boolean().optional(),
-  quota: z.number().int().optional(),
   usedPasscodes: z.lazy(() => PasscodeInstancesUncheckedCreateNestedManyWithoutUsedByInputSchema).optional(),
   scannedQrs: z.lazy(() => QRInstancesUncheckedCreateNestedManyWithoutScannedByInputSchema).optional(),
   pair: z.lazy(() => PairUncheckedCreateNestedOneWithoutFreshmenInputSchema).optional(),
@@ -2358,7 +2440,6 @@ export const FreshmenDetailsUpdateInputSchema: z.ZodType<Prisma.FreshmenDetailsU
   passcodePoints: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   easterEgg: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   vip: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  quota: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   user: z.lazy(() => UserUpdateOneRequiredWithoutFreshmenDetailsNestedInputSchema).optional(),
   usedPasscodes: z.lazy(() => PasscodeInstancesUpdateManyWithoutUsedByNestedInputSchema).optional(),
   scannedQrs: z.lazy(() => QRInstancesUpdateManyWithoutScannedByNestedInputSchema).optional(),
@@ -2385,7 +2466,6 @@ export const FreshmenDetailsUncheckedUpdateInputSchema: z.ZodType<Prisma.Freshme
   passcodePoints: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   easterEgg: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   vip: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  quota: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   usedPasscodes: z.lazy(() => PasscodeInstancesUncheckedUpdateManyWithoutUsedByNestedInputSchema).optional(),
   scannedQrs: z.lazy(() => QRInstancesUncheckedUpdateManyWithoutScannedByNestedInputSchema).optional(),
   pair: z.lazy(() => PairUncheckedUpdateOneWithoutFreshmenNestedInputSchema).optional(),
@@ -2410,8 +2490,7 @@ export const FreshmenDetailsCreateManyInputSchema: z.ZodType<Prisma.FreshmenDeta
   phone: z.string(),
   passcodePoints: z.number().int().optional(),
   easterEgg: z.boolean().optional(),
-  vip: z.boolean().optional(),
-  quota: z.number().int().optional()
+  vip: z.boolean().optional()
 }).strict();
 
 export const FreshmenDetailsUpdateManyMutationInputSchema: z.ZodType<Prisma.FreshmenDetailsUpdateManyMutationInput> = z.object({
@@ -2432,7 +2511,6 @@ export const FreshmenDetailsUpdateManyMutationInputSchema: z.ZodType<Prisma.Fres
   passcodePoints: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   easterEgg: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   vip: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  quota: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const FreshmenDetailsUncheckedUpdateManyInputSchema: z.ZodType<Prisma.FreshmenDetailsUncheckedUpdateManyInput> = z.object({
@@ -2454,7 +2532,6 @@ export const FreshmenDetailsUncheckedUpdateManyInputSchema: z.ZodType<Prisma.Fre
   passcodePoints: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   easterEgg: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   vip: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  quota: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const HintSlugsCreateInputSchema: z.ZodType<Prisma.HintSlugsCreateInput> = z.object({
@@ -2561,12 +2638,52 @@ export const HintsUncheckedUpdateManyInputSchema: z.ZodType<Prisma.HintsUnchecke
   update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
+export const MagicVerseCastCreateInputSchema: z.ZodType<Prisma.MagicVerseCastCreateInput> = z.object({
+  id: z.string().cuid().optional(),
+  result: z.union([ z.lazy(() => MagicVerseCastCreateresultInputSchema),z.boolean().array() ]).optional(),
+  verses: z.lazy(() => MagicVersesCreateNestedManyWithoutCastsInputSchema).optional()
+}).strict();
+
+export const MagicVerseCastUncheckedCreateInputSchema: z.ZodType<Prisma.MagicVerseCastUncheckedCreateInput> = z.object({
+  id: z.string().cuid().optional(),
+  result: z.union([ z.lazy(() => MagicVerseCastCreateresultInputSchema),z.boolean().array() ]).optional(),
+  verses: z.lazy(() => MagicVersesUncheckedCreateNestedManyWithoutCastsInputSchema).optional()
+}).strict();
+
+export const MagicVerseCastUpdateInputSchema: z.ZodType<Prisma.MagicVerseCastUpdateInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  result: z.union([ z.lazy(() => MagicVerseCastUpdateresultInputSchema),z.boolean().array() ]).optional(),
+  verses: z.lazy(() => MagicVersesUpdateManyWithoutCastsNestedInputSchema).optional()
+}).strict();
+
+export const MagicVerseCastUncheckedUpdateInputSchema: z.ZodType<Prisma.MagicVerseCastUncheckedUpdateInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  result: z.union([ z.lazy(() => MagicVerseCastUpdateresultInputSchema),z.boolean().array() ]).optional(),
+  verses: z.lazy(() => MagicVersesUncheckedUpdateManyWithoutCastsNestedInputSchema).optional()
+}).strict();
+
+export const MagicVerseCastCreateManyInputSchema: z.ZodType<Prisma.MagicVerseCastCreateManyInput> = z.object({
+  id: z.string().cuid().optional(),
+  result: z.union([ z.lazy(() => MagicVerseCastCreateresultInputSchema),z.boolean().array() ]).optional(),
+}).strict();
+
+export const MagicVerseCastUpdateManyMutationInputSchema: z.ZodType<Prisma.MagicVerseCastUpdateManyMutationInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  result: z.union([ z.lazy(() => MagicVerseCastUpdateresultInputSchema),z.boolean().array() ]).optional(),
+}).strict();
+
+export const MagicVerseCastUncheckedUpdateManyInputSchema: z.ZodType<Prisma.MagicVerseCastUncheckedUpdateManyInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  result: z.union([ z.lazy(() => MagicVerseCastUpdateresultInputSchema),z.boolean().array() ]).optional(),
+}).strict();
+
 export const MagicVersesCreateInputSchema: z.ZodType<Prisma.MagicVersesCreateInput> = z.object({
   handler: z.string(),
   name: z.string(),
   wildcard: z.boolean().optional(),
   cost: z.number().optional(),
-  SophomoreDetails: z.lazy(() => SophomoreDetailsCreateNestedOneWithoutVersesInputSchema).optional()
+  SophomoreDetails: z.lazy(() => SophomoreDetailsCreateNestedOneWithoutVersesInputSchema).optional(),
+  casts: z.lazy(() => MagicVerseCastCreateNestedManyWithoutVersesInputSchema).optional()
 }).strict();
 
 export const MagicVersesUncheckedCreateInputSchema: z.ZodType<Prisma.MagicVersesUncheckedCreateInput> = z.object({
@@ -2574,7 +2691,8 @@ export const MagicVersesUncheckedCreateInputSchema: z.ZodType<Prisma.MagicVerses
   name: z.string(),
   wildcard: z.boolean().optional(),
   cost: z.number().optional(),
-  sophomoreDetailsId: z.string().optional().nullable()
+  sophomoreDetailsId: z.string().optional().nullable(),
+  casts: z.lazy(() => MagicVerseCastUncheckedCreateNestedManyWithoutVersesInputSchema).optional()
 }).strict();
 
 export const MagicVersesUpdateInputSchema: z.ZodType<Prisma.MagicVersesUpdateInput> = z.object({
@@ -2582,7 +2700,8 @@ export const MagicVersesUpdateInputSchema: z.ZodType<Prisma.MagicVersesUpdateInp
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   wildcard: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   cost: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
-  SophomoreDetails: z.lazy(() => SophomoreDetailsUpdateOneWithoutVersesNestedInputSchema).optional()
+  SophomoreDetails: z.lazy(() => SophomoreDetailsUpdateOneWithoutVersesNestedInputSchema).optional(),
+  casts: z.lazy(() => MagicVerseCastUpdateManyWithoutVersesNestedInputSchema).optional()
 }).strict();
 
 export const MagicVersesUncheckedUpdateInputSchema: z.ZodType<Prisma.MagicVersesUncheckedUpdateInput> = z.object({
@@ -2591,6 +2710,7 @@ export const MagicVersesUncheckedUpdateInputSchema: z.ZodType<Prisma.MagicVerses
   wildcard: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   cost: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   sophomoreDetailsId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  casts: z.lazy(() => MagicVerseCastUncheckedUpdateManyWithoutVersesNestedInputSchema).optional()
 }).strict();
 
 export const MagicVersesCreateManyInputSchema: z.ZodType<Prisma.MagicVersesCreateManyInput> = z.object({
@@ -3459,13 +3579,11 @@ export const FreshmenDetailsCountOrderByAggregateInputSchema: z.ZodType<Prisma.F
   phone: z.lazy(() => SortOrderSchema).optional(),
   passcodePoints: z.lazy(() => SortOrderSchema).optional(),
   easterEgg: z.lazy(() => SortOrderSchema).optional(),
-  vip: z.lazy(() => SortOrderSchema).optional(),
-  quota: z.lazy(() => SortOrderSchema).optional()
+  vip: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const FreshmenDetailsAvgOrderByAggregateInputSchema: z.ZodType<Prisma.FreshmenDetailsAvgOrderByAggregateInput> = z.object({
-  passcodePoints: z.lazy(() => SortOrderSchema).optional(),
-  quota: z.lazy(() => SortOrderSchema).optional()
+  passcodePoints: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const FreshmenDetailsMaxOrderByAggregateInputSchema: z.ZodType<Prisma.FreshmenDetailsMaxOrderByAggregateInput> = z.object({
@@ -3485,8 +3603,7 @@ export const FreshmenDetailsMaxOrderByAggregateInputSchema: z.ZodType<Prisma.Fre
   phone: z.lazy(() => SortOrderSchema).optional(),
   passcodePoints: z.lazy(() => SortOrderSchema).optional(),
   easterEgg: z.lazy(() => SortOrderSchema).optional(),
-  vip: z.lazy(() => SortOrderSchema).optional(),
-  quota: z.lazy(() => SortOrderSchema).optional()
+  vip: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const FreshmenDetailsMinOrderByAggregateInputSchema: z.ZodType<Prisma.FreshmenDetailsMinOrderByAggregateInput> = z.object({
@@ -3506,13 +3623,11 @@ export const FreshmenDetailsMinOrderByAggregateInputSchema: z.ZodType<Prisma.Fre
   phone: z.lazy(() => SortOrderSchema).optional(),
   passcodePoints: z.lazy(() => SortOrderSchema).optional(),
   easterEgg: z.lazy(() => SortOrderSchema).optional(),
-  vip: z.lazy(() => SortOrderSchema).optional(),
-  quota: z.lazy(() => SortOrderSchema).optional()
+  vip: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const FreshmenDetailsSumOrderByAggregateInputSchema: z.ZodType<Prisma.FreshmenDetailsSumOrderByAggregateInput> = z.object({
-  passcodePoints: z.lazy(() => SortOrderSchema).optional(),
-  quota: z.lazy(() => SortOrderSchema).optional()
+  passcodePoints: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const BoolWithAggregatesFilterSchema: z.ZodType<Prisma.BoolWithAggregatesFilter> = z.object({
@@ -3613,6 +3728,37 @@ export const HintsMinOrderByAggregateInputSchema: z.ZodType<Prisma.HintsMinOrder
   update_at: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
+export const BoolNullableListFilterSchema: z.ZodType<Prisma.BoolNullableListFilter> = z.object({
+  equals: z.boolean().array().optional().nullable(),
+  has: z.boolean().optional().nullable(),
+  hasEvery: z.boolean().array().optional(),
+  hasSome: z.boolean().array().optional(),
+  isEmpty: z.boolean().optional()
+}).strict();
+
+export const MagicVersesListRelationFilterSchema: z.ZodType<Prisma.MagicVersesListRelationFilter> = z.object({
+  every: z.lazy(() => MagicVersesWhereInputSchema).optional(),
+  some: z.lazy(() => MagicVersesWhereInputSchema).optional(),
+  none: z.lazy(() => MagicVersesWhereInputSchema).optional()
+}).strict();
+
+export const MagicVersesOrderByRelationAggregateInputSchema: z.ZodType<Prisma.MagicVersesOrderByRelationAggregateInput> = z.object({
+  _count: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const MagicVerseCastCountOrderByAggregateInputSchema: z.ZodType<Prisma.MagicVerseCastCountOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional(),
+  result: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const MagicVerseCastMaxOrderByAggregateInputSchema: z.ZodType<Prisma.MagicVerseCastMaxOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const MagicVerseCastMinOrderByAggregateInputSchema: z.ZodType<Prisma.MagicVerseCastMinOrderByAggregateInput> = z.object({
+  id: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
 export const FloatFilterSchema: z.ZodType<Prisma.FloatFilter> = z.object({
   equals: z.number().optional(),
   in: z.union([ z.number().array(),z.number() ]).optional(),
@@ -3622,6 +3768,16 @@ export const FloatFilterSchema: z.ZodType<Prisma.FloatFilter> = z.object({
   gt: z.number().optional(),
   gte: z.number().optional(),
   not: z.union([ z.number(),z.lazy(() => NestedFloatFilterSchema) ]).optional(),
+}).strict();
+
+export const MagicVerseCastListRelationFilterSchema: z.ZodType<Prisma.MagicVerseCastListRelationFilter> = z.object({
+  every: z.lazy(() => MagicVerseCastWhereInputSchema).optional(),
+  some: z.lazy(() => MagicVerseCastWhereInputSchema).optional(),
+  none: z.lazy(() => MagicVerseCastWhereInputSchema).optional()
+}).strict();
+
+export const MagicVerseCastOrderByRelationAggregateInputSchema: z.ZodType<Prisma.MagicVerseCastOrderByRelationAggregateInput> = z.object({
+  _count: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const MagicVersesCountOrderByAggregateInputSchema: z.ZodType<Prisma.MagicVersesCountOrderByAggregateInput> = z.object({
@@ -3678,17 +3834,7 @@ export const PairListRelationFilterSchema: z.ZodType<Prisma.PairListRelationFilt
   none: z.lazy(() => PairWhereInputSchema).optional()
 }).strict();
 
-export const MagicVersesListRelationFilterSchema: z.ZodType<Prisma.MagicVersesListRelationFilter> = z.object({
-  every: z.lazy(() => MagicVersesWhereInputSchema).optional(),
-  some: z.lazy(() => MagicVersesWhereInputSchema).optional(),
-  none: z.lazy(() => MagicVersesWhereInputSchema).optional()
-}).strict();
-
 export const PairOrderByRelationAggregateInputSchema: z.ZodType<Prisma.PairOrderByRelationAggregateInput> = z.object({
-  _count: z.lazy(() => SortOrderSchema).optional()
-}).strict();
-
-export const MagicVersesOrderByRelationAggregateInputSchema: z.ZodType<Prisma.MagicVersesOrderByRelationAggregateInput> = z.object({
   _count: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
@@ -4530,10 +4676,69 @@ export const RevealedHintInstancesUncheckedUpdateManyWithoutHintNestedInputSchem
   deleteMany: z.union([ z.lazy(() => RevealedHintInstancesScalarWhereInputSchema),z.lazy(() => RevealedHintInstancesScalarWhereInputSchema).array() ]).optional(),
 }).strict();
 
+export const MagicVerseCastCreateresultInputSchema: z.ZodType<Prisma.MagicVerseCastCreateresultInput> = z.object({
+  set: z.boolean().array()
+}).strict();
+
+export const MagicVersesCreateNestedManyWithoutCastsInputSchema: z.ZodType<Prisma.MagicVersesCreateNestedManyWithoutCastsInput> = z.object({
+  create: z.union([ z.lazy(() => MagicVersesCreateWithoutCastsInputSchema),z.lazy(() => MagicVersesCreateWithoutCastsInputSchema).array(),z.lazy(() => MagicVersesUncheckedCreateWithoutCastsInputSchema),z.lazy(() => MagicVersesUncheckedCreateWithoutCastsInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => MagicVersesCreateOrConnectWithoutCastsInputSchema),z.lazy(() => MagicVersesCreateOrConnectWithoutCastsInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => MagicVersesWhereUniqueInputSchema),z.lazy(() => MagicVersesWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
+export const MagicVersesUncheckedCreateNestedManyWithoutCastsInputSchema: z.ZodType<Prisma.MagicVersesUncheckedCreateNestedManyWithoutCastsInput> = z.object({
+  create: z.union([ z.lazy(() => MagicVersesCreateWithoutCastsInputSchema),z.lazy(() => MagicVersesCreateWithoutCastsInputSchema).array(),z.lazy(() => MagicVersesUncheckedCreateWithoutCastsInputSchema),z.lazy(() => MagicVersesUncheckedCreateWithoutCastsInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => MagicVersesCreateOrConnectWithoutCastsInputSchema),z.lazy(() => MagicVersesCreateOrConnectWithoutCastsInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => MagicVersesWhereUniqueInputSchema),z.lazy(() => MagicVersesWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
+export const MagicVerseCastUpdateresultInputSchema: z.ZodType<Prisma.MagicVerseCastUpdateresultInput> = z.object({
+  set: z.boolean().array().optional(),
+  push: z.union([ z.boolean(),z.boolean().array() ]).optional(),
+}).strict();
+
+export const MagicVersesUpdateManyWithoutCastsNestedInputSchema: z.ZodType<Prisma.MagicVersesUpdateManyWithoutCastsNestedInput> = z.object({
+  create: z.union([ z.lazy(() => MagicVersesCreateWithoutCastsInputSchema),z.lazy(() => MagicVersesCreateWithoutCastsInputSchema).array(),z.lazy(() => MagicVersesUncheckedCreateWithoutCastsInputSchema),z.lazy(() => MagicVersesUncheckedCreateWithoutCastsInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => MagicVersesCreateOrConnectWithoutCastsInputSchema),z.lazy(() => MagicVersesCreateOrConnectWithoutCastsInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => MagicVersesUpsertWithWhereUniqueWithoutCastsInputSchema),z.lazy(() => MagicVersesUpsertWithWhereUniqueWithoutCastsInputSchema).array() ]).optional(),
+  set: z.union([ z.lazy(() => MagicVersesWhereUniqueInputSchema),z.lazy(() => MagicVersesWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => MagicVersesWhereUniqueInputSchema),z.lazy(() => MagicVersesWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => MagicVersesWhereUniqueInputSchema),z.lazy(() => MagicVersesWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => MagicVersesWhereUniqueInputSchema),z.lazy(() => MagicVersesWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => MagicVersesUpdateWithWhereUniqueWithoutCastsInputSchema),z.lazy(() => MagicVersesUpdateWithWhereUniqueWithoutCastsInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => MagicVersesUpdateManyWithWhereWithoutCastsInputSchema),z.lazy(() => MagicVersesUpdateManyWithWhereWithoutCastsInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => MagicVersesScalarWhereInputSchema),z.lazy(() => MagicVersesScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
+export const MagicVersesUncheckedUpdateManyWithoutCastsNestedInputSchema: z.ZodType<Prisma.MagicVersesUncheckedUpdateManyWithoutCastsNestedInput> = z.object({
+  create: z.union([ z.lazy(() => MagicVersesCreateWithoutCastsInputSchema),z.lazy(() => MagicVersesCreateWithoutCastsInputSchema).array(),z.lazy(() => MagicVersesUncheckedCreateWithoutCastsInputSchema),z.lazy(() => MagicVersesUncheckedCreateWithoutCastsInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => MagicVersesCreateOrConnectWithoutCastsInputSchema),z.lazy(() => MagicVersesCreateOrConnectWithoutCastsInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => MagicVersesUpsertWithWhereUniqueWithoutCastsInputSchema),z.lazy(() => MagicVersesUpsertWithWhereUniqueWithoutCastsInputSchema).array() ]).optional(),
+  set: z.union([ z.lazy(() => MagicVersesWhereUniqueInputSchema),z.lazy(() => MagicVersesWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => MagicVersesWhereUniqueInputSchema),z.lazy(() => MagicVersesWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => MagicVersesWhereUniqueInputSchema),z.lazy(() => MagicVersesWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => MagicVersesWhereUniqueInputSchema),z.lazy(() => MagicVersesWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => MagicVersesUpdateWithWhereUniqueWithoutCastsInputSchema),z.lazy(() => MagicVersesUpdateWithWhereUniqueWithoutCastsInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => MagicVersesUpdateManyWithWhereWithoutCastsInputSchema),z.lazy(() => MagicVersesUpdateManyWithWhereWithoutCastsInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => MagicVersesScalarWhereInputSchema),z.lazy(() => MagicVersesScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
 export const SophomoreDetailsCreateNestedOneWithoutVersesInputSchema: z.ZodType<Prisma.SophomoreDetailsCreateNestedOneWithoutVersesInput> = z.object({
   create: z.union([ z.lazy(() => SophomoreDetailsCreateWithoutVersesInputSchema),z.lazy(() => SophomoreDetailsUncheckedCreateWithoutVersesInputSchema) ]).optional(),
   connectOrCreate: z.lazy(() => SophomoreDetailsCreateOrConnectWithoutVersesInputSchema).optional(),
   connect: z.lazy(() => SophomoreDetailsWhereUniqueInputSchema).optional()
+}).strict();
+
+export const MagicVerseCastCreateNestedManyWithoutVersesInputSchema: z.ZodType<Prisma.MagicVerseCastCreateNestedManyWithoutVersesInput> = z.object({
+  create: z.union([ z.lazy(() => MagicVerseCastCreateWithoutVersesInputSchema),z.lazy(() => MagicVerseCastCreateWithoutVersesInputSchema).array(),z.lazy(() => MagicVerseCastUncheckedCreateWithoutVersesInputSchema),z.lazy(() => MagicVerseCastUncheckedCreateWithoutVersesInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => MagicVerseCastCreateOrConnectWithoutVersesInputSchema),z.lazy(() => MagicVerseCastCreateOrConnectWithoutVersesInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => MagicVerseCastWhereUniqueInputSchema),z.lazy(() => MagicVerseCastWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
+export const MagicVerseCastUncheckedCreateNestedManyWithoutVersesInputSchema: z.ZodType<Prisma.MagicVerseCastUncheckedCreateNestedManyWithoutVersesInput> = z.object({
+  create: z.union([ z.lazy(() => MagicVerseCastCreateWithoutVersesInputSchema),z.lazy(() => MagicVerseCastCreateWithoutVersesInputSchema).array(),z.lazy(() => MagicVerseCastUncheckedCreateWithoutVersesInputSchema),z.lazy(() => MagicVerseCastUncheckedCreateWithoutVersesInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => MagicVerseCastCreateOrConnectWithoutVersesInputSchema),z.lazy(() => MagicVerseCastCreateOrConnectWithoutVersesInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => MagicVerseCastWhereUniqueInputSchema),z.lazy(() => MagicVerseCastWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
 export const FloatFieldUpdateOperationsInputSchema: z.ZodType<Prisma.FloatFieldUpdateOperationsInput> = z.object({
@@ -4552,6 +4757,32 @@ export const SophomoreDetailsUpdateOneWithoutVersesNestedInputSchema: z.ZodType<
   delete: z.boolean().optional(),
   connect: z.lazy(() => SophomoreDetailsWhereUniqueInputSchema).optional(),
   update: z.union([ z.lazy(() => SophomoreDetailsUpdateWithoutVersesInputSchema),z.lazy(() => SophomoreDetailsUncheckedUpdateWithoutVersesInputSchema) ]).optional(),
+}).strict();
+
+export const MagicVerseCastUpdateManyWithoutVersesNestedInputSchema: z.ZodType<Prisma.MagicVerseCastUpdateManyWithoutVersesNestedInput> = z.object({
+  create: z.union([ z.lazy(() => MagicVerseCastCreateWithoutVersesInputSchema),z.lazy(() => MagicVerseCastCreateWithoutVersesInputSchema).array(),z.lazy(() => MagicVerseCastUncheckedCreateWithoutVersesInputSchema),z.lazy(() => MagicVerseCastUncheckedCreateWithoutVersesInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => MagicVerseCastCreateOrConnectWithoutVersesInputSchema),z.lazy(() => MagicVerseCastCreateOrConnectWithoutVersesInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => MagicVerseCastUpsertWithWhereUniqueWithoutVersesInputSchema),z.lazy(() => MagicVerseCastUpsertWithWhereUniqueWithoutVersesInputSchema).array() ]).optional(),
+  set: z.union([ z.lazy(() => MagicVerseCastWhereUniqueInputSchema),z.lazy(() => MagicVerseCastWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => MagicVerseCastWhereUniqueInputSchema),z.lazy(() => MagicVerseCastWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => MagicVerseCastWhereUniqueInputSchema),z.lazy(() => MagicVerseCastWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => MagicVerseCastWhereUniqueInputSchema),z.lazy(() => MagicVerseCastWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => MagicVerseCastUpdateWithWhereUniqueWithoutVersesInputSchema),z.lazy(() => MagicVerseCastUpdateWithWhereUniqueWithoutVersesInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => MagicVerseCastUpdateManyWithWhereWithoutVersesInputSchema),z.lazy(() => MagicVerseCastUpdateManyWithWhereWithoutVersesInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => MagicVerseCastScalarWhereInputSchema),z.lazy(() => MagicVerseCastScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
+export const MagicVerseCastUncheckedUpdateManyWithoutVersesNestedInputSchema: z.ZodType<Prisma.MagicVerseCastUncheckedUpdateManyWithoutVersesNestedInput> = z.object({
+  create: z.union([ z.lazy(() => MagicVerseCastCreateWithoutVersesInputSchema),z.lazy(() => MagicVerseCastCreateWithoutVersesInputSchema).array(),z.lazy(() => MagicVerseCastUncheckedCreateWithoutVersesInputSchema),z.lazy(() => MagicVerseCastUncheckedCreateWithoutVersesInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => MagicVerseCastCreateOrConnectWithoutVersesInputSchema),z.lazy(() => MagicVerseCastCreateOrConnectWithoutVersesInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => MagicVerseCastUpsertWithWhereUniqueWithoutVersesInputSchema),z.lazy(() => MagicVerseCastUpsertWithWhereUniqueWithoutVersesInputSchema).array() ]).optional(),
+  set: z.union([ z.lazy(() => MagicVerseCastWhereUniqueInputSchema),z.lazy(() => MagicVerseCastWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => MagicVerseCastWhereUniqueInputSchema),z.lazy(() => MagicVerseCastWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => MagicVerseCastWhereUniqueInputSchema),z.lazy(() => MagicVerseCastWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => MagicVerseCastWhereUniqueInputSchema),z.lazy(() => MagicVerseCastWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => MagicVerseCastUpdateWithWhereUniqueWithoutVersesInputSchema),z.lazy(() => MagicVerseCastUpdateWithWhereUniqueWithoutVersesInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => MagicVerseCastUpdateManyWithWhereWithoutVersesInputSchema),z.lazy(() => MagicVerseCastUpdateManyWithWhereWithoutVersesInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => MagicVerseCastScalarWhereInputSchema),z.lazy(() => MagicVerseCastScalarWhereInputSchema).array() ]).optional(),
 }).strict();
 
 export const SophomoreDetailsCreatethisOrThatInputSchema: z.ZodType<Prisma.SophomoreDetailsCreatethisOrThatInput> = z.object({
@@ -5273,7 +5504,6 @@ export const FreshmenDetailsCreateWithoutUserInputSchema: z.ZodType<Prisma.Fresh
   passcodePoints: z.number().int().optional(),
   easterEgg: z.boolean().optional(),
   vip: z.boolean().optional(),
-  quota: z.number().int().optional(),
   usedPasscodes: z.lazy(() => PasscodeInstancesCreateNestedManyWithoutUsedByInputSchema).optional(),
   scannedQrs: z.lazy(() => QRInstancesCreateNestedManyWithoutScannedByInputSchema).optional(),
   pair: z.lazy(() => PairCreateNestedOneWithoutFreshmenInputSchema).optional(),
@@ -5298,7 +5528,6 @@ export const FreshmenDetailsUncheckedCreateWithoutUserInputSchema: z.ZodType<Pri
   passcodePoints: z.number().int().optional(),
   easterEgg: z.boolean().optional(),
   vip: z.boolean().optional(),
-  quota: z.number().int().optional(),
   usedPasscodes: z.lazy(() => PasscodeInstancesUncheckedCreateNestedManyWithoutUsedByInputSchema).optional(),
   scannedQrs: z.lazy(() => QRInstancesUncheckedCreateNestedManyWithoutScannedByInputSchema).optional(),
   pair: z.lazy(() => PairUncheckedCreateNestedOneWithoutFreshmenInputSchema).optional(),
@@ -5467,7 +5696,6 @@ export const FreshmenDetailsUpdateWithoutUserInputSchema: z.ZodType<Prisma.Fresh
   passcodePoints: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   easterEgg: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   vip: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  quota: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   usedPasscodes: z.lazy(() => PasscodeInstancesUpdateManyWithoutUsedByNestedInputSchema).optional(),
   scannedQrs: z.lazy(() => QRInstancesUpdateManyWithoutScannedByNestedInputSchema).optional(),
   pair: z.lazy(() => PairUpdateOneWithoutFreshmenNestedInputSchema).optional(),
@@ -5492,7 +5720,6 @@ export const FreshmenDetailsUncheckedUpdateWithoutUserInputSchema: z.ZodType<Pri
   passcodePoints: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   easterEgg: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   vip: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  quota: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   usedPasscodes: z.lazy(() => PasscodeInstancesUncheckedUpdateManyWithoutUsedByNestedInputSchema).optional(),
   scannedQrs: z.lazy(() => QRInstancesUncheckedUpdateManyWithoutScannedByNestedInputSchema).optional(),
   pair: z.lazy(() => PairUncheckedUpdateOneWithoutFreshmenNestedInputSchema).optional(),
@@ -5672,7 +5899,6 @@ export const FreshmenDetailsCreateWithoutScannedQrsInputSchema: z.ZodType<Prisma
   passcodePoints: z.number().int().optional(),
   easterEgg: z.boolean().optional(),
   vip: z.boolean().optional(),
-  quota: z.number().int().optional(),
   user: z.lazy(() => UserCreateNestedOneWithoutFreshmenDetailsInputSchema),
   usedPasscodes: z.lazy(() => PasscodeInstancesCreateNestedManyWithoutUsedByInputSchema).optional(),
   pair: z.lazy(() => PairCreateNestedOneWithoutFreshmenInputSchema).optional(),
@@ -5698,7 +5924,6 @@ export const FreshmenDetailsUncheckedCreateWithoutScannedQrsInputSchema: z.ZodTy
   passcodePoints: z.number().int().optional(),
   easterEgg: z.boolean().optional(),
   vip: z.boolean().optional(),
-  quota: z.number().int().optional(),
   usedPasscodes: z.lazy(() => PasscodeInstancesUncheckedCreateNestedManyWithoutUsedByInputSchema).optional(),
   pair: z.lazy(() => PairUncheckedCreateNestedOneWithoutFreshmenInputSchema).optional(),
   todayResin: z.lazy(() => TodayResinUncheckedCreateNestedManyWithoutFreshmenInputSchema).optional()
@@ -5800,7 +6025,6 @@ export const FreshmenDetailsScalarWhereInputSchema: z.ZodType<Prisma.FreshmenDet
   passcodePoints: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   easterEgg: z.union([ z.lazy(() => BoolFilterSchema),z.boolean() ]).optional(),
   vip: z.union([ z.lazy(() => BoolFilterSchema),z.boolean() ]).optional(),
-  quota: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
 }).strict();
 
 export const SophomoreDetailsCreateWithoutPasscodeInstancesInputSchema: z.ZodType<Prisma.SophomoreDetailsCreateWithoutPasscodeInstancesInput> = z.object({
@@ -5874,7 +6098,6 @@ export const FreshmenDetailsCreateWithoutUsedPasscodesInputSchema: z.ZodType<Pri
   passcodePoints: z.number().int().optional(),
   easterEgg: z.boolean().optional(),
   vip: z.boolean().optional(),
-  quota: z.number().int().optional(),
   user: z.lazy(() => UserCreateNestedOneWithoutFreshmenDetailsInputSchema),
   scannedQrs: z.lazy(() => QRInstancesCreateNestedManyWithoutScannedByInputSchema).optional(),
   pair: z.lazy(() => PairCreateNestedOneWithoutFreshmenInputSchema).optional(),
@@ -5900,7 +6123,6 @@ export const FreshmenDetailsUncheckedCreateWithoutUsedPasscodesInputSchema: z.Zo
   passcodePoints: z.number().int().optional(),
   easterEgg: z.boolean().optional(),
   vip: z.boolean().optional(),
-  quota: z.number().int().optional(),
   scannedQrs: z.lazy(() => QRInstancesUncheckedCreateNestedManyWithoutScannedByInputSchema).optional(),
   pair: z.lazy(() => PairUncheckedCreateNestedOneWithoutFreshmenInputSchema).optional(),
   todayResin: z.lazy(() => TodayResinUncheckedCreateNestedManyWithoutFreshmenInputSchema).optional()
@@ -5987,7 +6209,6 @@ export const FreshmenDetailsUpdateWithoutUsedPasscodesInputSchema: z.ZodType<Pri
   passcodePoints: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   easterEgg: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   vip: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  quota: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   user: z.lazy(() => UserUpdateOneRequiredWithoutFreshmenDetailsNestedInputSchema).optional(),
   scannedQrs: z.lazy(() => QRInstancesUpdateManyWithoutScannedByNestedInputSchema).optional(),
   pair: z.lazy(() => PairUpdateOneWithoutFreshmenNestedInputSchema).optional(),
@@ -6013,7 +6234,6 @@ export const FreshmenDetailsUncheckedUpdateWithoutUsedPasscodesInputSchema: z.Zo
   passcodePoints: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   easterEgg: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   vip: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  quota: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   scannedQrs: z.lazy(() => QRInstancesUncheckedUpdateManyWithoutScannedByNestedInputSchema).optional(),
   pair: z.lazy(() => PairUncheckedUpdateOneWithoutFreshmenNestedInputSchema).optional(),
   todayResin: z.lazy(() => TodayResinUncheckedUpdateManyWithoutFreshmenNestedInputSchema).optional()
@@ -6187,7 +6407,6 @@ export const FreshmenDetailsCreateWithoutPairInputSchema: z.ZodType<Prisma.Fresh
   passcodePoints: z.number().int().optional(),
   easterEgg: z.boolean().optional(),
   vip: z.boolean().optional(),
-  quota: z.number().int().optional(),
   user: z.lazy(() => UserCreateNestedOneWithoutFreshmenDetailsInputSchema),
   usedPasscodes: z.lazy(() => PasscodeInstancesCreateNestedManyWithoutUsedByInputSchema).optional(),
   scannedQrs: z.lazy(() => QRInstancesCreateNestedManyWithoutScannedByInputSchema).optional(),
@@ -6213,7 +6432,6 @@ export const FreshmenDetailsUncheckedCreateWithoutPairInputSchema: z.ZodType<Pri
   passcodePoints: z.number().int().optional(),
   easterEgg: z.boolean().optional(),
   vip: z.boolean().optional(),
-  quota: z.number().int().optional(),
   usedPasscodes: z.lazy(() => PasscodeInstancesUncheckedCreateNestedManyWithoutUsedByInputSchema).optional(),
   scannedQrs: z.lazy(() => QRInstancesUncheckedCreateNestedManyWithoutScannedByInputSchema).optional(),
   todayResin: z.lazy(() => TodayResinUncheckedCreateNestedManyWithoutFreshmenInputSchema).optional()
@@ -6323,7 +6541,6 @@ export const FreshmenDetailsUpdateWithoutPairInputSchema: z.ZodType<Prisma.Fresh
   passcodePoints: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   easterEgg: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   vip: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  quota: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   user: z.lazy(() => UserUpdateOneRequiredWithoutFreshmenDetailsNestedInputSchema).optional(),
   usedPasscodes: z.lazy(() => PasscodeInstancesUpdateManyWithoutUsedByNestedInputSchema).optional(),
   scannedQrs: z.lazy(() => QRInstancesUpdateManyWithoutScannedByNestedInputSchema).optional(),
@@ -6349,7 +6566,6 @@ export const FreshmenDetailsUncheckedUpdateWithoutPairInputSchema: z.ZodType<Pri
   passcodePoints: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   easterEgg: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   vip: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  quota: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   usedPasscodes: z.lazy(() => PasscodeInstancesUncheckedUpdateManyWithoutUsedByNestedInputSchema).optional(),
   scannedQrs: z.lazy(() => QRInstancesUncheckedUpdateManyWithoutScannedByNestedInputSchema).optional(),
   todayResin: z.lazy(() => TodayResinUncheckedUpdateManyWithoutFreshmenNestedInputSchema).optional()
@@ -6927,6 +7143,54 @@ export const RevealedHintInstancesUpdateManyWithWhereWithoutHintInputSchema: z.Z
   data: z.union([ z.lazy(() => RevealedHintInstancesUpdateManyMutationInputSchema),z.lazy(() => RevealedHintInstancesUncheckedUpdateManyWithoutRevealedHintInstancesInputSchema) ]),
 }).strict();
 
+export const MagicVersesCreateWithoutCastsInputSchema: z.ZodType<Prisma.MagicVersesCreateWithoutCastsInput> = z.object({
+  handler: z.string(),
+  name: z.string(),
+  wildcard: z.boolean().optional(),
+  cost: z.number().optional(),
+  SophomoreDetails: z.lazy(() => SophomoreDetailsCreateNestedOneWithoutVersesInputSchema).optional()
+}).strict();
+
+export const MagicVersesUncheckedCreateWithoutCastsInputSchema: z.ZodType<Prisma.MagicVersesUncheckedCreateWithoutCastsInput> = z.object({
+  handler: z.string(),
+  name: z.string(),
+  wildcard: z.boolean().optional(),
+  cost: z.number().optional(),
+  sophomoreDetailsId: z.string().optional().nullable()
+}).strict();
+
+export const MagicVersesCreateOrConnectWithoutCastsInputSchema: z.ZodType<Prisma.MagicVersesCreateOrConnectWithoutCastsInput> = z.object({
+  where: z.lazy(() => MagicVersesWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => MagicVersesCreateWithoutCastsInputSchema),z.lazy(() => MagicVersesUncheckedCreateWithoutCastsInputSchema) ]),
+}).strict();
+
+export const MagicVersesUpsertWithWhereUniqueWithoutCastsInputSchema: z.ZodType<Prisma.MagicVersesUpsertWithWhereUniqueWithoutCastsInput> = z.object({
+  where: z.lazy(() => MagicVersesWhereUniqueInputSchema),
+  update: z.union([ z.lazy(() => MagicVersesUpdateWithoutCastsInputSchema),z.lazy(() => MagicVersesUncheckedUpdateWithoutCastsInputSchema) ]),
+  create: z.union([ z.lazy(() => MagicVersesCreateWithoutCastsInputSchema),z.lazy(() => MagicVersesUncheckedCreateWithoutCastsInputSchema) ]),
+}).strict();
+
+export const MagicVersesUpdateWithWhereUniqueWithoutCastsInputSchema: z.ZodType<Prisma.MagicVersesUpdateWithWhereUniqueWithoutCastsInput> = z.object({
+  where: z.lazy(() => MagicVersesWhereUniqueInputSchema),
+  data: z.union([ z.lazy(() => MagicVersesUpdateWithoutCastsInputSchema),z.lazy(() => MagicVersesUncheckedUpdateWithoutCastsInputSchema) ]),
+}).strict();
+
+export const MagicVersesUpdateManyWithWhereWithoutCastsInputSchema: z.ZodType<Prisma.MagicVersesUpdateManyWithWhereWithoutCastsInput> = z.object({
+  where: z.lazy(() => MagicVersesScalarWhereInputSchema),
+  data: z.union([ z.lazy(() => MagicVersesUpdateManyMutationInputSchema),z.lazy(() => MagicVersesUncheckedUpdateManyWithoutVersesInputSchema) ]),
+}).strict();
+
+export const MagicVersesScalarWhereInputSchema: z.ZodType<Prisma.MagicVersesScalarWhereInput> = z.object({
+  AND: z.union([ z.lazy(() => MagicVersesScalarWhereInputSchema),z.lazy(() => MagicVersesScalarWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => MagicVersesScalarWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => MagicVersesScalarWhereInputSchema),z.lazy(() => MagicVersesScalarWhereInputSchema).array() ]).optional(),
+  handler: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  name: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  wildcard: z.union([ z.lazy(() => BoolFilterSchema),z.boolean() ]).optional(),
+  cost: z.union([ z.lazy(() => FloatFilterSchema),z.number() ]).optional(),
+  sophomoreDetailsId: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
+}).strict();
+
 export const SophomoreDetailsCreateWithoutVersesInputSchema: z.ZodType<Prisma.SophomoreDetailsCreateWithoutVersesInput> = z.object({
   create_at: z.coerce.date().optional(),
   update_at: z.coerce.date().optional(),
@@ -6980,6 +7244,21 @@ export const SophomoreDetailsCreateOrConnectWithoutVersesInputSchema: z.ZodType<
   create: z.union([ z.lazy(() => SophomoreDetailsCreateWithoutVersesInputSchema),z.lazy(() => SophomoreDetailsUncheckedCreateWithoutVersesInputSchema) ]),
 }).strict();
 
+export const MagicVerseCastCreateWithoutVersesInputSchema: z.ZodType<Prisma.MagicVerseCastCreateWithoutVersesInput> = z.object({
+  id: z.string().cuid().optional(),
+  result: z.union([ z.lazy(() => MagicVerseCastCreateresultInputSchema),z.boolean().array() ]).optional(),
+}).strict();
+
+export const MagicVerseCastUncheckedCreateWithoutVersesInputSchema: z.ZodType<Prisma.MagicVerseCastUncheckedCreateWithoutVersesInput> = z.object({
+  id: z.string().cuid().optional(),
+  result: z.union([ z.lazy(() => MagicVerseCastCreateresultInputSchema),z.boolean().array() ]).optional(),
+}).strict();
+
+export const MagicVerseCastCreateOrConnectWithoutVersesInputSchema: z.ZodType<Prisma.MagicVerseCastCreateOrConnectWithoutVersesInput> = z.object({
+  where: z.lazy(() => MagicVerseCastWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => MagicVerseCastCreateWithoutVersesInputSchema),z.lazy(() => MagicVerseCastUncheckedCreateWithoutVersesInputSchema) ]),
+}).strict();
+
 export const SophomoreDetailsUpsertWithoutVersesInputSchema: z.ZodType<Prisma.SophomoreDetailsUpsertWithoutVersesInput> = z.object({
   update: z.union([ z.lazy(() => SophomoreDetailsUpdateWithoutVersesInputSchema),z.lazy(() => SophomoreDetailsUncheckedUpdateWithoutVersesInputSchema) ]),
   create: z.union([ z.lazy(() => SophomoreDetailsCreateWithoutVersesInputSchema),z.lazy(() => SophomoreDetailsUncheckedCreateWithoutVersesInputSchema) ]),
@@ -7031,6 +7310,30 @@ export const SophomoreDetailsUncheckedUpdateWithoutVersesInputSchema: z.ZodType<
   PasscodeInstances: z.lazy(() => PasscodeInstancesUncheckedUpdateManyWithoutOwnerNestedInputSchema).optional(),
   QRInstances: z.lazy(() => QRInstancesUncheckedUpdateManyWithoutOwnerNestedInputSchema).optional(),
   pair: z.lazy(() => PairUncheckedUpdateManyWithoutSophomoreNestedInputSchema).optional()
+}).strict();
+
+export const MagicVerseCastUpsertWithWhereUniqueWithoutVersesInputSchema: z.ZodType<Prisma.MagicVerseCastUpsertWithWhereUniqueWithoutVersesInput> = z.object({
+  where: z.lazy(() => MagicVerseCastWhereUniqueInputSchema),
+  update: z.union([ z.lazy(() => MagicVerseCastUpdateWithoutVersesInputSchema),z.lazy(() => MagicVerseCastUncheckedUpdateWithoutVersesInputSchema) ]),
+  create: z.union([ z.lazy(() => MagicVerseCastCreateWithoutVersesInputSchema),z.lazy(() => MagicVerseCastUncheckedCreateWithoutVersesInputSchema) ]),
+}).strict();
+
+export const MagicVerseCastUpdateWithWhereUniqueWithoutVersesInputSchema: z.ZodType<Prisma.MagicVerseCastUpdateWithWhereUniqueWithoutVersesInput> = z.object({
+  where: z.lazy(() => MagicVerseCastWhereUniqueInputSchema),
+  data: z.union([ z.lazy(() => MagicVerseCastUpdateWithoutVersesInputSchema),z.lazy(() => MagicVerseCastUncheckedUpdateWithoutVersesInputSchema) ]),
+}).strict();
+
+export const MagicVerseCastUpdateManyWithWhereWithoutVersesInputSchema: z.ZodType<Prisma.MagicVerseCastUpdateManyWithWhereWithoutVersesInput> = z.object({
+  where: z.lazy(() => MagicVerseCastScalarWhereInputSchema),
+  data: z.union([ z.lazy(() => MagicVerseCastUpdateManyMutationInputSchema),z.lazy(() => MagicVerseCastUncheckedUpdateManyWithoutCastsInputSchema) ]),
+}).strict();
+
+export const MagicVerseCastScalarWhereInputSchema: z.ZodType<Prisma.MagicVerseCastScalarWhereInput> = z.object({
+  AND: z.union([ z.lazy(() => MagicVerseCastScalarWhereInputSchema),z.lazy(() => MagicVerseCastScalarWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => MagicVerseCastScalarWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => MagicVerseCastScalarWhereInputSchema),z.lazy(() => MagicVerseCastScalarWhereInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  result: z.lazy(() => BoolNullableListFilterSchema).optional()
 }).strict();
 
 export const HintsCreateWithoutSophomoreInputSchema: z.ZodType<Prisma.HintsCreateWithoutSophomoreInput> = z.object({
@@ -7176,14 +7479,16 @@ export const MagicVersesCreateWithoutSophomoreDetailsInputSchema: z.ZodType<Pris
   handler: z.string(),
   name: z.string(),
   wildcard: z.boolean().optional(),
-  cost: z.number().optional()
+  cost: z.number().optional(),
+  casts: z.lazy(() => MagicVerseCastCreateNestedManyWithoutVersesInputSchema).optional()
 }).strict();
 
 export const MagicVersesUncheckedCreateWithoutSophomoreDetailsInputSchema: z.ZodType<Prisma.MagicVersesUncheckedCreateWithoutSophomoreDetailsInput> = z.object({
   handler: z.string(),
   name: z.string(),
   wildcard: z.boolean().optional(),
-  cost: z.number().optional()
+  cost: z.number().optional(),
+  casts: z.lazy(() => MagicVerseCastUncheckedCreateNestedManyWithoutVersesInputSchema).optional()
 }).strict();
 
 export const MagicVersesCreateOrConnectWithoutSophomoreDetailsInputSchema: z.ZodType<Prisma.MagicVersesCreateOrConnectWithoutSophomoreDetailsInput> = z.object({
@@ -7322,17 +7627,6 @@ export const MagicVersesUpdateManyWithWhereWithoutSophomoreDetailsInputSchema: z
   data: z.union([ z.lazy(() => MagicVersesUpdateManyMutationInputSchema),z.lazy(() => MagicVersesUncheckedUpdateManyWithoutVersesInputSchema) ]),
 }).strict();
 
-export const MagicVersesScalarWhereInputSchema: z.ZodType<Prisma.MagicVersesScalarWhereInput> = z.object({
-  AND: z.union([ z.lazy(() => MagicVersesScalarWhereInputSchema),z.lazy(() => MagicVersesScalarWhereInputSchema).array() ]).optional(),
-  OR: z.lazy(() => MagicVersesScalarWhereInputSchema).array().optional(),
-  NOT: z.union([ z.lazy(() => MagicVersesScalarWhereInputSchema),z.lazy(() => MagicVersesScalarWhereInputSchema).array() ]).optional(),
-  handler: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  name: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  wildcard: z.union([ z.lazy(() => BoolFilterSchema),z.boolean() ]).optional(),
-  cost: z.union([ z.lazy(() => FloatFilterSchema),z.number() ]).optional(),
-  sophomoreDetailsId: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
-}).strict();
-
 export const FreshmenDetailsCreateWithoutTodayResinInputSchema: z.ZodType<Prisma.FreshmenDetailsCreateWithoutTodayResinInput> = z.object({
   create_at: z.coerce.date().optional(),
   update_at: z.coerce.date().optional(),
@@ -7351,7 +7645,6 @@ export const FreshmenDetailsCreateWithoutTodayResinInputSchema: z.ZodType<Prisma
   passcodePoints: z.number().int().optional(),
   easterEgg: z.boolean().optional(),
   vip: z.boolean().optional(),
-  quota: z.number().int().optional(),
   user: z.lazy(() => UserCreateNestedOneWithoutFreshmenDetailsInputSchema),
   usedPasscodes: z.lazy(() => PasscodeInstancesCreateNestedManyWithoutUsedByInputSchema).optional(),
   scannedQrs: z.lazy(() => QRInstancesCreateNestedManyWithoutScannedByInputSchema).optional(),
@@ -7377,7 +7670,6 @@ export const FreshmenDetailsUncheckedCreateWithoutTodayResinInputSchema: z.ZodTy
   passcodePoints: z.number().int().optional(),
   easterEgg: z.boolean().optional(),
   vip: z.boolean().optional(),
-  quota: z.number().int().optional(),
   usedPasscodes: z.lazy(() => PasscodeInstancesUncheckedCreateNestedManyWithoutUsedByInputSchema).optional(),
   scannedQrs: z.lazy(() => QRInstancesUncheckedCreateNestedManyWithoutScannedByInputSchema).optional(),
   pair: z.lazy(() => PairUncheckedCreateNestedOneWithoutFreshmenInputSchema).optional()
@@ -7411,7 +7703,6 @@ export const FreshmenDetailsUpdateWithoutTodayResinInputSchema: z.ZodType<Prisma
   passcodePoints: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   easterEgg: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   vip: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  quota: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   user: z.lazy(() => UserUpdateOneRequiredWithoutFreshmenDetailsNestedInputSchema).optional(),
   usedPasscodes: z.lazy(() => PasscodeInstancesUpdateManyWithoutUsedByNestedInputSchema).optional(),
   scannedQrs: z.lazy(() => QRInstancesUpdateManyWithoutScannedByNestedInputSchema).optional(),
@@ -7437,7 +7728,6 @@ export const FreshmenDetailsUncheckedUpdateWithoutTodayResinInputSchema: z.ZodTy
   passcodePoints: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   easterEgg: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   vip: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  quota: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   usedPasscodes: z.lazy(() => PasscodeInstancesUncheckedUpdateManyWithoutUsedByNestedInputSchema).optional(),
   scannedQrs: z.lazy(() => QRInstancesUncheckedUpdateManyWithoutScannedByNestedInputSchema).optional(),
   pair: z.lazy(() => PairUncheckedUpdateOneWithoutFreshmenNestedInputSchema).optional()
@@ -7549,7 +7839,6 @@ export const FreshmenDetailsUpdateWithoutScannedQrsInputSchema: z.ZodType<Prisma
   passcodePoints: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   easterEgg: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   vip: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  quota: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   user: z.lazy(() => UserUpdateOneRequiredWithoutFreshmenDetailsNestedInputSchema).optional(),
   usedPasscodes: z.lazy(() => PasscodeInstancesUpdateManyWithoutUsedByNestedInputSchema).optional(),
   pair: z.lazy(() => PairUpdateOneWithoutFreshmenNestedInputSchema).optional(),
@@ -7575,7 +7864,6 @@ export const FreshmenDetailsUncheckedUpdateWithoutScannedQrsInputSchema: z.ZodTy
   passcodePoints: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   easterEgg: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   vip: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  quota: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   usedPasscodes: z.lazy(() => PasscodeInstancesUncheckedUpdateManyWithoutUsedByNestedInputSchema).optional(),
   pair: z.lazy(() => PairUncheckedUpdateOneWithoutFreshmenNestedInputSchema).optional(),
   todayResin: z.lazy(() => TodayResinUncheckedUpdateManyWithoutFreshmenNestedInputSchema).optional()
@@ -7600,7 +7888,6 @@ export const FreshmenDetailsUncheckedUpdateManyWithoutScannedByInputSchema: z.Zo
   passcodePoints: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   easterEgg: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   vip: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  quota: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const UserCreateManyFactionInputSchema: z.ZodType<Prisma.UserCreateManyFactionInput> = z.object({
@@ -7823,6 +8110,45 @@ export const RevealedHintInstancesUncheckedUpdateManyWithoutRevealedHintInstance
   pairId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
+export const MagicVersesUpdateWithoutCastsInputSchema: z.ZodType<Prisma.MagicVersesUpdateWithoutCastsInput> = z.object({
+  handler: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  wildcard: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
+  cost: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
+  SophomoreDetails: z.lazy(() => SophomoreDetailsUpdateOneWithoutVersesNestedInputSchema).optional()
+}).strict();
+
+export const MagicVersesUncheckedUpdateWithoutCastsInputSchema: z.ZodType<Prisma.MagicVersesUncheckedUpdateWithoutCastsInput> = z.object({
+  handler: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  wildcard: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
+  cost: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
+  sophomoreDetailsId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+}).strict();
+
+export const MagicVersesUncheckedUpdateManyWithoutVersesInputSchema: z.ZodType<Prisma.MagicVersesUncheckedUpdateManyWithoutVersesInput> = z.object({
+  handler: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  wildcard: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
+  cost: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
+  sophomoreDetailsId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+}).strict();
+
+export const MagicVerseCastUpdateWithoutVersesInputSchema: z.ZodType<Prisma.MagicVerseCastUpdateWithoutVersesInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  result: z.union([ z.lazy(() => MagicVerseCastUpdateresultInputSchema),z.boolean().array() ]).optional(),
+}).strict();
+
+export const MagicVerseCastUncheckedUpdateWithoutVersesInputSchema: z.ZodType<Prisma.MagicVerseCastUncheckedUpdateWithoutVersesInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  result: z.union([ z.lazy(() => MagicVerseCastUpdateresultInputSchema),z.boolean().array() ]).optional(),
+}).strict();
+
+export const MagicVerseCastUncheckedUpdateManyWithoutCastsInputSchema: z.ZodType<Prisma.MagicVerseCastUncheckedUpdateManyWithoutCastsInput> = z.object({
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  result: z.union([ z.lazy(() => MagicVerseCastUpdateresultInputSchema),z.boolean().array() ]).optional(),
+}).strict();
+
 export const HintsCreateManySophomoreInputSchema: z.ZodType<Prisma.HintsCreateManySophomoreInput> = z.object({
   hintSlugId: z.string(),
   content: z.string(),
@@ -7946,6 +8272,7 @@ export const MagicVersesUpdateWithoutSophomoreDetailsInputSchema: z.ZodType<Pris
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   wildcard: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   cost: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
+  casts: z.lazy(() => MagicVerseCastUpdateManyWithoutVersesNestedInputSchema).optional()
 }).strict();
 
 export const MagicVersesUncheckedUpdateWithoutSophomoreDetailsInputSchema: z.ZodType<Prisma.MagicVersesUncheckedUpdateWithoutSophomoreDetailsInput> = z.object({
@@ -7953,13 +8280,7 @@ export const MagicVersesUncheckedUpdateWithoutSophomoreDetailsInputSchema: z.Zod
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   wildcard: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   cost: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
-}).strict();
-
-export const MagicVersesUncheckedUpdateManyWithoutVersesInputSchema: z.ZodType<Prisma.MagicVersesUncheckedUpdateManyWithoutVersesInput> = z.object({
-  handler: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  wildcard: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
-  cost: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
+  casts: z.lazy(() => MagicVerseCastUncheckedUpdateManyWithoutVersesNestedInputSchema).optional()
 }).strict();
 
 /////////////////////////////////////////
@@ -8705,6 +9026,68 @@ export const HintsFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.HintsFindUniqueO
   where: HintsWhereUniqueInputSchema,
 }).strict()
 
+export const MagicVerseCastFindFirstArgsSchema: z.ZodType<Prisma.MagicVerseCastFindFirstArgs> = z.object({
+  select: MagicVerseCastSelectSchema.optional(),
+  include: MagicVerseCastIncludeSchema.optional(),
+  where: MagicVerseCastWhereInputSchema.optional(),
+  orderBy: z.union([ MagicVerseCastOrderByWithRelationInputSchema.array(),MagicVerseCastOrderByWithRelationInputSchema ]).optional(),
+  cursor: MagicVerseCastWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ MagicVerseCastScalarFieldEnumSchema,MagicVerseCastScalarFieldEnumSchema.array() ]).optional(),
+}).strict()
+
+export const MagicVerseCastFindFirstOrThrowArgsSchema: z.ZodType<Prisma.MagicVerseCastFindFirstOrThrowArgs> = z.object({
+  select: MagicVerseCastSelectSchema.optional(),
+  include: MagicVerseCastIncludeSchema.optional(),
+  where: MagicVerseCastWhereInputSchema.optional(),
+  orderBy: z.union([ MagicVerseCastOrderByWithRelationInputSchema.array(),MagicVerseCastOrderByWithRelationInputSchema ]).optional(),
+  cursor: MagicVerseCastWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ MagicVerseCastScalarFieldEnumSchema,MagicVerseCastScalarFieldEnumSchema.array() ]).optional(),
+}).strict()
+
+export const MagicVerseCastFindManyArgsSchema: z.ZodType<Prisma.MagicVerseCastFindManyArgs> = z.object({
+  select: MagicVerseCastSelectSchema.optional(),
+  include: MagicVerseCastIncludeSchema.optional(),
+  where: MagicVerseCastWhereInputSchema.optional(),
+  orderBy: z.union([ MagicVerseCastOrderByWithRelationInputSchema.array(),MagicVerseCastOrderByWithRelationInputSchema ]).optional(),
+  cursor: MagicVerseCastWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ MagicVerseCastScalarFieldEnumSchema,MagicVerseCastScalarFieldEnumSchema.array() ]).optional(),
+}).strict()
+
+export const MagicVerseCastAggregateArgsSchema: z.ZodType<Prisma.MagicVerseCastAggregateArgs> = z.object({
+  where: MagicVerseCastWhereInputSchema.optional(),
+  orderBy: z.union([ MagicVerseCastOrderByWithRelationInputSchema.array(),MagicVerseCastOrderByWithRelationInputSchema ]).optional(),
+  cursor: MagicVerseCastWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict()
+
+export const MagicVerseCastGroupByArgsSchema: z.ZodType<Prisma.MagicVerseCastGroupByArgs> = z.object({
+  where: MagicVerseCastWhereInputSchema.optional(),
+  orderBy: z.union([ MagicVerseCastOrderByWithAggregationInputSchema.array(),MagicVerseCastOrderByWithAggregationInputSchema ]).optional(),
+  by: MagicVerseCastScalarFieldEnumSchema.array(),
+  having: MagicVerseCastScalarWhereWithAggregatesInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict()
+
+export const MagicVerseCastFindUniqueArgsSchema: z.ZodType<Prisma.MagicVerseCastFindUniqueArgs> = z.object({
+  select: MagicVerseCastSelectSchema.optional(),
+  include: MagicVerseCastIncludeSchema.optional(),
+  where: MagicVerseCastWhereUniqueInputSchema,
+}).strict()
+
+export const MagicVerseCastFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.MagicVerseCastFindUniqueOrThrowArgs> = z.object({
+  select: MagicVerseCastSelectSchema.optional(),
+  include: MagicVerseCastIncludeSchema.optional(),
+  where: MagicVerseCastWhereUniqueInputSchema,
+}).strict()
+
 export const MagicVersesFindFirstArgsSchema: z.ZodType<Prisma.MagicVersesFindFirstArgs> = z.object({
   select: MagicVersesSelectSchema.optional(),
   include: MagicVersesIncludeSchema.optional(),
@@ -9377,6 +9760,47 @@ export const HintsUpdateManyArgsSchema: z.ZodType<Prisma.HintsUpdateManyArgs> = 
 
 export const HintsDeleteManyArgsSchema: z.ZodType<Prisma.HintsDeleteManyArgs> = z.object({
   where: HintsWhereInputSchema.optional(),
+}).strict()
+
+export const MagicVerseCastCreateArgsSchema: z.ZodType<Prisma.MagicVerseCastCreateArgs> = z.object({
+  select: MagicVerseCastSelectSchema.optional(),
+  include: MagicVerseCastIncludeSchema.optional(),
+  data: z.union([ MagicVerseCastCreateInputSchema,MagicVerseCastUncheckedCreateInputSchema ]).optional(),
+}).strict()
+
+export const MagicVerseCastUpsertArgsSchema: z.ZodType<Prisma.MagicVerseCastUpsertArgs> = z.object({
+  select: MagicVerseCastSelectSchema.optional(),
+  include: MagicVerseCastIncludeSchema.optional(),
+  where: MagicVerseCastWhereUniqueInputSchema,
+  create: z.union([ MagicVerseCastCreateInputSchema,MagicVerseCastUncheckedCreateInputSchema ]),
+  update: z.union([ MagicVerseCastUpdateInputSchema,MagicVerseCastUncheckedUpdateInputSchema ]),
+}).strict()
+
+export const MagicVerseCastCreateManyArgsSchema: z.ZodType<Prisma.MagicVerseCastCreateManyArgs> = z.object({
+  data: z.union([ MagicVerseCastCreateManyInputSchema,MagicVerseCastCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict()
+
+export const MagicVerseCastDeleteArgsSchema: z.ZodType<Prisma.MagicVerseCastDeleteArgs> = z.object({
+  select: MagicVerseCastSelectSchema.optional(),
+  include: MagicVerseCastIncludeSchema.optional(),
+  where: MagicVerseCastWhereUniqueInputSchema,
+}).strict()
+
+export const MagicVerseCastUpdateArgsSchema: z.ZodType<Prisma.MagicVerseCastUpdateArgs> = z.object({
+  select: MagicVerseCastSelectSchema.optional(),
+  include: MagicVerseCastIncludeSchema.optional(),
+  data: z.union([ MagicVerseCastUpdateInputSchema,MagicVerseCastUncheckedUpdateInputSchema ]),
+  where: MagicVerseCastWhereUniqueInputSchema,
+}).strict()
+
+export const MagicVerseCastUpdateManyArgsSchema: z.ZodType<Prisma.MagicVerseCastUpdateManyArgs> = z.object({
+  data: z.union([ MagicVerseCastUpdateManyMutationInputSchema,MagicVerseCastUncheckedUpdateManyInputSchema ]),
+  where: MagicVerseCastWhereInputSchema.optional(),
+}).strict()
+
+export const MagicVerseCastDeleteManyArgsSchema: z.ZodType<Prisma.MagicVerseCastDeleteManyArgs> = z.object({
+  where: MagicVerseCastWhereInputSchema.optional(),
 }).strict()
 
 export const MagicVersesCreateArgsSchema: z.ZodType<Prisma.MagicVersesCreateArgs> = z.object({

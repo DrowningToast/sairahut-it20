@@ -152,9 +152,6 @@ model FreshmenDetails {
 
   // จะเป็น true เมื่อได้เข้าร่วมกิจกรรม ITGG เท่านั้น
   vip Boolean @default(false)
-
-  // Freshmen quota of guessing their pair for free
-  quota Int @default(3)
 }
 
 model HintSlugs {
@@ -179,6 +176,15 @@ model Hints {
   @@id([hintSlugId, sophomoreId])
 }
 
+// ทุกครั้งที่เดาหนึ่งครั้งจะสร้าง 1 record
+model MagicVerseCast {
+  id String @id @default(cuid())
+
+  // the length should all be 3
+  verses MagicVerses[]
+  result Boolean[]
+}
+
 model MagicVerses {
   handler            String            @id @unique
   name               String
@@ -188,6 +194,7 @@ model MagicVerses {
   cost               Float             @default(1)
   SophomoreDetails   SophomoreDetails? @relation(fields: [sophomoreDetailsId], references: [id])
   sophomoreDetailsId String?
+  casts              MagicVerseCast[]
 }
 
 model SophomoreDetails {
