@@ -5,12 +5,12 @@ import { prisma } from '$lib/serverUtils';
 import { TRPCError } from '@trpc/server';
 import { freshmenRegister } from '$lib/zod';
 import { AirtableController } from '$lib/airtable-api/controller';
-import { MagicVerse, type FreshmenDetails, type Prisma, type User } from 'database';
+import type { FreshmenDetails, Prisma, User } from 'database';
 import { FreshmenDetailsController } from '../database/freshmen/controller';
 import { determineYear } from '$lib/utils';
 import { PasscodeController } from '../database/passcode/controller';
 import { ResinController } from '../database/resin/controller';
-import { MagicVerseSchema } from 'database/zod';
+import { PairController } from '../database/pair/controller';
 
 interface SearchQuery {
 	where: {
@@ -625,8 +625,56 @@ export const freshmenRouters = createRouter({
 		}
 	}),
 
-	submitMagicVerse: freshmenProcedure.input(z.array(MagicVerseSchema))
-		.query(async () => {
-			return;
+	submitMagicVerse: freshmenProcedure.input(
+		z.array(z.string()).min(3).max(3)
+	).query(async ({ ctx, input }) => {
+		const pairController = PairController(prisma)
+		const freshmenController = FreshmenDetailsController(prisma)
+
+		const { user } = ctx;
+		const freshmenDetailsId = user?.freshmenDetails?.id as string
+
+		const pair = await pairController.getPairByFreshmenId(freshmenDetailsId)
+		const magicVerse = await prisma.magicVerses.findMany({
+			where: {
+				sophomoreDetailsId: pair?.sophomoreDetailsId
+			}
 		})
+
+		const result: boolean[] = []
+
+		// Loop through Sophomore's verse
+		magicVerse.forEach(async (verse, index) => {
+			// if Freshmen trigger wildcard
+			if (verse.handler === input[index] && verse.wildcard) {
+				result.push(true)
+				await freshmenController.decrementFreshmenBalance({
+					id: freshmenDetailsId
+				}, verse.cost)
+				// if Freshmen trigger correct verse at this index
+			} else if (verse.handler === input[index]) {
+				result.push(true)
+				// if Freshmen fail to trigger correct verse
+			} else {
+				result.push(false)
+				await freshmenController.decrementFreshmenBalance({
+					id: freshmenDetailsId
+				}, verse.cost)
+			}
+		})
+
+		const res = await prisma.magicVerseCast.create({
+			data: {
+				verses: {
+					connect: magicVerse
+				},
+				result,
+			}
+		})
+
+		return {
+			success: true,
+			payload: res
+		};
+	})
 });
