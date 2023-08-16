@@ -625,6 +625,50 @@ export const freshmenRouters = createRouter({
 		}
 	}),
 
+	submitShowdownQR: freshmenProcedure.input(
+		z.object({
+			qrCodeContent: z.string()
+		})
+	).query(async ({ ctx, input }) => {
+		// find qr code that scanned
+		const { user } = ctx
+
+		let spells = 0;
+
+		const freshmenId = user?.freshmenDetails?.id
+		const sophomoreId = 'somethingthatiscuid'
+
+		const logs = await prisma.qRInstances.count({
+			where: {
+				AND: {
+					ownerId: sophomoreId,
+					scannedBy: {
+						every: {
+							id: freshmenId
+						}
+					}
+				}
+			}
+		})
+
+		if (logs !== 0) {
+			spells++;
+		}
+
+		const pair = await PairController(prisma).getPairByFreshmenId(freshmenId!)
+
+		const freshmenBalance = user?.balance as number;
+		const sophomoreBalance = pair?.sophomore.user.balance as number;
+	
+		if (freshmenBalance >= sophomoreBalance) {
+			spells++;
+		}
+
+		return {
+			
+		};
+	}),
+
 	submitMagicVerse: freshmenProcedure.input(
 		z.array(z.string()).min(3).max(3)
 	).query(async ({ ctx, input }) => {

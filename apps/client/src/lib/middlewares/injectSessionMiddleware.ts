@@ -1,3 +1,4 @@
+import { checkMagicVerse } from '$lib/auth/auth';
 import { prisma } from '$lib/serverUtils';
 import type { Handle } from '@sveltejs/kit';
 

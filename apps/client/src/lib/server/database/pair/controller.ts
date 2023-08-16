@@ -5,6 +5,18 @@ export const PairController = (prisma: PrismaClient) => {
         return await prisma.pair.findUnique({
             where: {
                 freshmenDetailsId
+            },
+            include: {
+                freshmen: {
+                    include: {
+                        user: true
+                    }
+                },
+                sophomore: {
+                    include: {
+                        user: true
+                    }
+                }
             }
         })
     }
