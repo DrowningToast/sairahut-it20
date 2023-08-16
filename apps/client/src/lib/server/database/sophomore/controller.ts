@@ -120,6 +120,15 @@ export const SophomoreDetailsController = (prisma: PrismaClient) => {
 		}
 	};
 
+	const getSophomoreMagicVerse = async (sop: Prisma.SophomoreDetailsWhereUniqueInput) => {
+		return await prisma.sophomoreDetails.findUnique({
+			where: sop,
+			include: {
+				verses: true
+			}
+		})
+	}
+
 	return {
 		findUnique,
 		findUniqueUserWithFresh: findUniqueWithUser,
@@ -127,6 +136,7 @@ export const SophomoreDetailsController = (prisma: PrismaClient) => {
 		updateOne,
 		getUsedQRsByOwnerId,
 		getUsedPasscodesByOwnerId,
-		getSophomorePasscode
+		getSophomorePasscode,
+		getSophomoreMagicVerse
 	};
 };
