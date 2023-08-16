@@ -5,7 +5,7 @@ import { prisma } from '$lib/serverUtils';
 import { TRPCError } from '@trpc/server';
 import { freshmenRegister } from '$lib/zod';
 import { AirtableController } from '$lib/airtable-api/controller';
-import type { FreshmenDetails, Prisma, User } from 'database';
+import type { FreshmenDetails, MagicVerseCast, Prisma, User } from 'database';
 import { FreshmenDetailsController } from '../database/freshmen/controller';
 import { determineYear } from '$lib/utils';
 import { PasscodeController } from '../database/passcode/controller';
@@ -630,18 +630,40 @@ export const freshmenRouters = createRouter({
 			qrCodeContent: z.string()
 		})
 	).query(async ({ ctx, input }) => {
+		const { qrCodeContent } = input
 		// find qr code that scanned
 		const { user } = ctx
+
+		const qrRes = await prisma.magicVerseIdentificationInstance.findUnique({
+			where: {
+				content: qrCodeContent
+			}
+		})
+
+		if (!qrRes) {
+			throw new TRPCError({
+				code: 'NOT_FOUND',
+				message: `QR Code with code: "${qrCodeContent}" not found.`
+			})
+		}
+
+		await prisma.magicVerseIdentificationInstance.update({
+			data: {
+				isExpired: true,
+			},
+			where: {
+				id: qrRes.id
+			}
+		})
 
 		let spells = 0;
 
 		const freshmenId = user?.freshmenDetails?.id
-		const sophomoreId = 'somethingthatiscuid'
 
 		const logs = await prisma.qRInstances.count({
 			where: {
 				AND: {
-					ownerId: sophomoreId,
+					ownerId: qrRes?.sophomoreDetailsId,
 					scannedBy: {
 						every: {
 							id: freshmenId
@@ -659,14 +681,46 @@ export const freshmenRouters = createRouter({
 
 		const freshmenBalance = user?.balance as number;
 		const sophomoreBalance = pair?.sophomore.user.balance as number;
-	
+
 		if (freshmenBalance >= sophomoreBalance) {
 			spells++;
 		}
 
+		const pairMagicVerse = await prisma.magicVerses.findMany({
+			take: spells,
+			where: {
+				sophomores: {
+					every: {
+						id: pair?.sophomoreDetailsId
+					}
+				}
+			}
+		})
+
 		return {
-			
+			success: true,
+			payload: pairMagicVerse
 		};
+	}),
+
+	getMagicVerse: freshmenProcedure.query(async ({ ctx }) => {
+		const { user } = ctx;
+
+		const res = await prisma.magicVerseCast.findFirst({
+			orderBy: {
+				update_at: 'desc'
+			},
+			where: {
+				casterId: user?.freshmenDetails?.id
+			}
+		})
+
+		return {
+			success: true,
+			payload: {
+				lastCast: res || new Array<MagicVerseCast>(3)
+			}
+		}
 	}),
 
 	submitMagicVerse: freshmenProcedure.input(
@@ -681,7 +735,11 @@ export const freshmenRouters = createRouter({
 		const pair = await pairController.getPairByFreshmenId(freshmenDetailsId)
 		const magicVerse = await prisma.magicVerses.findMany({
 			where: {
-				sophomoreDetailsId: pair?.sophomoreDetailsId
+				sophomores: {
+					every: {
+						id: pair?.sophomoreDetailsId
+					}
+				}
 			}
 		})
 
@@ -709,10 +767,11 @@ export const freshmenRouters = createRouter({
 
 		const res = await prisma.magicVerseCast.create({
 			data: {
+				casterId: freshmenDetailsId,
+				result,
 				verses: {
 					connect: magicVerse
-				},
-				result,
+				}
 			}
 		})
 

@@ -152,6 +152,8 @@ model FreshmenDetails {
 
   // จะเป็น true เมื่อได้เข้าร่วมกิจกรรม ITGG เท่านั้น
   vip Boolean @default(false)
+
+  MagicVerseCast MagicVerseCast[]
 }
 
 model HintSlugs {
@@ -181,7 +183,7 @@ model MagicVerseIdentificationInstance {
   id                 String           @id @default(cuid())
   sophomoreDetails   SophomoreDetails @relation(fields: [sophomoreDetailsId], references: [id])
   // secret
-  content            String
+  content            String           @unique
   sophomoreDetailsId String
   isExpired          Boolean          @default(false)
 }
@@ -191,7 +193,9 @@ model MagicVerseCast {
   create_at DateTime @default(now())
   update_at DateTime @updatedAt
 
-  id String @id @default(cuid())
+  id       String          @id @default(cuid())
+  caster   FreshmenDetails @relation(fields: [casterId], references: [id])
+  casterId String
 
   // the length should all be 3
   verses MagicVerses[]
