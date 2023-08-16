@@ -58,8 +58,9 @@
 
 			// play sfx
 			const rewardSFX = new Audio();
+			rewardSFX.autoplay = true;
+			rewardSFX.src = slientSound;
 			rewardSFX.src = '/sfx/RewardSFX.ogg';
-			rewardSFX.play();
 
 			setTimeout(() => {
 				found = undefined;
