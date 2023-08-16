@@ -7,6 +7,7 @@
 	import { z } from 'zod';
 	import type { PageData } from './$types';
 	import { page } from '$app/stores';
+	import { slientSound } from '$lib/utils';
 
 	interface IFound {
 		nickname: string;
@@ -84,13 +85,15 @@
 		if (!res.payload.easterEgg) {
 			// play sfx
 			const rewardSFX = new Audio();
+			rewardSFX.autoplay = true;
+			rewardSFX.src = slientSound;
 			rewardSFX.src = '/sfx/RewardSFX.ogg';
-			rewardSFX.play();
 		} else {
 			// play murmur sfx, notifying the user has completed the challenge
 			const rewardSFX = new Audio();
+			rewardSFX.autoplay = true;
+			rewardSFX.src = slientSound;
 			rewardSFX.src = '/sfx/Murmur.ogg';
-			rewardSFX.play();
 		}
 
 		setTimeout(() => {
