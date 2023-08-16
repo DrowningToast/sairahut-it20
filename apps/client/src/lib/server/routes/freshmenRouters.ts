@@ -5,11 +5,12 @@ import { prisma } from '$lib/serverUtils';
 import { TRPCError } from '@trpc/server';
 import { freshmenRegister } from '$lib/zod';
 import { AirtableController } from '$lib/airtable-api/controller';
-import type { FreshmenDetails, Prisma, User } from 'database';
+import { MagicVerse, type FreshmenDetails, type Prisma, type User } from 'database';
 import { FreshmenDetailsController } from '../database/freshmen/controller';
 import { determineYear } from '$lib/utils';
 import { PasscodeController } from '../database/passcode/controller';
 import { ResinController } from '../database/resin/controller';
+import { MagicVerseSchema } from 'database/zod';
 
 interface SearchQuery {
 	where: {
@@ -622,5 +623,10 @@ export const freshmenRouters = createRouter({
 				logs
 			};
 		}
-	})
+	}),
+
+	submitMagicVerse: freshmenProcedure.input(z.array(MagicVerseSchema))
+		.query(async () => {
+			return;
+		})
 });

@@ -263,5 +263,14 @@ export const sophomoreRouters = createRouter({
 			success: true,
 			payload: res
 		};
+	}),
+	getMagicVerse: oldProcedure.query(async ({ ctx }) => {
+		const { user } = ctx;
+
+		if (user?.sophomoreDetails?.verses.length === 0) {
+			// create Sophomore's verse
+		}
+
+		return // Sophomore's verse
 	})
 });
