@@ -179,16 +179,15 @@ model Hints {
   @@id([hintSlugId, sophomoreId])
 }
 
-enum MagicVerse {
-  CRACKPOT
-  BRAVE
-  PADFOOT
-  NERVE
-  CHIVALRY
-  SPELL
-  GOBLET
-  SWISH
-  DEMENTOR
+model MagicVerses {
+  handler            String            @id @unique
+  name               String
+  // Wildcard allow to bypass a slot in the game
+  wildcard           Boolean           @default(false)
+  // cost of using this card
+  cost               Float             @default(1)
+  SophomoreDetails   SophomoreDetails? @relation(fields: [sophomoreDetailsId], references: [id])
+  sophomoreDetailsId String?
 }
 
 model SophomoreDetails {
@@ -215,7 +214,7 @@ model SophomoreDetails {
   user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   pair              Pair[]
 
-  verses MagicVerse[]
+  verses MagicVerses[]
 }
 
 model TodayResin {

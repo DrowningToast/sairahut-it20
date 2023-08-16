@@ -36,7 +36,9 @@ export const HintSlugsScalarFieldEnumSchema = z.enum(['slug','displayName','inde
 
 export const HintsScalarFieldEnumSchema = z.enum(['hintSlugId','content','sophomoreId','craete_at','update_at']);
 
-export const SophomoreDetailsScalarFieldEnumSchema = z.enum(['create_at','update_at','thisOrThat','thisOrThatReady','hintsReady','userId','id','fullname','title','student_id','nickname','branch','participate','many_fresh','facebook_link','instagram_link','phone','verses']);
+export const MagicVersesScalarFieldEnumSchema = z.enum(['handler','name','wildcard','cost','sophomoreDetailsId']);
+
+export const SophomoreDetailsScalarFieldEnumSchema = z.enum(['create_at','update_at','thisOrThat','thisOrThatReady','hintsReady','userId','id','fullname','title','student_id','nickname','branch','participate','many_fresh','facebook_link','instagram_link','phone']);
 
 export const TodayResinScalarFieldEnumSchema = z.enum(['id','create_at','quota','freshmenDetailsId']);
 
@@ -45,10 +47,6 @@ export const SortOrderSchema = z.enum(['asc','desc']);
 export const QueryModeSchema = z.enum(['default','insensitive']);
 
 export const NullsOrderSchema = z.enum(['first','last']);
-
-export const MagicVerseSchema = z.enum(['CRACKPOT','BRAVE','PADFOOT','NERVE','CHIVALRY','SPELL','GOBLET','SWISH','DEMENTOR']);
-
-export type MagicVerseType = `${z.infer<typeof MagicVerseSchema>}`
 
 export const PlayerTypeSchema = z.enum(['NONE','GUEST','FRESHMEN','SOPHOMORE','SENIOR']);
 
@@ -262,6 +260,20 @@ export const HintsSchema = z.object({
 export type Hints = z.infer<typeof HintsSchema>
 
 /////////////////////////////////////////
+// MAGIC VERSES SCHEMA
+/////////////////////////////////////////
+
+export const MagicVersesSchema = z.object({
+  handler: z.string(),
+  name: z.string(),
+  wildcard: z.boolean(),
+  cost: z.number(),
+  sophomoreDetailsId: z.string().nullable(),
+})
+
+export type MagicVerses = z.infer<typeof MagicVersesSchema>
+
+/////////////////////////////////////////
 // SOPHOMORE DETAILS SCHEMA
 /////////////////////////////////////////
 
@@ -269,7 +281,6 @@ export const SophomoreDetailsSchema = z.object({
   thisOrThat: ThisOrThatSchema.array(),
   title: NameTitleSchema,
   branch: BranchSchema,
-  verses: MagicVerseSchema.array(),
   create_at: z.coerce.date(),
   update_at: z.coerce.date(),
   thisOrThatReady: z.boolean(),
@@ -673,6 +684,27 @@ export const HintsSelectSchema: z.ZodType<Prisma.HintsSelect> = z.object({
   _count: z.union([z.boolean(),z.lazy(() => HintsCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
+// MAGIC VERSES
+//------------------------------------------------------
+
+export const MagicVersesIncludeSchema: z.ZodType<Prisma.MagicVersesInclude> = z.object({
+  SophomoreDetails: z.union([z.boolean(),z.lazy(() => SophomoreDetailsArgsSchema)]).optional(),
+}).strict()
+
+export const MagicVersesArgsSchema: z.ZodType<Prisma.MagicVersesArgs> = z.object({
+  select: z.lazy(() => MagicVersesSelectSchema).optional(),
+  include: z.lazy(() => MagicVersesIncludeSchema).optional(),
+}).strict();
+
+export const MagicVersesSelectSchema: z.ZodType<Prisma.MagicVersesSelect> = z.object({
+  handler: z.boolean().optional(),
+  name: z.boolean().optional(),
+  wildcard: z.boolean().optional(),
+  cost: z.boolean().optional(),
+  sophomoreDetailsId: z.boolean().optional(),
+  SophomoreDetails: z.union([z.boolean(),z.lazy(() => SophomoreDetailsArgsSchema)]).optional(),
+}).strict()
+
 // SOPHOMORE DETAILS
 //------------------------------------------------------
 
@@ -682,6 +714,7 @@ export const SophomoreDetailsIncludeSchema: z.ZodType<Prisma.SophomoreDetailsInc
   QRInstances: z.union([z.boolean(),z.lazy(() => QRInstancesFindManyArgsSchema)]).optional(),
   user: z.union([z.boolean(),z.lazy(() => UserArgsSchema)]).optional(),
   pair: z.union([z.boolean(),z.lazy(() => PairFindManyArgsSchema)]).optional(),
+  verses: z.union([z.boolean(),z.lazy(() => MagicVersesFindManyArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => SophomoreDetailsCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
@@ -699,6 +732,7 @@ export const SophomoreDetailsCountOutputTypeSelectSchema: z.ZodType<Prisma.Sopho
   PasscodeInstances: z.boolean().optional(),
   QRInstances: z.boolean().optional(),
   pair: z.boolean().optional(),
+  verses: z.boolean().optional(),
 }).strict();
 
 export const SophomoreDetailsSelectSchema: z.ZodType<Prisma.SophomoreDetailsSelect> = z.object({
@@ -719,12 +753,12 @@ export const SophomoreDetailsSelectSchema: z.ZodType<Prisma.SophomoreDetailsSele
   facebook_link: z.boolean().optional(),
   instagram_link: z.boolean().optional(),
   phone: z.boolean().optional(),
-  verses: z.boolean().optional(),
   hints: z.union([z.boolean(),z.lazy(() => HintsFindManyArgsSchema)]).optional(),
   PasscodeInstances: z.union([z.boolean(),z.lazy(() => PasscodeInstancesFindManyArgsSchema)]).optional(),
   QRInstances: z.union([z.boolean(),z.lazy(() => QRInstancesFindManyArgsSchema)]).optional(),
   user: z.union([z.boolean(),z.lazy(() => UserArgsSchema)]).optional(),
   pair: z.union([z.boolean(),z.lazy(() => PairFindManyArgsSchema)]).optional(),
+  verses: z.union([z.boolean(),z.lazy(() => MagicVersesFindManyArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => SophomoreDetailsCountOutputTypeArgsSchema)]).optional(),
 }).strict()
 
@@ -1457,6 +1491,55 @@ export const HintsScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.HintsSc
   update_at: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
 }).strict();
 
+export const MagicVersesWhereInputSchema: z.ZodType<Prisma.MagicVersesWhereInput> = z.object({
+  AND: z.union([ z.lazy(() => MagicVersesWhereInputSchema),z.lazy(() => MagicVersesWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => MagicVersesWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => MagicVersesWhereInputSchema),z.lazy(() => MagicVersesWhereInputSchema).array() ]).optional(),
+  handler: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  name: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  wildcard: z.union([ z.lazy(() => BoolFilterSchema),z.boolean() ]).optional(),
+  cost: z.union([ z.lazy(() => FloatFilterSchema),z.number() ]).optional(),
+  sophomoreDetailsId: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
+  SophomoreDetails: z.union([ z.lazy(() => SophomoreDetailsRelationFilterSchema),z.lazy(() => SophomoreDetailsWhereInputSchema) ]).optional().nullable(),
+}).strict();
+
+export const MagicVersesOrderByWithRelationInputSchema: z.ZodType<Prisma.MagicVersesOrderByWithRelationInput> = z.object({
+  handler: z.lazy(() => SortOrderSchema).optional(),
+  name: z.lazy(() => SortOrderSchema).optional(),
+  wildcard: z.lazy(() => SortOrderSchema).optional(),
+  cost: z.lazy(() => SortOrderSchema).optional(),
+  sophomoreDetailsId: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  SophomoreDetails: z.lazy(() => SophomoreDetailsOrderByWithRelationInputSchema).optional()
+}).strict();
+
+export const MagicVersesWhereUniqueInputSchema: z.ZodType<Prisma.MagicVersesWhereUniqueInput> = z.object({
+  handler: z.string().optional()
+}).strict();
+
+export const MagicVersesOrderByWithAggregationInputSchema: z.ZodType<Prisma.MagicVersesOrderByWithAggregationInput> = z.object({
+  handler: z.lazy(() => SortOrderSchema).optional(),
+  name: z.lazy(() => SortOrderSchema).optional(),
+  wildcard: z.lazy(() => SortOrderSchema).optional(),
+  cost: z.lazy(() => SortOrderSchema).optional(),
+  sophomoreDetailsId: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  _count: z.lazy(() => MagicVersesCountOrderByAggregateInputSchema).optional(),
+  _avg: z.lazy(() => MagicVersesAvgOrderByAggregateInputSchema).optional(),
+  _max: z.lazy(() => MagicVersesMaxOrderByAggregateInputSchema).optional(),
+  _min: z.lazy(() => MagicVersesMinOrderByAggregateInputSchema).optional(),
+  _sum: z.lazy(() => MagicVersesSumOrderByAggregateInputSchema).optional()
+}).strict();
+
+export const MagicVersesScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.MagicVersesScalarWhereWithAggregatesInput> = z.object({
+  AND: z.union([ z.lazy(() => MagicVersesScalarWhereWithAggregatesInputSchema),z.lazy(() => MagicVersesScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  OR: z.lazy(() => MagicVersesScalarWhereWithAggregatesInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => MagicVersesScalarWhereWithAggregatesInputSchema),z.lazy(() => MagicVersesScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  handler: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  name: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  wildcard: z.union([ z.lazy(() => BoolWithAggregatesFilterSchema),z.boolean() ]).optional(),
+  cost: z.union([ z.lazy(() => FloatWithAggregatesFilterSchema),z.number() ]).optional(),
+  sophomoreDetailsId: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
+}).strict();
+
 export const SophomoreDetailsWhereInputSchema: z.ZodType<Prisma.SophomoreDetailsWhereInput> = z.object({
   AND: z.union([ z.lazy(() => SophomoreDetailsWhereInputSchema),z.lazy(() => SophomoreDetailsWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => SophomoreDetailsWhereInputSchema).array().optional(),
@@ -1478,12 +1561,12 @@ export const SophomoreDetailsWhereInputSchema: z.ZodType<Prisma.SophomoreDetails
   facebook_link: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   instagram_link: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   phone: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  verses: z.lazy(() => EnumMagicVerseNullableListFilterSchema).optional(),
   hints: z.lazy(() => HintsListRelationFilterSchema).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesListRelationFilterSchema).optional(),
   QRInstances: z.lazy(() => QRInstancesListRelationFilterSchema).optional(),
   user: z.union([ z.lazy(() => UserRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),
-  pair: z.lazy(() => PairListRelationFilterSchema).optional()
+  pair: z.lazy(() => PairListRelationFilterSchema).optional(),
+  verses: z.lazy(() => MagicVersesListRelationFilterSchema).optional()
 }).strict();
 
 export const SophomoreDetailsOrderByWithRelationInputSchema: z.ZodType<Prisma.SophomoreDetailsOrderByWithRelationInput> = z.object({
@@ -1504,12 +1587,12 @@ export const SophomoreDetailsOrderByWithRelationInputSchema: z.ZodType<Prisma.So
   facebook_link: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   instagram_link: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   phone: z.lazy(() => SortOrderSchema).optional(),
-  verses: z.lazy(() => SortOrderSchema).optional(),
   hints: z.lazy(() => HintsOrderByRelationAggregateInputSchema).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesOrderByRelationAggregateInputSchema).optional(),
   QRInstances: z.lazy(() => QRInstancesOrderByRelationAggregateInputSchema).optional(),
   user: z.lazy(() => UserOrderByWithRelationInputSchema).optional(),
-  pair: z.lazy(() => PairOrderByRelationAggregateInputSchema).optional()
+  pair: z.lazy(() => PairOrderByRelationAggregateInputSchema).optional(),
+  verses: z.lazy(() => MagicVersesOrderByRelationAggregateInputSchema).optional()
 }).strict();
 
 export const SophomoreDetailsWhereUniqueInputSchema: z.ZodType<Prisma.SophomoreDetailsWhereUniqueInput> = z.object({
@@ -1536,7 +1619,6 @@ export const SophomoreDetailsOrderByWithAggregationInputSchema: z.ZodType<Prisma
   facebook_link: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   instagram_link: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   phone: z.lazy(() => SortOrderSchema).optional(),
-  verses: z.lazy(() => SortOrderSchema).optional(),
   _count: z.lazy(() => SophomoreDetailsCountOrderByAggregateInputSchema).optional(),
   _max: z.lazy(() => SophomoreDetailsMaxOrderByAggregateInputSchema).optional(),
   _min: z.lazy(() => SophomoreDetailsMinOrderByAggregateInputSchema).optional()
@@ -1563,7 +1645,6 @@ export const SophomoreDetailsScalarWhereWithAggregatesInputSchema: z.ZodType<Pri
   facebook_link: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
   instagram_link: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
   phone: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
-  verses: z.lazy(() => EnumMagicVerseNullableListFilterSchema).optional()
 }).strict();
 
 export const TodayResinWhereInputSchema: z.ZodType<Prisma.TodayResinWhereInput> = z.object({
@@ -2480,6 +2561,61 @@ export const HintsUncheckedUpdateManyInputSchema: z.ZodType<Prisma.HintsUnchecke
   update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
+export const MagicVersesCreateInputSchema: z.ZodType<Prisma.MagicVersesCreateInput> = z.object({
+  handler: z.string(),
+  name: z.string(),
+  wildcard: z.boolean().optional(),
+  cost: z.number().optional(),
+  SophomoreDetails: z.lazy(() => SophomoreDetailsCreateNestedOneWithoutVersesInputSchema).optional()
+}).strict();
+
+export const MagicVersesUncheckedCreateInputSchema: z.ZodType<Prisma.MagicVersesUncheckedCreateInput> = z.object({
+  handler: z.string(),
+  name: z.string(),
+  wildcard: z.boolean().optional(),
+  cost: z.number().optional(),
+  sophomoreDetailsId: z.string().optional().nullable()
+}).strict();
+
+export const MagicVersesUpdateInputSchema: z.ZodType<Prisma.MagicVersesUpdateInput> = z.object({
+  handler: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  wildcard: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
+  cost: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
+  SophomoreDetails: z.lazy(() => SophomoreDetailsUpdateOneWithoutVersesNestedInputSchema).optional()
+}).strict();
+
+export const MagicVersesUncheckedUpdateInputSchema: z.ZodType<Prisma.MagicVersesUncheckedUpdateInput> = z.object({
+  handler: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  wildcard: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
+  cost: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
+  sophomoreDetailsId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+}).strict();
+
+export const MagicVersesCreateManyInputSchema: z.ZodType<Prisma.MagicVersesCreateManyInput> = z.object({
+  handler: z.string(),
+  name: z.string(),
+  wildcard: z.boolean().optional(),
+  cost: z.number().optional(),
+  sophomoreDetailsId: z.string().optional().nullable()
+}).strict();
+
+export const MagicVersesUpdateManyMutationInputSchema: z.ZodType<Prisma.MagicVersesUpdateManyMutationInput> = z.object({
+  handler: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  wildcard: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
+  cost: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const MagicVersesUncheckedUpdateManyInputSchema: z.ZodType<Prisma.MagicVersesUncheckedUpdateManyInput> = z.object({
+  handler: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  wildcard: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
+  cost: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
+  sophomoreDetailsId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+}).strict();
+
 export const SophomoreDetailsCreateInputSchema: z.ZodType<Prisma.SophomoreDetailsCreateInput> = z.object({
   create_at: z.coerce.date().optional(),
   update_at: z.coerce.date().optional(),
@@ -2497,12 +2633,12 @@ export const SophomoreDetailsCreateInputSchema: z.ZodType<Prisma.SophomoreDetail
   facebook_link: z.string().optional().nullable(),
   instagram_link: z.string().optional().nullable(),
   phone: z.string(),
-  verses: z.union([ z.lazy(() => SophomoreDetailsCreateversesInputSchema),z.lazy(() => MagicVerseSchema).array() ]).optional(),
   hints: z.lazy(() => HintsCreateNestedManyWithoutSophomoreInputSchema).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesCreateNestedManyWithoutOwnerInputSchema).optional(),
   QRInstances: z.lazy(() => QRInstancesCreateNestedManyWithoutOwnerInputSchema).optional(),
   user: z.lazy(() => UserCreateNestedOneWithoutSophomoreDetailsInputSchema),
-  pair: z.lazy(() => PairCreateNestedManyWithoutSophomoreInputSchema).optional()
+  pair: z.lazy(() => PairCreateNestedManyWithoutSophomoreInputSchema).optional(),
+  verses: z.lazy(() => MagicVersesCreateNestedManyWithoutSophomoreDetailsInputSchema).optional()
 }).strict();
 
 export const SophomoreDetailsUncheckedCreateInputSchema: z.ZodType<Prisma.SophomoreDetailsUncheckedCreateInput> = z.object({
@@ -2523,11 +2659,11 @@ export const SophomoreDetailsUncheckedCreateInputSchema: z.ZodType<Prisma.Sophom
   facebook_link: z.string().optional().nullable(),
   instagram_link: z.string().optional().nullable(),
   phone: z.string(),
-  verses: z.union([ z.lazy(() => SophomoreDetailsCreateversesInputSchema),z.lazy(() => MagicVerseSchema).array() ]).optional(),
   hints: z.lazy(() => HintsUncheckedCreateNestedManyWithoutSophomoreInputSchema).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesUncheckedCreateNestedManyWithoutOwnerInputSchema).optional(),
   QRInstances: z.lazy(() => QRInstancesUncheckedCreateNestedManyWithoutOwnerInputSchema).optional(),
-  pair: z.lazy(() => PairUncheckedCreateNestedManyWithoutSophomoreInputSchema).optional()
+  pair: z.lazy(() => PairUncheckedCreateNestedManyWithoutSophomoreInputSchema).optional(),
+  verses: z.lazy(() => MagicVersesUncheckedCreateNestedManyWithoutSophomoreDetailsInputSchema).optional()
 }).strict();
 
 export const SophomoreDetailsUpdateInputSchema: z.ZodType<Prisma.SophomoreDetailsUpdateInput> = z.object({
@@ -2547,12 +2683,12 @@ export const SophomoreDetailsUpdateInputSchema: z.ZodType<Prisma.SophomoreDetail
   facebook_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   instagram_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   phone: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  verses: z.union([ z.lazy(() => SophomoreDetailsUpdateversesInputSchema),z.lazy(() => MagicVerseSchema).array() ]).optional(),
   hints: z.lazy(() => HintsUpdateManyWithoutSophomoreNestedInputSchema).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesUpdateManyWithoutOwnerNestedInputSchema).optional(),
   QRInstances: z.lazy(() => QRInstancesUpdateManyWithoutOwnerNestedInputSchema).optional(),
   user: z.lazy(() => UserUpdateOneRequiredWithoutSophomoreDetailsNestedInputSchema).optional(),
-  pair: z.lazy(() => PairUpdateManyWithoutSophomoreNestedInputSchema).optional()
+  pair: z.lazy(() => PairUpdateManyWithoutSophomoreNestedInputSchema).optional(),
+  verses: z.lazy(() => MagicVersesUpdateManyWithoutSophomoreDetailsNestedInputSchema).optional()
 }).strict();
 
 export const SophomoreDetailsUncheckedUpdateInputSchema: z.ZodType<Prisma.SophomoreDetailsUncheckedUpdateInput> = z.object({
@@ -2573,11 +2709,11 @@ export const SophomoreDetailsUncheckedUpdateInputSchema: z.ZodType<Prisma.Sophom
   facebook_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   instagram_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   phone: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  verses: z.union([ z.lazy(() => SophomoreDetailsUpdateversesInputSchema),z.lazy(() => MagicVerseSchema).array() ]).optional(),
   hints: z.lazy(() => HintsUncheckedUpdateManyWithoutSophomoreNestedInputSchema).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesUncheckedUpdateManyWithoutOwnerNestedInputSchema).optional(),
   QRInstances: z.lazy(() => QRInstancesUncheckedUpdateManyWithoutOwnerNestedInputSchema).optional(),
-  pair: z.lazy(() => PairUncheckedUpdateManyWithoutSophomoreNestedInputSchema).optional()
+  pair: z.lazy(() => PairUncheckedUpdateManyWithoutSophomoreNestedInputSchema).optional(),
+  verses: z.lazy(() => MagicVersesUncheckedUpdateManyWithoutSophomoreDetailsNestedInputSchema).optional()
 }).strict();
 
 export const SophomoreDetailsCreateManyInputSchema: z.ZodType<Prisma.SophomoreDetailsCreateManyInput> = z.object({
@@ -2597,8 +2733,7 @@ export const SophomoreDetailsCreateManyInputSchema: z.ZodType<Prisma.SophomoreDe
   many_fresh: z.boolean(),
   facebook_link: z.string().optional().nullable(),
   instagram_link: z.string().optional().nullable(),
-  phone: z.string(),
-  verses: z.union([ z.lazy(() => SophomoreDetailsCreateversesInputSchema),z.lazy(() => MagicVerseSchema).array() ]).optional(),
+  phone: z.string()
 }).strict();
 
 export const SophomoreDetailsUpdateManyMutationInputSchema: z.ZodType<Prisma.SophomoreDetailsUpdateManyMutationInput> = z.object({
@@ -2618,7 +2753,6 @@ export const SophomoreDetailsUpdateManyMutationInputSchema: z.ZodType<Prisma.Sop
   facebook_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   instagram_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   phone: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  verses: z.union([ z.lazy(() => SophomoreDetailsUpdateversesInputSchema),z.lazy(() => MagicVerseSchema).array() ]).optional(),
 }).strict();
 
 export const SophomoreDetailsUncheckedUpdateManyInputSchema: z.ZodType<Prisma.SophomoreDetailsUncheckedUpdateManyInput> = z.object({
@@ -2639,7 +2773,6 @@ export const SophomoreDetailsUncheckedUpdateManyInputSchema: z.ZodType<Prisma.So
   facebook_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   instagram_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   phone: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  verses: z.union([ z.lazy(() => SophomoreDetailsUpdateversesInputSchema),z.lazy(() => MagicVerseSchema).array() ]).optional(),
 }).strict();
 
 export const TodayResinCreateInputSchema: z.ZodType<Prisma.TodayResinCreateInput> = z.object({
@@ -3480,12 +3613,63 @@ export const HintsMinOrderByAggregateInputSchema: z.ZodType<Prisma.HintsMinOrder
   update_at: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
-export const EnumMagicVerseNullableListFilterSchema: z.ZodType<Prisma.EnumMagicVerseNullableListFilter> = z.object({
-  equals: z.lazy(() => MagicVerseSchema).array().optional().nullable(),
-  has: z.lazy(() => MagicVerseSchema).optional().nullable(),
-  hasEvery: z.lazy(() => MagicVerseSchema).array().optional(),
-  hasSome: z.lazy(() => MagicVerseSchema).array().optional(),
-  isEmpty: z.boolean().optional()
+export const FloatFilterSchema: z.ZodType<Prisma.FloatFilter> = z.object({
+  equals: z.number().optional(),
+  in: z.union([ z.number().array(),z.number() ]).optional(),
+  notIn: z.union([ z.number().array(),z.number() ]).optional(),
+  lt: z.number().optional(),
+  lte: z.number().optional(),
+  gt: z.number().optional(),
+  gte: z.number().optional(),
+  not: z.union([ z.number(),z.lazy(() => NestedFloatFilterSchema) ]).optional(),
+}).strict();
+
+export const MagicVersesCountOrderByAggregateInputSchema: z.ZodType<Prisma.MagicVersesCountOrderByAggregateInput> = z.object({
+  handler: z.lazy(() => SortOrderSchema).optional(),
+  name: z.lazy(() => SortOrderSchema).optional(),
+  wildcard: z.lazy(() => SortOrderSchema).optional(),
+  cost: z.lazy(() => SortOrderSchema).optional(),
+  sophomoreDetailsId: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const MagicVersesAvgOrderByAggregateInputSchema: z.ZodType<Prisma.MagicVersesAvgOrderByAggregateInput> = z.object({
+  cost: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const MagicVersesMaxOrderByAggregateInputSchema: z.ZodType<Prisma.MagicVersesMaxOrderByAggregateInput> = z.object({
+  handler: z.lazy(() => SortOrderSchema).optional(),
+  name: z.lazy(() => SortOrderSchema).optional(),
+  wildcard: z.lazy(() => SortOrderSchema).optional(),
+  cost: z.lazy(() => SortOrderSchema).optional(),
+  sophomoreDetailsId: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const MagicVersesMinOrderByAggregateInputSchema: z.ZodType<Prisma.MagicVersesMinOrderByAggregateInput> = z.object({
+  handler: z.lazy(() => SortOrderSchema).optional(),
+  name: z.lazy(() => SortOrderSchema).optional(),
+  wildcard: z.lazy(() => SortOrderSchema).optional(),
+  cost: z.lazy(() => SortOrderSchema).optional(),
+  sophomoreDetailsId: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const MagicVersesSumOrderByAggregateInputSchema: z.ZodType<Prisma.MagicVersesSumOrderByAggregateInput> = z.object({
+  cost: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const FloatWithAggregatesFilterSchema: z.ZodType<Prisma.FloatWithAggregatesFilter> = z.object({
+  equals: z.number().optional(),
+  in: z.union([ z.number().array(),z.number() ]).optional(),
+  notIn: z.union([ z.number().array(),z.number() ]).optional(),
+  lt: z.number().optional(),
+  lte: z.number().optional(),
+  gt: z.number().optional(),
+  gte: z.number().optional(),
+  not: z.union([ z.number(),z.lazy(() => NestedFloatWithAggregatesFilterSchema) ]).optional(),
+  _count: z.lazy(() => NestedIntFilterSchema).optional(),
+  _avg: z.lazy(() => NestedFloatFilterSchema).optional(),
+  _sum: z.lazy(() => NestedFloatFilterSchema).optional(),
+  _min: z.lazy(() => NestedFloatFilterSchema).optional(),
+  _max: z.lazy(() => NestedFloatFilterSchema).optional()
 }).strict();
 
 export const PairListRelationFilterSchema: z.ZodType<Prisma.PairListRelationFilter> = z.object({
@@ -3494,7 +3678,17 @@ export const PairListRelationFilterSchema: z.ZodType<Prisma.PairListRelationFilt
   none: z.lazy(() => PairWhereInputSchema).optional()
 }).strict();
 
+export const MagicVersesListRelationFilterSchema: z.ZodType<Prisma.MagicVersesListRelationFilter> = z.object({
+  every: z.lazy(() => MagicVersesWhereInputSchema).optional(),
+  some: z.lazy(() => MagicVersesWhereInputSchema).optional(),
+  none: z.lazy(() => MagicVersesWhereInputSchema).optional()
+}).strict();
+
 export const PairOrderByRelationAggregateInputSchema: z.ZodType<Prisma.PairOrderByRelationAggregateInput> = z.object({
+  _count: z.lazy(() => SortOrderSchema).optional()
+}).strict();
+
+export const MagicVersesOrderByRelationAggregateInputSchema: z.ZodType<Prisma.MagicVersesOrderByRelationAggregateInput> = z.object({
   _count: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
@@ -3515,8 +3709,7 @@ export const SophomoreDetailsCountOrderByAggregateInputSchema: z.ZodType<Prisma.
   many_fresh: z.lazy(() => SortOrderSchema).optional(),
   facebook_link: z.lazy(() => SortOrderSchema).optional(),
   instagram_link: z.lazy(() => SortOrderSchema).optional(),
-  phone: z.lazy(() => SortOrderSchema).optional(),
-  verses: z.lazy(() => SortOrderSchema).optional()
+  phone: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const SophomoreDetailsMaxOrderByAggregateInputSchema: z.ZodType<Prisma.SophomoreDetailsMaxOrderByAggregateInput> = z.object({
@@ -4337,12 +4530,32 @@ export const RevealedHintInstancesUncheckedUpdateManyWithoutHintNestedInputSchem
   deleteMany: z.union([ z.lazy(() => RevealedHintInstancesScalarWhereInputSchema),z.lazy(() => RevealedHintInstancesScalarWhereInputSchema).array() ]).optional(),
 }).strict();
 
-export const SophomoreDetailsCreatethisOrThatInputSchema: z.ZodType<Prisma.SophomoreDetailsCreatethisOrThatInput> = z.object({
-  set: z.lazy(() => ThisOrThatSchema).array()
+export const SophomoreDetailsCreateNestedOneWithoutVersesInputSchema: z.ZodType<Prisma.SophomoreDetailsCreateNestedOneWithoutVersesInput> = z.object({
+  create: z.union([ z.lazy(() => SophomoreDetailsCreateWithoutVersesInputSchema),z.lazy(() => SophomoreDetailsUncheckedCreateWithoutVersesInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => SophomoreDetailsCreateOrConnectWithoutVersesInputSchema).optional(),
+  connect: z.lazy(() => SophomoreDetailsWhereUniqueInputSchema).optional()
 }).strict();
 
-export const SophomoreDetailsCreateversesInputSchema: z.ZodType<Prisma.SophomoreDetailsCreateversesInput> = z.object({
-  set: z.lazy(() => MagicVerseSchema).array()
+export const FloatFieldUpdateOperationsInputSchema: z.ZodType<Prisma.FloatFieldUpdateOperationsInput> = z.object({
+  set: z.number().optional(),
+  increment: z.number().optional(),
+  decrement: z.number().optional(),
+  multiply: z.number().optional(),
+  divide: z.number().optional()
+}).strict();
+
+export const SophomoreDetailsUpdateOneWithoutVersesNestedInputSchema: z.ZodType<Prisma.SophomoreDetailsUpdateOneWithoutVersesNestedInput> = z.object({
+  create: z.union([ z.lazy(() => SophomoreDetailsCreateWithoutVersesInputSchema),z.lazy(() => SophomoreDetailsUncheckedCreateWithoutVersesInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => SophomoreDetailsCreateOrConnectWithoutVersesInputSchema).optional(),
+  upsert: z.lazy(() => SophomoreDetailsUpsertWithoutVersesInputSchema).optional(),
+  disconnect: z.boolean().optional(),
+  delete: z.boolean().optional(),
+  connect: z.lazy(() => SophomoreDetailsWhereUniqueInputSchema).optional(),
+  update: z.union([ z.lazy(() => SophomoreDetailsUpdateWithoutVersesInputSchema),z.lazy(() => SophomoreDetailsUncheckedUpdateWithoutVersesInputSchema) ]).optional(),
+}).strict();
+
+export const SophomoreDetailsCreatethisOrThatInputSchema: z.ZodType<Prisma.SophomoreDetailsCreatethisOrThatInput> = z.object({
+  set: z.lazy(() => ThisOrThatSchema).array()
 }).strict();
 
 export const HintsCreateNestedManyWithoutSophomoreInputSchema: z.ZodType<Prisma.HintsCreateNestedManyWithoutSophomoreInput> = z.object({
@@ -4379,6 +4592,13 @@ export const PairCreateNestedManyWithoutSophomoreInputSchema: z.ZodType<Prisma.P
   connect: z.union([ z.lazy(() => PairWhereUniqueInputSchema),z.lazy(() => PairWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
+export const MagicVersesCreateNestedManyWithoutSophomoreDetailsInputSchema: z.ZodType<Prisma.MagicVersesCreateNestedManyWithoutSophomoreDetailsInput> = z.object({
+  create: z.union([ z.lazy(() => MagicVersesCreateWithoutSophomoreDetailsInputSchema),z.lazy(() => MagicVersesCreateWithoutSophomoreDetailsInputSchema).array(),z.lazy(() => MagicVersesUncheckedCreateWithoutSophomoreDetailsInputSchema),z.lazy(() => MagicVersesUncheckedCreateWithoutSophomoreDetailsInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => MagicVersesCreateOrConnectWithoutSophomoreDetailsInputSchema),z.lazy(() => MagicVersesCreateOrConnectWithoutSophomoreDetailsInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => MagicVersesCreateManySophomoreDetailsInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => MagicVersesWhereUniqueInputSchema),z.lazy(() => MagicVersesWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
 export const HintsUncheckedCreateNestedManyWithoutSophomoreInputSchema: z.ZodType<Prisma.HintsUncheckedCreateNestedManyWithoutSophomoreInput> = z.object({
   create: z.union([ z.lazy(() => HintsCreateWithoutSophomoreInputSchema),z.lazy(() => HintsCreateWithoutSophomoreInputSchema).array(),z.lazy(() => HintsUncheckedCreateWithoutSophomoreInputSchema),z.lazy(() => HintsUncheckedCreateWithoutSophomoreInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => HintsCreateOrConnectWithoutSophomoreInputSchema),z.lazy(() => HintsCreateOrConnectWithoutSophomoreInputSchema).array() ]).optional(),
@@ -4407,14 +4627,16 @@ export const PairUncheckedCreateNestedManyWithoutSophomoreInputSchema: z.ZodType
   connect: z.union([ z.lazy(() => PairWhereUniqueInputSchema),z.lazy(() => PairWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
+export const MagicVersesUncheckedCreateNestedManyWithoutSophomoreDetailsInputSchema: z.ZodType<Prisma.MagicVersesUncheckedCreateNestedManyWithoutSophomoreDetailsInput> = z.object({
+  create: z.union([ z.lazy(() => MagicVersesCreateWithoutSophomoreDetailsInputSchema),z.lazy(() => MagicVersesCreateWithoutSophomoreDetailsInputSchema).array(),z.lazy(() => MagicVersesUncheckedCreateWithoutSophomoreDetailsInputSchema),z.lazy(() => MagicVersesUncheckedCreateWithoutSophomoreDetailsInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => MagicVersesCreateOrConnectWithoutSophomoreDetailsInputSchema),z.lazy(() => MagicVersesCreateOrConnectWithoutSophomoreDetailsInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => MagicVersesCreateManySophomoreDetailsInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => MagicVersesWhereUniqueInputSchema),z.lazy(() => MagicVersesWhereUniqueInputSchema).array() ]).optional(),
+}).strict();
+
 export const SophomoreDetailsUpdatethisOrThatInputSchema: z.ZodType<Prisma.SophomoreDetailsUpdatethisOrThatInput> = z.object({
   set: z.lazy(() => ThisOrThatSchema).array().optional(),
   push: z.union([ z.lazy(() => ThisOrThatSchema),z.lazy(() => ThisOrThatSchema).array() ]).optional(),
-}).strict();
-
-export const SophomoreDetailsUpdateversesInputSchema: z.ZodType<Prisma.SophomoreDetailsUpdateversesInput> = z.object({
-  set: z.lazy(() => MagicVerseSchema).array().optional(),
-  push: z.union([ z.lazy(() => MagicVerseSchema),z.lazy(() => MagicVerseSchema).array() ]).optional(),
 }).strict();
 
 export const HintsUpdateManyWithoutSophomoreNestedInputSchema: z.ZodType<Prisma.HintsUpdateManyWithoutSophomoreNestedInput> = z.object({
@@ -4481,6 +4703,20 @@ export const PairUpdateManyWithoutSophomoreNestedInputSchema: z.ZodType<Prisma.P
   deleteMany: z.union([ z.lazy(() => PairScalarWhereInputSchema),z.lazy(() => PairScalarWhereInputSchema).array() ]).optional(),
 }).strict();
 
+export const MagicVersesUpdateManyWithoutSophomoreDetailsNestedInputSchema: z.ZodType<Prisma.MagicVersesUpdateManyWithoutSophomoreDetailsNestedInput> = z.object({
+  create: z.union([ z.lazy(() => MagicVersesCreateWithoutSophomoreDetailsInputSchema),z.lazy(() => MagicVersesCreateWithoutSophomoreDetailsInputSchema).array(),z.lazy(() => MagicVersesUncheckedCreateWithoutSophomoreDetailsInputSchema),z.lazy(() => MagicVersesUncheckedCreateWithoutSophomoreDetailsInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => MagicVersesCreateOrConnectWithoutSophomoreDetailsInputSchema),z.lazy(() => MagicVersesCreateOrConnectWithoutSophomoreDetailsInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => MagicVersesUpsertWithWhereUniqueWithoutSophomoreDetailsInputSchema),z.lazy(() => MagicVersesUpsertWithWhereUniqueWithoutSophomoreDetailsInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => MagicVersesCreateManySophomoreDetailsInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => MagicVersesWhereUniqueInputSchema),z.lazy(() => MagicVersesWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => MagicVersesWhereUniqueInputSchema),z.lazy(() => MagicVersesWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => MagicVersesWhereUniqueInputSchema),z.lazy(() => MagicVersesWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => MagicVersesWhereUniqueInputSchema),z.lazy(() => MagicVersesWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => MagicVersesUpdateWithWhereUniqueWithoutSophomoreDetailsInputSchema),z.lazy(() => MagicVersesUpdateWithWhereUniqueWithoutSophomoreDetailsInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => MagicVersesUpdateManyWithWhereWithoutSophomoreDetailsInputSchema),z.lazy(() => MagicVersesUpdateManyWithWhereWithoutSophomoreDetailsInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => MagicVersesScalarWhereInputSchema),z.lazy(() => MagicVersesScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
 export const HintsUncheckedUpdateManyWithoutSophomoreNestedInputSchema: z.ZodType<Prisma.HintsUncheckedUpdateManyWithoutSophomoreNestedInput> = z.object({
   create: z.union([ z.lazy(() => HintsCreateWithoutSophomoreInputSchema),z.lazy(() => HintsCreateWithoutSophomoreInputSchema).array(),z.lazy(() => HintsUncheckedCreateWithoutSophomoreInputSchema),z.lazy(() => HintsUncheckedCreateWithoutSophomoreInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => HintsCreateOrConnectWithoutSophomoreInputSchema),z.lazy(() => HintsCreateOrConnectWithoutSophomoreInputSchema).array() ]).optional(),
@@ -4535,6 +4771,20 @@ export const PairUncheckedUpdateManyWithoutSophomoreNestedInputSchema: z.ZodType
   update: z.union([ z.lazy(() => PairUpdateWithWhereUniqueWithoutSophomoreInputSchema),z.lazy(() => PairUpdateWithWhereUniqueWithoutSophomoreInputSchema).array() ]).optional(),
   updateMany: z.union([ z.lazy(() => PairUpdateManyWithWhereWithoutSophomoreInputSchema),z.lazy(() => PairUpdateManyWithWhereWithoutSophomoreInputSchema).array() ]).optional(),
   deleteMany: z.union([ z.lazy(() => PairScalarWhereInputSchema),z.lazy(() => PairScalarWhereInputSchema).array() ]).optional(),
+}).strict();
+
+export const MagicVersesUncheckedUpdateManyWithoutSophomoreDetailsNestedInputSchema: z.ZodType<Prisma.MagicVersesUncheckedUpdateManyWithoutSophomoreDetailsNestedInput> = z.object({
+  create: z.union([ z.lazy(() => MagicVersesCreateWithoutSophomoreDetailsInputSchema),z.lazy(() => MagicVersesCreateWithoutSophomoreDetailsInputSchema).array(),z.lazy(() => MagicVersesUncheckedCreateWithoutSophomoreDetailsInputSchema),z.lazy(() => MagicVersesUncheckedCreateWithoutSophomoreDetailsInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => MagicVersesCreateOrConnectWithoutSophomoreDetailsInputSchema),z.lazy(() => MagicVersesCreateOrConnectWithoutSophomoreDetailsInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => MagicVersesUpsertWithWhereUniqueWithoutSophomoreDetailsInputSchema),z.lazy(() => MagicVersesUpsertWithWhereUniqueWithoutSophomoreDetailsInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => MagicVersesCreateManySophomoreDetailsInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => MagicVersesWhereUniqueInputSchema),z.lazy(() => MagicVersesWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => MagicVersesWhereUniqueInputSchema),z.lazy(() => MagicVersesWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => MagicVersesWhereUniqueInputSchema),z.lazy(() => MagicVersesWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => MagicVersesWhereUniqueInputSchema),z.lazy(() => MagicVersesWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => MagicVersesUpdateWithWhereUniqueWithoutSophomoreDetailsInputSchema),z.lazy(() => MagicVersesUpdateWithWhereUniqueWithoutSophomoreDetailsInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => MagicVersesUpdateManyWithWhereWithoutSophomoreDetailsInputSchema),z.lazy(() => MagicVersesUpdateManyWithWhereWithoutSophomoreDetailsInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => MagicVersesScalarWhereInputSchema),z.lazy(() => MagicVersesScalarWhereInputSchema).array() ]).optional(),
 }).strict();
 
 export const FreshmenDetailsCreateNestedOneWithoutTodayResinInputSchema: z.ZodType<Prisma.FreshmenDetailsCreateNestedOneWithoutTodayResinInput> = z.object({
@@ -4801,6 +5051,22 @@ export const NestedEnumBranchWithAggregatesFilterSchema: z.ZodType<Prisma.Nested
   _count: z.lazy(() => NestedIntFilterSchema).optional(),
   _min: z.lazy(() => NestedEnumBranchFilterSchema).optional(),
   _max: z.lazy(() => NestedEnumBranchFilterSchema).optional()
+}).strict();
+
+export const NestedFloatWithAggregatesFilterSchema: z.ZodType<Prisma.NestedFloatWithAggregatesFilter> = z.object({
+  equals: z.number().optional(),
+  in: z.union([ z.number().array(),z.number() ]).optional(),
+  notIn: z.union([ z.number().array(),z.number() ]).optional(),
+  lt: z.number().optional(),
+  lte: z.number().optional(),
+  gt: z.number().optional(),
+  gte: z.number().optional(),
+  not: z.union([ z.number(),z.lazy(() => NestedFloatWithAggregatesFilterSchema) ]).optional(),
+  _count: z.lazy(() => NestedIntFilterSchema).optional(),
+  _avg: z.lazy(() => NestedFloatFilterSchema).optional(),
+  _sum: z.lazy(() => NestedFloatFilterSchema).optional(),
+  _min: z.lazy(() => NestedFloatFilterSchema).optional(),
+  _max: z.lazy(() => NestedFloatFilterSchema).optional()
 }).strict();
 
 export const UserCreateWithoutAccountsInputSchema: z.ZodType<Prisma.UserCreateWithoutAccountsInput> = z.object({
@@ -5087,11 +5353,11 @@ export const SophomoreDetailsCreateWithoutUserInputSchema: z.ZodType<Prisma.Soph
   facebook_link: z.string().optional().nullable(),
   instagram_link: z.string().optional().nullable(),
   phone: z.string(),
-  verses: z.union([ z.lazy(() => SophomoreDetailsCreateversesInputSchema),z.lazy(() => MagicVerseSchema).array() ]).optional(),
   hints: z.lazy(() => HintsCreateNestedManyWithoutSophomoreInputSchema).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesCreateNestedManyWithoutOwnerInputSchema).optional(),
   QRInstances: z.lazy(() => QRInstancesCreateNestedManyWithoutOwnerInputSchema).optional(),
-  pair: z.lazy(() => PairCreateNestedManyWithoutSophomoreInputSchema).optional()
+  pair: z.lazy(() => PairCreateNestedManyWithoutSophomoreInputSchema).optional(),
+  verses: z.lazy(() => MagicVersesCreateNestedManyWithoutSophomoreDetailsInputSchema).optional()
 }).strict();
 
 export const SophomoreDetailsUncheckedCreateWithoutUserInputSchema: z.ZodType<Prisma.SophomoreDetailsUncheckedCreateWithoutUserInput> = z.object({
@@ -5111,11 +5377,11 @@ export const SophomoreDetailsUncheckedCreateWithoutUserInputSchema: z.ZodType<Pr
   facebook_link: z.string().optional().nullable(),
   instagram_link: z.string().optional().nullable(),
   phone: z.string(),
-  verses: z.union([ z.lazy(() => SophomoreDetailsCreateversesInputSchema),z.lazy(() => MagicVerseSchema).array() ]).optional(),
   hints: z.lazy(() => HintsUncheckedCreateNestedManyWithoutSophomoreInputSchema).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesUncheckedCreateNestedManyWithoutOwnerInputSchema).optional(),
   QRInstances: z.lazy(() => QRInstancesUncheckedCreateNestedManyWithoutOwnerInputSchema).optional(),
-  pair: z.lazy(() => PairUncheckedCreateNestedManyWithoutSophomoreInputSchema).optional()
+  pair: z.lazy(() => PairUncheckedCreateNestedManyWithoutSophomoreInputSchema).optional(),
+  verses: z.lazy(() => MagicVersesUncheckedCreateNestedManyWithoutSophomoreDetailsInputSchema).optional()
 }).strict();
 
 export const SophomoreDetailsCreateOrConnectWithoutUserInputSchema: z.ZodType<Prisma.SophomoreDetailsCreateOrConnectWithoutUserInput> = z.object({
@@ -5283,11 +5549,11 @@ export const SophomoreDetailsUpdateWithoutUserInputSchema: z.ZodType<Prisma.Soph
   facebook_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   instagram_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   phone: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  verses: z.union([ z.lazy(() => SophomoreDetailsUpdateversesInputSchema),z.lazy(() => MagicVerseSchema).array() ]).optional(),
   hints: z.lazy(() => HintsUpdateManyWithoutSophomoreNestedInputSchema).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesUpdateManyWithoutOwnerNestedInputSchema).optional(),
   QRInstances: z.lazy(() => QRInstancesUpdateManyWithoutOwnerNestedInputSchema).optional(),
-  pair: z.lazy(() => PairUpdateManyWithoutSophomoreNestedInputSchema).optional()
+  pair: z.lazy(() => PairUpdateManyWithoutSophomoreNestedInputSchema).optional(),
+  verses: z.lazy(() => MagicVersesUpdateManyWithoutSophomoreDetailsNestedInputSchema).optional()
 }).strict();
 
 export const SophomoreDetailsUncheckedUpdateWithoutUserInputSchema: z.ZodType<Prisma.SophomoreDetailsUncheckedUpdateWithoutUserInput> = z.object({
@@ -5307,11 +5573,11 @@ export const SophomoreDetailsUncheckedUpdateWithoutUserInputSchema: z.ZodType<Pr
   facebook_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   instagram_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   phone: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  verses: z.union([ z.lazy(() => SophomoreDetailsUpdateversesInputSchema),z.lazy(() => MagicVerseSchema).array() ]).optional(),
   hints: z.lazy(() => HintsUncheckedUpdateManyWithoutSophomoreNestedInputSchema).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesUncheckedUpdateManyWithoutOwnerNestedInputSchema).optional(),
   QRInstances: z.lazy(() => QRInstancesUncheckedUpdateManyWithoutOwnerNestedInputSchema).optional(),
-  pair: z.lazy(() => PairUncheckedUpdateManyWithoutSophomoreNestedInputSchema).optional()
+  pair: z.lazy(() => PairUncheckedUpdateManyWithoutSophomoreNestedInputSchema).optional(),
+  verses: z.lazy(() => MagicVersesUncheckedUpdateManyWithoutSophomoreDetailsNestedInputSchema).optional()
 }).strict();
 
 export const FactionsUpsertWithoutUsersInputSchema: z.ZodType<Prisma.FactionsUpsertWithoutUsersInput> = z.object({
@@ -5352,11 +5618,11 @@ export const SophomoreDetailsCreateWithoutQRInstancesInputSchema: z.ZodType<Pris
   facebook_link: z.string().optional().nullable(),
   instagram_link: z.string().optional().nullable(),
   phone: z.string(),
-  verses: z.union([ z.lazy(() => SophomoreDetailsCreateversesInputSchema),z.lazy(() => MagicVerseSchema).array() ]).optional(),
   hints: z.lazy(() => HintsCreateNestedManyWithoutSophomoreInputSchema).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesCreateNestedManyWithoutOwnerInputSchema).optional(),
   user: z.lazy(() => UserCreateNestedOneWithoutSophomoreDetailsInputSchema),
-  pair: z.lazy(() => PairCreateNestedManyWithoutSophomoreInputSchema).optional()
+  pair: z.lazy(() => PairCreateNestedManyWithoutSophomoreInputSchema).optional(),
+  verses: z.lazy(() => MagicVersesCreateNestedManyWithoutSophomoreDetailsInputSchema).optional()
 }).strict();
 
 export const SophomoreDetailsUncheckedCreateWithoutQRInstancesInputSchema: z.ZodType<Prisma.SophomoreDetailsUncheckedCreateWithoutQRInstancesInput> = z.object({
@@ -5377,10 +5643,10 @@ export const SophomoreDetailsUncheckedCreateWithoutQRInstancesInputSchema: z.Zod
   facebook_link: z.string().optional().nullable(),
   instagram_link: z.string().optional().nullable(),
   phone: z.string(),
-  verses: z.union([ z.lazy(() => SophomoreDetailsCreateversesInputSchema),z.lazy(() => MagicVerseSchema).array() ]).optional(),
   hints: z.lazy(() => HintsUncheckedCreateNestedManyWithoutSophomoreInputSchema).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesUncheckedCreateNestedManyWithoutOwnerInputSchema).optional(),
-  pair: z.lazy(() => PairUncheckedCreateNestedManyWithoutSophomoreInputSchema).optional()
+  pair: z.lazy(() => PairUncheckedCreateNestedManyWithoutSophomoreInputSchema).optional(),
+  verses: z.lazy(() => MagicVersesUncheckedCreateNestedManyWithoutSophomoreDetailsInputSchema).optional()
 }).strict();
 
 export const SophomoreDetailsCreateOrConnectWithoutQRInstancesInputSchema: z.ZodType<Prisma.SophomoreDetailsCreateOrConnectWithoutQRInstancesInput> = z.object({
@@ -5465,11 +5731,11 @@ export const SophomoreDetailsUpdateWithoutQRInstancesInputSchema: z.ZodType<Pris
   facebook_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   instagram_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   phone: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  verses: z.union([ z.lazy(() => SophomoreDetailsUpdateversesInputSchema),z.lazy(() => MagicVerseSchema).array() ]).optional(),
   hints: z.lazy(() => HintsUpdateManyWithoutSophomoreNestedInputSchema).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesUpdateManyWithoutOwnerNestedInputSchema).optional(),
   user: z.lazy(() => UserUpdateOneRequiredWithoutSophomoreDetailsNestedInputSchema).optional(),
-  pair: z.lazy(() => PairUpdateManyWithoutSophomoreNestedInputSchema).optional()
+  pair: z.lazy(() => PairUpdateManyWithoutSophomoreNestedInputSchema).optional(),
+  verses: z.lazy(() => MagicVersesUpdateManyWithoutSophomoreDetailsNestedInputSchema).optional()
 }).strict();
 
 export const SophomoreDetailsUncheckedUpdateWithoutQRInstancesInputSchema: z.ZodType<Prisma.SophomoreDetailsUncheckedUpdateWithoutQRInstancesInput> = z.object({
@@ -5490,10 +5756,10 @@ export const SophomoreDetailsUncheckedUpdateWithoutQRInstancesInputSchema: z.Zod
   facebook_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   instagram_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   phone: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  verses: z.union([ z.lazy(() => SophomoreDetailsUpdateversesInputSchema),z.lazy(() => MagicVerseSchema).array() ]).optional(),
   hints: z.lazy(() => HintsUncheckedUpdateManyWithoutSophomoreNestedInputSchema).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesUncheckedUpdateManyWithoutOwnerNestedInputSchema).optional(),
-  pair: z.lazy(() => PairUncheckedUpdateManyWithoutSophomoreNestedInputSchema).optional()
+  pair: z.lazy(() => PairUncheckedUpdateManyWithoutSophomoreNestedInputSchema).optional(),
+  verses: z.lazy(() => MagicVersesUncheckedUpdateManyWithoutSophomoreDetailsNestedInputSchema).optional()
 }).strict();
 
 export const FreshmenDetailsUpsertWithWhereUniqueWithoutScannedQrsInputSchema: z.ZodType<Prisma.FreshmenDetailsUpsertWithWhereUniqueWithoutScannedQrsInput> = z.object({
@@ -5554,11 +5820,11 @@ export const SophomoreDetailsCreateWithoutPasscodeInstancesInputSchema: z.ZodTyp
   facebook_link: z.string().optional().nullable(),
   instagram_link: z.string().optional().nullable(),
   phone: z.string(),
-  verses: z.union([ z.lazy(() => SophomoreDetailsCreateversesInputSchema),z.lazy(() => MagicVerseSchema).array() ]).optional(),
   hints: z.lazy(() => HintsCreateNestedManyWithoutSophomoreInputSchema).optional(),
   QRInstances: z.lazy(() => QRInstancesCreateNestedManyWithoutOwnerInputSchema).optional(),
   user: z.lazy(() => UserCreateNestedOneWithoutSophomoreDetailsInputSchema),
-  pair: z.lazy(() => PairCreateNestedManyWithoutSophomoreInputSchema).optional()
+  pair: z.lazy(() => PairCreateNestedManyWithoutSophomoreInputSchema).optional(),
+  verses: z.lazy(() => MagicVersesCreateNestedManyWithoutSophomoreDetailsInputSchema).optional()
 }).strict();
 
 export const SophomoreDetailsUncheckedCreateWithoutPasscodeInstancesInputSchema: z.ZodType<Prisma.SophomoreDetailsUncheckedCreateWithoutPasscodeInstancesInput> = z.object({
@@ -5579,10 +5845,10 @@ export const SophomoreDetailsUncheckedCreateWithoutPasscodeInstancesInputSchema:
   facebook_link: z.string().optional().nullable(),
   instagram_link: z.string().optional().nullable(),
   phone: z.string(),
-  verses: z.union([ z.lazy(() => SophomoreDetailsCreateversesInputSchema),z.lazy(() => MagicVerseSchema).array() ]).optional(),
   hints: z.lazy(() => HintsUncheckedCreateNestedManyWithoutSophomoreInputSchema).optional(),
   QRInstances: z.lazy(() => QRInstancesUncheckedCreateNestedManyWithoutOwnerInputSchema).optional(),
-  pair: z.lazy(() => PairUncheckedCreateNestedManyWithoutSophomoreInputSchema).optional()
+  pair: z.lazy(() => PairUncheckedCreateNestedManyWithoutSophomoreInputSchema).optional(),
+  verses: z.lazy(() => MagicVersesUncheckedCreateNestedManyWithoutSophomoreDetailsInputSchema).optional()
 }).strict();
 
 export const SophomoreDetailsCreateOrConnectWithoutPasscodeInstancesInputSchema: z.ZodType<Prisma.SophomoreDetailsCreateOrConnectWithoutPasscodeInstancesInput> = z.object({
@@ -5667,11 +5933,11 @@ export const SophomoreDetailsUpdateWithoutPasscodeInstancesInputSchema: z.ZodTyp
   facebook_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   instagram_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   phone: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  verses: z.union([ z.lazy(() => SophomoreDetailsUpdateversesInputSchema),z.lazy(() => MagicVerseSchema).array() ]).optional(),
   hints: z.lazy(() => HintsUpdateManyWithoutSophomoreNestedInputSchema).optional(),
   QRInstances: z.lazy(() => QRInstancesUpdateManyWithoutOwnerNestedInputSchema).optional(),
   user: z.lazy(() => UserUpdateOneRequiredWithoutSophomoreDetailsNestedInputSchema).optional(),
-  pair: z.lazy(() => PairUpdateManyWithoutSophomoreNestedInputSchema).optional()
+  pair: z.lazy(() => PairUpdateManyWithoutSophomoreNestedInputSchema).optional(),
+  verses: z.lazy(() => MagicVersesUpdateManyWithoutSophomoreDetailsNestedInputSchema).optional()
 }).strict();
 
 export const SophomoreDetailsUncheckedUpdateWithoutPasscodeInstancesInputSchema: z.ZodType<Prisma.SophomoreDetailsUncheckedUpdateWithoutPasscodeInstancesInput> = z.object({
@@ -5692,10 +5958,10 @@ export const SophomoreDetailsUncheckedUpdateWithoutPasscodeInstancesInputSchema:
   facebook_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   instagram_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   phone: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  verses: z.union([ z.lazy(() => SophomoreDetailsUpdateversesInputSchema),z.lazy(() => MagicVerseSchema).array() ]).optional(),
   hints: z.lazy(() => HintsUncheckedUpdateManyWithoutSophomoreNestedInputSchema).optional(),
   QRInstances: z.lazy(() => QRInstancesUncheckedUpdateManyWithoutOwnerNestedInputSchema).optional(),
-  pair: z.lazy(() => PairUncheckedUpdateManyWithoutSophomoreNestedInputSchema).optional()
+  pair: z.lazy(() => PairUncheckedUpdateManyWithoutSophomoreNestedInputSchema).optional(),
+  verses: z.lazy(() => MagicVersesUncheckedUpdateManyWithoutSophomoreDetailsNestedInputSchema).optional()
 }).strict();
 
 export const FreshmenDetailsUpsertWithoutUsedPasscodesInputSchema: z.ZodType<Prisma.FreshmenDetailsUpsertWithoutUsedPasscodesInput> = z.object({
@@ -5975,11 +6241,11 @@ export const SophomoreDetailsCreateWithoutPairInputSchema: z.ZodType<Prisma.Soph
   facebook_link: z.string().optional().nullable(),
   instagram_link: z.string().optional().nullable(),
   phone: z.string(),
-  verses: z.union([ z.lazy(() => SophomoreDetailsCreateversesInputSchema),z.lazy(() => MagicVerseSchema).array() ]).optional(),
   hints: z.lazy(() => HintsCreateNestedManyWithoutSophomoreInputSchema).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesCreateNestedManyWithoutOwnerInputSchema).optional(),
   QRInstances: z.lazy(() => QRInstancesCreateNestedManyWithoutOwnerInputSchema).optional(),
-  user: z.lazy(() => UserCreateNestedOneWithoutSophomoreDetailsInputSchema)
+  user: z.lazy(() => UserCreateNestedOneWithoutSophomoreDetailsInputSchema),
+  verses: z.lazy(() => MagicVersesCreateNestedManyWithoutSophomoreDetailsInputSchema).optional()
 }).strict();
 
 export const SophomoreDetailsUncheckedCreateWithoutPairInputSchema: z.ZodType<Prisma.SophomoreDetailsUncheckedCreateWithoutPairInput> = z.object({
@@ -6000,10 +6266,10 @@ export const SophomoreDetailsUncheckedCreateWithoutPairInputSchema: z.ZodType<Pr
   facebook_link: z.string().optional().nullable(),
   instagram_link: z.string().optional().nullable(),
   phone: z.string(),
-  verses: z.union([ z.lazy(() => SophomoreDetailsCreateversesInputSchema),z.lazy(() => MagicVerseSchema).array() ]).optional(),
   hints: z.lazy(() => HintsUncheckedCreateNestedManyWithoutSophomoreInputSchema).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesUncheckedCreateNestedManyWithoutOwnerInputSchema).optional(),
-  QRInstances: z.lazy(() => QRInstancesUncheckedCreateNestedManyWithoutOwnerInputSchema).optional()
+  QRInstances: z.lazy(() => QRInstancesUncheckedCreateNestedManyWithoutOwnerInputSchema).optional(),
+  verses: z.lazy(() => MagicVersesUncheckedCreateNestedManyWithoutSophomoreDetailsInputSchema).optional()
 }).strict();
 
 export const SophomoreDetailsCreateOrConnectWithoutPairInputSchema: z.ZodType<Prisma.SophomoreDetailsCreateOrConnectWithoutPairInput> = z.object({
@@ -6111,11 +6377,11 @@ export const SophomoreDetailsUpdateWithoutPairInputSchema: z.ZodType<Prisma.Soph
   facebook_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   instagram_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   phone: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  verses: z.union([ z.lazy(() => SophomoreDetailsUpdateversesInputSchema),z.lazy(() => MagicVerseSchema).array() ]).optional(),
   hints: z.lazy(() => HintsUpdateManyWithoutSophomoreNestedInputSchema).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesUpdateManyWithoutOwnerNestedInputSchema).optional(),
   QRInstances: z.lazy(() => QRInstancesUpdateManyWithoutOwnerNestedInputSchema).optional(),
-  user: z.lazy(() => UserUpdateOneRequiredWithoutSophomoreDetailsNestedInputSchema).optional()
+  user: z.lazy(() => UserUpdateOneRequiredWithoutSophomoreDetailsNestedInputSchema).optional(),
+  verses: z.lazy(() => MagicVersesUpdateManyWithoutSophomoreDetailsNestedInputSchema).optional()
 }).strict();
 
 export const SophomoreDetailsUncheckedUpdateWithoutPairInputSchema: z.ZodType<Prisma.SophomoreDetailsUncheckedUpdateWithoutPairInput> = z.object({
@@ -6136,10 +6402,10 @@ export const SophomoreDetailsUncheckedUpdateWithoutPairInputSchema: z.ZodType<Pr
   facebook_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   instagram_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   phone: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  verses: z.union([ z.lazy(() => SophomoreDetailsUpdateversesInputSchema),z.lazy(() => MagicVerseSchema).array() ]).optional(),
   hints: z.lazy(() => HintsUncheckedUpdateManyWithoutSophomoreNestedInputSchema).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesUncheckedUpdateManyWithoutOwnerNestedInputSchema).optional(),
-  QRInstances: z.lazy(() => QRInstancesUncheckedUpdateManyWithoutOwnerNestedInputSchema).optional()
+  QRInstances: z.lazy(() => QRInstancesUncheckedUpdateManyWithoutOwnerNestedInputSchema).optional(),
+  verses: z.lazy(() => MagicVersesUncheckedUpdateManyWithoutSophomoreDetailsNestedInputSchema).optional()
 }).strict();
 
 export const RevealedHintInstancesUpsertWithWhereUniqueWithoutPairInputSchema: z.ZodType<Prisma.RevealedHintInstancesUpsertWithWhereUniqueWithoutPairInput> = z.object({
@@ -6517,11 +6783,11 @@ export const SophomoreDetailsCreateWithoutHintsInputSchema: z.ZodType<Prisma.Sop
   facebook_link: z.string().optional().nullable(),
   instagram_link: z.string().optional().nullable(),
   phone: z.string(),
-  verses: z.union([ z.lazy(() => SophomoreDetailsCreateversesInputSchema),z.lazy(() => MagicVerseSchema).array() ]).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesCreateNestedManyWithoutOwnerInputSchema).optional(),
   QRInstances: z.lazy(() => QRInstancesCreateNestedManyWithoutOwnerInputSchema).optional(),
   user: z.lazy(() => UserCreateNestedOneWithoutSophomoreDetailsInputSchema),
-  pair: z.lazy(() => PairCreateNestedManyWithoutSophomoreInputSchema).optional()
+  pair: z.lazy(() => PairCreateNestedManyWithoutSophomoreInputSchema).optional(),
+  verses: z.lazy(() => MagicVersesCreateNestedManyWithoutSophomoreDetailsInputSchema).optional()
 }).strict();
 
 export const SophomoreDetailsUncheckedCreateWithoutHintsInputSchema: z.ZodType<Prisma.SophomoreDetailsUncheckedCreateWithoutHintsInput> = z.object({
@@ -6542,10 +6808,10 @@ export const SophomoreDetailsUncheckedCreateWithoutHintsInputSchema: z.ZodType<P
   facebook_link: z.string().optional().nullable(),
   instagram_link: z.string().optional().nullable(),
   phone: z.string(),
-  verses: z.union([ z.lazy(() => SophomoreDetailsCreateversesInputSchema),z.lazy(() => MagicVerseSchema).array() ]).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesUncheckedCreateNestedManyWithoutOwnerInputSchema).optional(),
   QRInstances: z.lazy(() => QRInstancesUncheckedCreateNestedManyWithoutOwnerInputSchema).optional(),
-  pair: z.lazy(() => PairUncheckedCreateNestedManyWithoutSophomoreInputSchema).optional()
+  pair: z.lazy(() => PairUncheckedCreateNestedManyWithoutSophomoreInputSchema).optional(),
+  verses: z.lazy(() => MagicVersesUncheckedCreateNestedManyWithoutSophomoreDetailsInputSchema).optional()
 }).strict();
 
 export const SophomoreDetailsCreateOrConnectWithoutHintsInputSchema: z.ZodType<Prisma.SophomoreDetailsCreateOrConnectWithoutHintsInput> = z.object({
@@ -6614,11 +6880,11 @@ export const SophomoreDetailsUpdateWithoutHintsInputSchema: z.ZodType<Prisma.Sop
   facebook_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   instagram_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   phone: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  verses: z.union([ z.lazy(() => SophomoreDetailsUpdateversesInputSchema),z.lazy(() => MagicVerseSchema).array() ]).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesUpdateManyWithoutOwnerNestedInputSchema).optional(),
   QRInstances: z.lazy(() => QRInstancesUpdateManyWithoutOwnerNestedInputSchema).optional(),
   user: z.lazy(() => UserUpdateOneRequiredWithoutSophomoreDetailsNestedInputSchema).optional(),
-  pair: z.lazy(() => PairUpdateManyWithoutSophomoreNestedInputSchema).optional()
+  pair: z.lazy(() => PairUpdateManyWithoutSophomoreNestedInputSchema).optional(),
+  verses: z.lazy(() => MagicVersesUpdateManyWithoutSophomoreDetailsNestedInputSchema).optional()
 }).strict();
 
 export const SophomoreDetailsUncheckedUpdateWithoutHintsInputSchema: z.ZodType<Prisma.SophomoreDetailsUncheckedUpdateWithoutHintsInput> = z.object({
@@ -6639,10 +6905,10 @@ export const SophomoreDetailsUncheckedUpdateWithoutHintsInputSchema: z.ZodType<P
   facebook_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   instagram_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   phone: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  verses: z.union([ z.lazy(() => SophomoreDetailsUpdateversesInputSchema),z.lazy(() => MagicVerseSchema).array() ]).optional(),
   PasscodeInstances: z.lazy(() => PasscodeInstancesUncheckedUpdateManyWithoutOwnerNestedInputSchema).optional(),
   QRInstances: z.lazy(() => QRInstancesUncheckedUpdateManyWithoutOwnerNestedInputSchema).optional(),
-  pair: z.lazy(() => PairUncheckedUpdateManyWithoutSophomoreNestedInputSchema).optional()
+  pair: z.lazy(() => PairUncheckedUpdateManyWithoutSophomoreNestedInputSchema).optional(),
+  verses: z.lazy(() => MagicVersesUncheckedUpdateManyWithoutSophomoreDetailsNestedInputSchema).optional()
 }).strict();
 
 export const RevealedHintInstancesUpsertWithWhereUniqueWithoutHintInputSchema: z.ZodType<Prisma.RevealedHintInstancesUpsertWithWhereUniqueWithoutHintInput> = z.object({
@@ -6659,6 +6925,112 @@ export const RevealedHintInstancesUpdateWithWhereUniqueWithoutHintInputSchema: z
 export const RevealedHintInstancesUpdateManyWithWhereWithoutHintInputSchema: z.ZodType<Prisma.RevealedHintInstancesUpdateManyWithWhereWithoutHintInput> = z.object({
   where: z.lazy(() => RevealedHintInstancesScalarWhereInputSchema),
   data: z.union([ z.lazy(() => RevealedHintInstancesUpdateManyMutationInputSchema),z.lazy(() => RevealedHintInstancesUncheckedUpdateManyWithoutRevealedHintInstancesInputSchema) ]),
+}).strict();
+
+export const SophomoreDetailsCreateWithoutVersesInputSchema: z.ZodType<Prisma.SophomoreDetailsCreateWithoutVersesInput> = z.object({
+  create_at: z.coerce.date().optional(),
+  update_at: z.coerce.date().optional(),
+  thisOrThat: z.union([ z.lazy(() => SophomoreDetailsCreatethisOrThatInputSchema),z.lazy(() => ThisOrThatSchema).array() ]).optional(),
+  thisOrThatReady: z.boolean().optional(),
+  hintsReady: z.boolean().optional(),
+  id: z.string().cuid().optional(),
+  fullname: z.string(),
+  title: z.lazy(() => NameTitleSchema),
+  student_id: z.string(),
+  nickname: z.string(),
+  branch: z.lazy(() => BranchSchema),
+  participate: z.boolean(),
+  many_fresh: z.boolean(),
+  facebook_link: z.string().optional().nullable(),
+  instagram_link: z.string().optional().nullable(),
+  phone: z.string(),
+  hints: z.lazy(() => HintsCreateNestedManyWithoutSophomoreInputSchema).optional(),
+  PasscodeInstances: z.lazy(() => PasscodeInstancesCreateNestedManyWithoutOwnerInputSchema).optional(),
+  QRInstances: z.lazy(() => QRInstancesCreateNestedManyWithoutOwnerInputSchema).optional(),
+  user: z.lazy(() => UserCreateNestedOneWithoutSophomoreDetailsInputSchema),
+  pair: z.lazy(() => PairCreateNestedManyWithoutSophomoreInputSchema).optional()
+}).strict();
+
+export const SophomoreDetailsUncheckedCreateWithoutVersesInputSchema: z.ZodType<Prisma.SophomoreDetailsUncheckedCreateWithoutVersesInput> = z.object({
+  create_at: z.coerce.date().optional(),
+  update_at: z.coerce.date().optional(),
+  thisOrThat: z.union([ z.lazy(() => SophomoreDetailsCreatethisOrThatInputSchema),z.lazy(() => ThisOrThatSchema).array() ]).optional(),
+  thisOrThatReady: z.boolean().optional(),
+  hintsReady: z.boolean().optional(),
+  userId: z.string(),
+  id: z.string().cuid().optional(),
+  fullname: z.string(),
+  title: z.lazy(() => NameTitleSchema),
+  student_id: z.string(),
+  nickname: z.string(),
+  branch: z.lazy(() => BranchSchema),
+  participate: z.boolean(),
+  many_fresh: z.boolean(),
+  facebook_link: z.string().optional().nullable(),
+  instagram_link: z.string().optional().nullable(),
+  phone: z.string(),
+  hints: z.lazy(() => HintsUncheckedCreateNestedManyWithoutSophomoreInputSchema).optional(),
+  PasscodeInstances: z.lazy(() => PasscodeInstancesUncheckedCreateNestedManyWithoutOwnerInputSchema).optional(),
+  QRInstances: z.lazy(() => QRInstancesUncheckedCreateNestedManyWithoutOwnerInputSchema).optional(),
+  pair: z.lazy(() => PairUncheckedCreateNestedManyWithoutSophomoreInputSchema).optional()
+}).strict();
+
+export const SophomoreDetailsCreateOrConnectWithoutVersesInputSchema: z.ZodType<Prisma.SophomoreDetailsCreateOrConnectWithoutVersesInput> = z.object({
+  where: z.lazy(() => SophomoreDetailsWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => SophomoreDetailsCreateWithoutVersesInputSchema),z.lazy(() => SophomoreDetailsUncheckedCreateWithoutVersesInputSchema) ]),
+}).strict();
+
+export const SophomoreDetailsUpsertWithoutVersesInputSchema: z.ZodType<Prisma.SophomoreDetailsUpsertWithoutVersesInput> = z.object({
+  update: z.union([ z.lazy(() => SophomoreDetailsUpdateWithoutVersesInputSchema),z.lazy(() => SophomoreDetailsUncheckedUpdateWithoutVersesInputSchema) ]),
+  create: z.union([ z.lazy(() => SophomoreDetailsCreateWithoutVersesInputSchema),z.lazy(() => SophomoreDetailsUncheckedCreateWithoutVersesInputSchema) ]),
+}).strict();
+
+export const SophomoreDetailsUpdateWithoutVersesInputSchema: z.ZodType<Prisma.SophomoreDetailsUpdateWithoutVersesInput> = z.object({
+  create_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  thisOrThat: z.union([ z.lazy(() => SophomoreDetailsUpdatethisOrThatInputSchema),z.lazy(() => ThisOrThatSchema).array() ]).optional(),
+  thisOrThatReady: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
+  hintsReady: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  fullname: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  title: z.union([ z.lazy(() => NameTitleSchema),z.lazy(() => EnumNameTitleFieldUpdateOperationsInputSchema) ]).optional(),
+  student_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  nickname: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  branch: z.union([ z.lazy(() => BranchSchema),z.lazy(() => EnumBranchFieldUpdateOperationsInputSchema) ]).optional(),
+  participate: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
+  many_fresh: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
+  facebook_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  instagram_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  phone: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  hints: z.lazy(() => HintsUpdateManyWithoutSophomoreNestedInputSchema).optional(),
+  PasscodeInstances: z.lazy(() => PasscodeInstancesUpdateManyWithoutOwnerNestedInputSchema).optional(),
+  QRInstances: z.lazy(() => QRInstancesUpdateManyWithoutOwnerNestedInputSchema).optional(),
+  user: z.lazy(() => UserUpdateOneRequiredWithoutSophomoreDetailsNestedInputSchema).optional(),
+  pair: z.lazy(() => PairUpdateManyWithoutSophomoreNestedInputSchema).optional()
+}).strict();
+
+export const SophomoreDetailsUncheckedUpdateWithoutVersesInputSchema: z.ZodType<Prisma.SophomoreDetailsUncheckedUpdateWithoutVersesInput> = z.object({
+  create_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  thisOrThat: z.union([ z.lazy(() => SophomoreDetailsUpdatethisOrThatInputSchema),z.lazy(() => ThisOrThatSchema).array() ]).optional(),
+  thisOrThatReady: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
+  hintsReady: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  fullname: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  title: z.union([ z.lazy(() => NameTitleSchema),z.lazy(() => EnumNameTitleFieldUpdateOperationsInputSchema) ]).optional(),
+  student_id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  nickname: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  branch: z.union([ z.lazy(() => BranchSchema),z.lazy(() => EnumBranchFieldUpdateOperationsInputSchema) ]).optional(),
+  participate: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
+  many_fresh: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
+  facebook_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  instagram_link: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  phone: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  hints: z.lazy(() => HintsUncheckedUpdateManyWithoutSophomoreNestedInputSchema).optional(),
+  PasscodeInstances: z.lazy(() => PasscodeInstancesUncheckedUpdateManyWithoutOwnerNestedInputSchema).optional(),
+  QRInstances: z.lazy(() => QRInstancesUncheckedUpdateManyWithoutOwnerNestedInputSchema).optional(),
+  pair: z.lazy(() => PairUncheckedUpdateManyWithoutSophomoreNestedInputSchema).optional()
 }).strict();
 
 export const HintsCreateWithoutSophomoreInputSchema: z.ZodType<Prisma.HintsCreateWithoutSophomoreInput> = z.object({
@@ -6800,6 +7172,30 @@ export const PairCreateManySophomoreInputEnvelopeSchema: z.ZodType<Prisma.PairCr
   skipDuplicates: z.boolean().optional()
 }).strict();
 
+export const MagicVersesCreateWithoutSophomoreDetailsInputSchema: z.ZodType<Prisma.MagicVersesCreateWithoutSophomoreDetailsInput> = z.object({
+  handler: z.string(),
+  name: z.string(),
+  wildcard: z.boolean().optional(),
+  cost: z.number().optional()
+}).strict();
+
+export const MagicVersesUncheckedCreateWithoutSophomoreDetailsInputSchema: z.ZodType<Prisma.MagicVersesUncheckedCreateWithoutSophomoreDetailsInput> = z.object({
+  handler: z.string(),
+  name: z.string(),
+  wildcard: z.boolean().optional(),
+  cost: z.number().optional()
+}).strict();
+
+export const MagicVersesCreateOrConnectWithoutSophomoreDetailsInputSchema: z.ZodType<Prisma.MagicVersesCreateOrConnectWithoutSophomoreDetailsInput> = z.object({
+  where: z.lazy(() => MagicVersesWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => MagicVersesCreateWithoutSophomoreDetailsInputSchema),z.lazy(() => MagicVersesUncheckedCreateWithoutSophomoreDetailsInputSchema) ]),
+}).strict();
+
+export const MagicVersesCreateManySophomoreDetailsInputEnvelopeSchema: z.ZodType<Prisma.MagicVersesCreateManySophomoreDetailsInputEnvelope> = z.object({
+  data: z.union([ z.lazy(() => MagicVersesCreateManySophomoreDetailsInputSchema),z.lazy(() => MagicVersesCreateManySophomoreDetailsInputSchema).array() ]),
+  skipDuplicates: z.boolean().optional()
+}).strict();
+
 export const HintsUpsertWithWhereUniqueWithoutSophomoreInputSchema: z.ZodType<Prisma.HintsUpsertWithWhereUniqueWithoutSophomoreInput> = z.object({
   where: z.lazy(() => HintsWhereUniqueInputSchema),
   update: z.union([ z.lazy(() => HintsUpdateWithoutSophomoreInputSchema),z.lazy(() => HintsUncheckedUpdateWithoutSophomoreInputSchema) ]),
@@ -6908,6 +7304,33 @@ export const PairScalarWhereInputSchema: z.ZodType<Prisma.PairScalarWhereInput> 
   id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   freshmenDetailsId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   sophomoreDetailsId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+}).strict();
+
+export const MagicVersesUpsertWithWhereUniqueWithoutSophomoreDetailsInputSchema: z.ZodType<Prisma.MagicVersesUpsertWithWhereUniqueWithoutSophomoreDetailsInput> = z.object({
+  where: z.lazy(() => MagicVersesWhereUniqueInputSchema),
+  update: z.union([ z.lazy(() => MagicVersesUpdateWithoutSophomoreDetailsInputSchema),z.lazy(() => MagicVersesUncheckedUpdateWithoutSophomoreDetailsInputSchema) ]),
+  create: z.union([ z.lazy(() => MagicVersesCreateWithoutSophomoreDetailsInputSchema),z.lazy(() => MagicVersesUncheckedCreateWithoutSophomoreDetailsInputSchema) ]),
+}).strict();
+
+export const MagicVersesUpdateWithWhereUniqueWithoutSophomoreDetailsInputSchema: z.ZodType<Prisma.MagicVersesUpdateWithWhereUniqueWithoutSophomoreDetailsInput> = z.object({
+  where: z.lazy(() => MagicVersesWhereUniqueInputSchema),
+  data: z.union([ z.lazy(() => MagicVersesUpdateWithoutSophomoreDetailsInputSchema),z.lazy(() => MagicVersesUncheckedUpdateWithoutSophomoreDetailsInputSchema) ]),
+}).strict();
+
+export const MagicVersesUpdateManyWithWhereWithoutSophomoreDetailsInputSchema: z.ZodType<Prisma.MagicVersesUpdateManyWithWhereWithoutSophomoreDetailsInput> = z.object({
+  where: z.lazy(() => MagicVersesScalarWhereInputSchema),
+  data: z.union([ z.lazy(() => MagicVersesUpdateManyMutationInputSchema),z.lazy(() => MagicVersesUncheckedUpdateManyWithoutVersesInputSchema) ]),
+}).strict();
+
+export const MagicVersesScalarWhereInputSchema: z.ZodType<Prisma.MagicVersesScalarWhereInput> = z.object({
+  AND: z.union([ z.lazy(() => MagicVersesScalarWhereInputSchema),z.lazy(() => MagicVersesScalarWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => MagicVersesScalarWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => MagicVersesScalarWhereInputSchema),z.lazy(() => MagicVersesScalarWhereInputSchema).array() ]).optional(),
+  handler: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  name: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  wildcard: z.union([ z.lazy(() => BoolFilterSchema),z.boolean() ]).optional(),
+  cost: z.union([ z.lazy(() => FloatFilterSchema),z.number() ]).optional(),
+  sophomoreDetailsId: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
 }).strict();
 
 export const FreshmenDetailsCreateWithoutTodayResinInputSchema: z.ZodType<Prisma.FreshmenDetailsCreateWithoutTodayResinInput> = z.object({
@@ -7428,6 +7851,13 @@ export const PairCreateManySophomoreInputSchema: z.ZodType<Prisma.PairCreateMany
   freshmenDetailsId: z.string()
 }).strict();
 
+export const MagicVersesCreateManySophomoreDetailsInputSchema: z.ZodType<Prisma.MagicVersesCreateManySophomoreDetailsInput> = z.object({
+  handler: z.string(),
+  name: z.string(),
+  wildcard: z.boolean().optional(),
+  cost: z.number().optional()
+}).strict();
+
 export const HintsUpdateWithoutSophomoreInputSchema: z.ZodType<Prisma.HintsUpdateWithoutSophomoreInput> = z.object({
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   craete_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -7509,6 +7939,27 @@ export const PairUncheckedUpdateWithoutSophomoreInputSchema: z.ZodType<Prisma.Pa
 export const PairUncheckedUpdateManyWithoutPairInputSchema: z.ZodType<Prisma.PairUncheckedUpdateManyWithoutPairInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   freshmenDetailsId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const MagicVersesUpdateWithoutSophomoreDetailsInputSchema: z.ZodType<Prisma.MagicVersesUpdateWithoutSophomoreDetailsInput> = z.object({
+  handler: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  wildcard: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
+  cost: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const MagicVersesUncheckedUpdateWithoutSophomoreDetailsInputSchema: z.ZodType<Prisma.MagicVersesUncheckedUpdateWithoutSophomoreDetailsInput> = z.object({
+  handler: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  wildcard: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
+  cost: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
+}).strict();
+
+export const MagicVersesUncheckedUpdateManyWithoutVersesInputSchema: z.ZodType<Prisma.MagicVersesUncheckedUpdateManyWithoutVersesInput> = z.object({
+  handler: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  wildcard: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
+  cost: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 /////////////////////////////////////////
@@ -8254,6 +8705,68 @@ export const HintsFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.HintsFindUniqueO
   where: HintsWhereUniqueInputSchema,
 }).strict()
 
+export const MagicVersesFindFirstArgsSchema: z.ZodType<Prisma.MagicVersesFindFirstArgs> = z.object({
+  select: MagicVersesSelectSchema.optional(),
+  include: MagicVersesIncludeSchema.optional(),
+  where: MagicVersesWhereInputSchema.optional(),
+  orderBy: z.union([ MagicVersesOrderByWithRelationInputSchema.array(),MagicVersesOrderByWithRelationInputSchema ]).optional(),
+  cursor: MagicVersesWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ MagicVersesScalarFieldEnumSchema,MagicVersesScalarFieldEnumSchema.array() ]).optional(),
+}).strict()
+
+export const MagicVersesFindFirstOrThrowArgsSchema: z.ZodType<Prisma.MagicVersesFindFirstOrThrowArgs> = z.object({
+  select: MagicVersesSelectSchema.optional(),
+  include: MagicVersesIncludeSchema.optional(),
+  where: MagicVersesWhereInputSchema.optional(),
+  orderBy: z.union([ MagicVersesOrderByWithRelationInputSchema.array(),MagicVersesOrderByWithRelationInputSchema ]).optional(),
+  cursor: MagicVersesWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ MagicVersesScalarFieldEnumSchema,MagicVersesScalarFieldEnumSchema.array() ]).optional(),
+}).strict()
+
+export const MagicVersesFindManyArgsSchema: z.ZodType<Prisma.MagicVersesFindManyArgs> = z.object({
+  select: MagicVersesSelectSchema.optional(),
+  include: MagicVersesIncludeSchema.optional(),
+  where: MagicVersesWhereInputSchema.optional(),
+  orderBy: z.union([ MagicVersesOrderByWithRelationInputSchema.array(),MagicVersesOrderByWithRelationInputSchema ]).optional(),
+  cursor: MagicVersesWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+  distinct: z.union([ MagicVersesScalarFieldEnumSchema,MagicVersesScalarFieldEnumSchema.array() ]).optional(),
+}).strict()
+
+export const MagicVersesAggregateArgsSchema: z.ZodType<Prisma.MagicVersesAggregateArgs> = z.object({
+  where: MagicVersesWhereInputSchema.optional(),
+  orderBy: z.union([ MagicVersesOrderByWithRelationInputSchema.array(),MagicVersesOrderByWithRelationInputSchema ]).optional(),
+  cursor: MagicVersesWhereUniqueInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict()
+
+export const MagicVersesGroupByArgsSchema: z.ZodType<Prisma.MagicVersesGroupByArgs> = z.object({
+  where: MagicVersesWhereInputSchema.optional(),
+  orderBy: z.union([ MagicVersesOrderByWithAggregationInputSchema.array(),MagicVersesOrderByWithAggregationInputSchema ]).optional(),
+  by: MagicVersesScalarFieldEnumSchema.array(),
+  having: MagicVersesScalarWhereWithAggregatesInputSchema.optional(),
+  take: z.number().optional(),
+  skip: z.number().optional(),
+}).strict()
+
+export const MagicVersesFindUniqueArgsSchema: z.ZodType<Prisma.MagicVersesFindUniqueArgs> = z.object({
+  select: MagicVersesSelectSchema.optional(),
+  include: MagicVersesIncludeSchema.optional(),
+  where: MagicVersesWhereUniqueInputSchema,
+}).strict()
+
+export const MagicVersesFindUniqueOrThrowArgsSchema: z.ZodType<Prisma.MagicVersesFindUniqueOrThrowArgs> = z.object({
+  select: MagicVersesSelectSchema.optional(),
+  include: MagicVersesIncludeSchema.optional(),
+  where: MagicVersesWhereUniqueInputSchema,
+}).strict()
+
 export const SophomoreDetailsFindFirstArgsSchema: z.ZodType<Prisma.SophomoreDetailsFindFirstArgs> = z.object({
   select: SophomoreDetailsSelectSchema.optional(),
   include: SophomoreDetailsIncludeSchema.optional(),
@@ -8864,6 +9377,47 @@ export const HintsUpdateManyArgsSchema: z.ZodType<Prisma.HintsUpdateManyArgs> = 
 
 export const HintsDeleteManyArgsSchema: z.ZodType<Prisma.HintsDeleteManyArgs> = z.object({
   where: HintsWhereInputSchema.optional(),
+}).strict()
+
+export const MagicVersesCreateArgsSchema: z.ZodType<Prisma.MagicVersesCreateArgs> = z.object({
+  select: MagicVersesSelectSchema.optional(),
+  include: MagicVersesIncludeSchema.optional(),
+  data: z.union([ MagicVersesCreateInputSchema,MagicVersesUncheckedCreateInputSchema ]),
+}).strict()
+
+export const MagicVersesUpsertArgsSchema: z.ZodType<Prisma.MagicVersesUpsertArgs> = z.object({
+  select: MagicVersesSelectSchema.optional(),
+  include: MagicVersesIncludeSchema.optional(),
+  where: MagicVersesWhereUniqueInputSchema,
+  create: z.union([ MagicVersesCreateInputSchema,MagicVersesUncheckedCreateInputSchema ]),
+  update: z.union([ MagicVersesUpdateInputSchema,MagicVersesUncheckedUpdateInputSchema ]),
+}).strict()
+
+export const MagicVersesCreateManyArgsSchema: z.ZodType<Prisma.MagicVersesCreateManyArgs> = z.object({
+  data: z.union([ MagicVersesCreateManyInputSchema,MagicVersesCreateManyInputSchema.array() ]),
+  skipDuplicates: z.boolean().optional(),
+}).strict()
+
+export const MagicVersesDeleteArgsSchema: z.ZodType<Prisma.MagicVersesDeleteArgs> = z.object({
+  select: MagicVersesSelectSchema.optional(),
+  include: MagicVersesIncludeSchema.optional(),
+  where: MagicVersesWhereUniqueInputSchema,
+}).strict()
+
+export const MagicVersesUpdateArgsSchema: z.ZodType<Prisma.MagicVersesUpdateArgs> = z.object({
+  select: MagicVersesSelectSchema.optional(),
+  include: MagicVersesIncludeSchema.optional(),
+  data: z.union([ MagicVersesUpdateInputSchema,MagicVersesUncheckedUpdateInputSchema ]),
+  where: MagicVersesWhereUniqueInputSchema,
+}).strict()
+
+export const MagicVersesUpdateManyArgsSchema: z.ZodType<Prisma.MagicVersesUpdateManyArgs> = z.object({
+  data: z.union([ MagicVersesUpdateManyMutationInputSchema,MagicVersesUncheckedUpdateManyInputSchema ]),
+  where: MagicVersesWhereInputSchema.optional(),
+}).strict()
+
+export const MagicVersesDeleteManyArgsSchema: z.ZodType<Prisma.MagicVersesDeleteManyArgs> = z.object({
+  where: MagicVersesWhereInputSchema.optional(),
 }).strict()
 
 export const SophomoreDetailsCreateArgsSchema: z.ZodType<Prisma.SophomoreDetailsCreateArgs> = z.object({

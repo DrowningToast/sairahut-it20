@@ -5,7 +5,6 @@ import type { Handle } from '@sveltejs/kit';
 import type { Branch } from 'database';
 
 /**
- *
  * Check if the user joins in for the first time or not.
  * If so, user data should exists in the Airtable, and further more
  * if the user still lacks hints or this or that information, the user should
@@ -35,7 +34,7 @@ export const firstTimeMiddleware: Handle = async ({ event, resolve }) => {
 					throw new Error('Email not found');
 				}
 
-				res = { ...res, participate: true }
+				res = { ...res, participate: true };
 			} else if (gen == 20) {
 				// fetch the IT20 airtable
 				res = await AirtableController.participantIT20.getParticipantByStudentId(
