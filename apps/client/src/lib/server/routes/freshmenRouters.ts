@@ -7,7 +7,7 @@ import { freshmenRegister } from '$lib/zod';
 import { AirtableController } from '$lib/airtable-api/controller';
 import type { FreshmenDetails, MagicVerseCast, Prisma, User } from 'database';
 import { FreshmenDetailsController } from '../database/freshmen/controller';
-import { determineYear } from '$lib/utils';
+import { determineYear, shuffle } from '$lib/utils';
 import { PasscodeController } from '../database/passcode/controller';
 import { ResinController } from '../database/resin/controller';
 import { PairController } from '../database/pair/controller';
@@ -647,6 +647,8 @@ export const freshmenRouters = createRouter({
 			})
 		}
 
+		const freshmenId = user?.freshmenDetails?.id
+
 		await prisma.magicVerseIdentificationInstance.update({
 			data: {
 				isExpired: true,
@@ -656,9 +658,13 @@ export const freshmenRouters = createRouter({
 			}
 		})
 
-		let spells = 0;
+		const isCached = await prisma.magicVerseCast.findFirst({
+			where: {
+				casterId: freshmenId
+			}
+		})
 
-		const freshmenId = user?.freshmenDetails?.id
+		let spells = 0;
 
 		const logs = await prisma.qRInstances.count({
 			where: {
@@ -686,8 +692,7 @@ export const freshmenRouters = createRouter({
 			spells++;
 		}
 
-		const pairMagicVerse = await prisma.magicVerses.findMany({
-			take: spells,
+		const magicVerses = await prisma.magicVerses.findMany({
 			where: {
 				sophomores: {
 					every: {
@@ -697,30 +702,53 @@ export const freshmenRouters = createRouter({
 			}
 		})
 
+		const randomVerses = []
+
+		for (let i = 0; i < spells; i++) {
+			const rando = shuffle(magicVerses)
+			randomVerses.push(rando)
+		}
+
+		// You can use local storage for caching
 		return {
 			success: true,
+			payload: randomVerses
 		};
 	}),
 
-	getLatestMagicVerse: freshmenProcedure.query(async ({ ctx }) => {
-		const { user } = ctx;
+	getLatestMagicVerse: freshmenProcedure
+		.input(z.object({
+			sophomoreId: z.string()
+		}))
+		.query(async ({ ctx, input }) => {
+			const { sophomoreId } = input
+			const { user } = ctx;
 
-		const res = await prisma.magicVerseCast.findFirst({
-			orderBy: {
-				update_at: 'desc'
-			},
-			where: {
-				casterId: user?.freshmenDetails?.id
-			}
-		})
+			const res = await prisma.magicVerseCast.findFirst({
+				orderBy: {
+					update_at: 'desc'
+				},
+				where: {
+					casterId: user?.freshmenDetails?.id,
+					verses: {
+						every: {
+							sophomores: {
+								every: {
+									id: sophomoreId
+								}
+							}
+						}
+					}
+				}
+			})
 
-		return {
-			success: true,
-			payload: {
-				lastCast: res || new Array<MagicVerseCast>(3)
+			return {
+				success: true,
+				payload: {
+					lastCast: res || new Array<MagicVerseCast>(3)
+				}
 			}
-		}
-	}),
+		}),
 
 	// When freshmen submit verse, Code will run chcek the result of verse
 	submitMagicVerse: freshmenProcedure.input(
@@ -749,7 +777,7 @@ export const freshmenRouters = createRouter({
 
 		// Loop through Sophomore's verse
 		magicVerses.forEach(async (verse, index) => {
-			if (verse.handler === input[index] && verse.wildcard) {
+			if (verse.wildcard) {
 				// if Freshmen trigger wildcard
 				result.push(true)
 				balanceDecrement += verse.cost
