@@ -722,6 +722,7 @@ export const freshmenRouters = createRouter({
 		}
 	}),
 
+	// When freshmen submit verse, Code will run chcek the result of verse
 	submitMagicVerse: freshmenProcedure.input(
 		z.array(z.string()).min(3).max(3)
 	).query(async ({ ctx, input }) => {
@@ -744,26 +745,29 @@ export const freshmenRouters = createRouter({
 
 		const result: boolean[] = []
 
+		let balanceDecrement = 0;
+
 		// Loop through Sophomore's verse
 		magicVerses.forEach(async (verse, index) => {
-			// if Freshmen trigger wildcard
 			if (verse.handler === input[index] && verse.wildcard) {
+				// if Freshmen trigger wildcard
 				result.push(true)
-				await freshmenController.decrementFreshmenBalance({
-					id: freshmenDetailsId
-				}, verse.cost)
-				// if Freshmen trigger correct verse at this index
+				balanceDecrement += verse.cost
 			} else if (verse.handler === input[index]) {
+				// if Freshmen trigger correct verse at this index
 				result.push(true)
-				// if Freshmen fail to trigger correct verse
 			} else {
+				// if Freshmen fail to trigger correct verse
 				result.push(false)
-				await freshmenController.decrementFreshmenBalance({
-					id: freshmenDetailsId
-				}, verse.cost)
+				balanceDecrement += verse.cost
 			}
 		})
 
+		await freshmenController.decrementFreshmenBalance({
+			id: freshmenDetailsId
+		}, balanceDecrement)
+
+		// สร้าง cast record ว่าน้อง cast spell แล้วผลลัพธ์เป็นยังไง
 		const res = await prisma.magicVerseCast.create({
 			data: {
 				casterId: freshmenDetailsId,
