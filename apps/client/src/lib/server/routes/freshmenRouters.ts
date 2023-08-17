@@ -626,113 +626,124 @@ export const freshmenRouters = createRouter({
 		}
 	}),
 
-	submitShowdownQR: freshmenProcedure.input(
-		z.object({
-			qrCodeContent: z.string()
-		})
-	).query(async ({ ctx, input }) => {
-		const { qrCodeContent } = input
-		// find qr code that scanned
-		const { user } = ctx
-
-		const qrRes = await prisma.magicVerseIdentificationInstance.findUnique({
-			where: {
-				content: qrCodeContent
-			}
-		})
-
-		if (!qrRes) {
-			throw new TRPCError({
-				code: 'NOT_FOUND',
-				message: `QR Code with code: "${qrCodeContent}" not found.`
+	submitShowdownQR: freshmenProcedure
+		.input(
+			z.object({
+				qrCodeContent: z.string()
 			})
-		}
+		)
+		.query(async ({ ctx, input }) => {
+			const { qrCodeContent } = input;
+			// find qr code that scanned
+			const { user } = ctx;
 
-		const freshmenId = user?.freshmenDetails?.id
-
-		await prisma.magicVerseIdentificationInstance.update({
-			data: {
-				isExpired: true,
-			},
-			where: {
-				id: qrRes.id
-			}
-		})
-
-		let spells = 0;
-
-		const beforeFriday = new Date()
-		beforeFriday.setFullYear(2023, 7, 19)
-
-		const logs = await prisma.qRInstances.count({
-			where: {
-				AND: {
-					ownerId: qrRes?.sophomoreDetailsId,
-					scannedBy: {
-						every: {
-							id: freshmenId
-						}
-					},
-					create_at: {
-						lt: beforeFriday
-					}
+			const qrRes = await prisma.magicVerseIdentificationInstance.findUnique({
+				where: {
+					content: qrCodeContent
 				}
+			});
+
+			if (!qrRes) {
+				throw new TRPCError({
+					code: 'NOT_FOUND',
+					message: `QR Code with code: "${qrCodeContent}" not found.`
+				});
 			}
-		})
 
-		if (logs !== 0) {
-			spells++;
-		}
+			const freshmenId = user?.freshmenDetails?.id;
+			if (!freshmenId)
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message: 'FRESHMEN ID NOT FOUND'
+				});
 
-		const sophomore = await SophomoreDetailsController(prisma).findUnique({ id: qrRes?.sophomoreDetailsId })
-
-		const freshmenBalance = user?.balance as number;
-		const sophomoreBalance = sophomore?.user.balance as number;
-
-		if (freshmenBalance >= sophomoreBalance) {
-			spells++;
-		}
-
-		const magicVerses = await prisma.magicVerses.findMany({
-			where: {
-				sophomores: {
-					every: {
-						id: sophomore?.id
-					}
-				}
-			}
-		})
-
-		const randomVerses = []
-
-		for (let i = 0; i < spells; i++) {
-			const rando = shuffle(magicVerses)
-			randomVerses.push(rando[0])
-		}
-		
-		// กัสฝากดูที มันแดงอยู่
-		await prisma.magicVerseCast.create({
-			data: {
-				casterId: freshmenId,
-				verses: {
-					connect: [randomVerses[0], randomVerses[1]]
+			await prisma.magicVerseIdentificationInstance.update({
+				data: {
+					isExpired: true
 				},
-			}
-		})
+				where: {
+					id: qrRes.id
+				}
+			});
 
-		// กัสฝากทำตรงนี้ที ตรงที่ส่ง randomVerse ไปที่ user ที่หน้าบ้าน
-		return {
-			success: true,
-			payload: randomVerses
-		};
-	}),
+			let spells = 0;
+
+			const beforeFriday = new Date();
+			beforeFriday.setFullYear(2023, 7, 19);
+
+			const logs = await prisma.qRInstances.count({
+				where: {
+					AND: {
+						ownerId: qrRes?.sophomoreDetailsId,
+						scannedBy: {
+							every: {
+								id: freshmenId
+							}
+						},
+						create_at: {
+							lt: beforeFriday
+						}
+					}
+				}
+			});
+
+			if (logs !== 0) {
+				spells++;
+			}
+
+			const sophomore = await SophomoreDetailsController(prisma).findUnique({
+				id: qrRes?.sophomoreDetailsId
+			});
+
+			const freshmenBalance = user?.balance as number;
+			const sophomoreBalance = sophomore?.user.balance as number;
+
+			if (freshmenBalance >= sophomoreBalance) {
+				spells++;
+			}
+
+			const magicVerses = await prisma.magicVerses.findMany({
+				where: {
+					sophomores: {
+						every: {
+							id: sophomore?.id
+						}
+					}
+				}
+			});
+
+			const randomVerses = [];
+
+			for (let i = 0; i < spells; i++) {
+				const rando = shuffle(magicVerses);
+				randomVerses.push(rando[0]);
+			}
+
+			// กัสฝากดูที มันแดงอยู่
+			await prisma.magicVerseCast.create({
+				data: {
+					casterId: freshmenId,
+					verses: {
+						connect: [randomVerses[0], randomVerses[1]]
+					}
+				}
+			});
+
+			// กัสฝากทำตรงนี้ที ตรงที่ส่ง randomVerse ไปที่ user ที่หน้าบ้าน
+			return {
+				success: true,
+				payload: randomVerses
+			};
+		}),
 
 	getLatestMagicVerse: freshmenProcedure
-		.input(z.object({
-			sophomoreId: z.string()
-		}))
+		.input(
+			z.object({
+				sophomoreId: z.string()
+			})
+		)
 		.query(async ({ ctx, input }) => {
-			const { sophomoreId } = input
+			const { sophomoreId } = input;
 			const { user } = ctx;
 
 			const res = await prisma.magicVerseCast.findFirst({
@@ -751,80 +762,85 @@ export const freshmenRouters = createRouter({
 						}
 					}
 				}
-			})
+			});
 
 			return {
 				success: true,
 				payload: {
 					lastCast: res || new Array<MagicVerseCast>(3)
 				}
-			}
+			};
 		}),
 
 	// When freshmen submit verse, Code will run chcek the result of verse
-	submitMagicVerse: freshmenProcedure.input(
-		z.object({
-			answer: z.array(z.string()).min(3).max(3),
-			sophomoreId: z.string()
-		})
-	).query(async ({ ctx, input }) => {
-		const { answer, sophomoreId } = input;
-		const sophomoreController = SophomoreDetailsController(prisma)
-		const freshmenController = FreshmenDetailsController(prisma)
+	submitMagicVerse: freshmenProcedure
+		.input(
+			z.object({
+				answer: z.array(z.string()).min(3).max(3),
+				sophomoreId: z.string()
+			})
+		)
+		.query(async ({ ctx, input }) => {
+			const { answer, sophomoreId } = input;
+			const sophomoreController = SophomoreDetailsController(prisma);
+			const freshmenController = FreshmenDetailsController(prisma);
 
-		const { user } = ctx;
-		const freshmenDetailsId = user?.freshmenDetails?.id as string
+			const { user } = ctx;
+			const freshmenDetailsId = user?.freshmenDetails?.id as string;
 
-		// หา verses ของ sophomore
-		const sophomore = await sophomoreController.findUnique({ id: sophomoreId })
-		const magicVerses = await prisma.magicVerses.findMany({
-			where: {
-				sophomores: {
-					every: {
-						id: sophomore?.id
+			// หา verses ของ sophomore
+			const sophomore = await sophomoreController.findUnique({ id: sophomoreId });
+			const magicVerses = await prisma.magicVerses.findMany({
+				where: {
+					sophomores: {
+						every: {
+							id: sophomore?.id
+						}
 					}
 				}
-			}
-		})
+			});
 
-		const result: boolean[] = []
+			const result: boolean[] = [];
 
-		let balanceDecrement = 0;
+			let balanceDecrement = 0;
 
-		// Loop through Sophomore's verse
-		magicVerses.forEach(async (verse, index) => {
-			if (verse.wildcard) {
-				// if Freshmen trigger wildcard
-				result.push(true)
-				balanceDecrement += verse.cost
-			} else if (verse.handler === answer[index]) {
-				// if Freshmen trigger correct verse at this index
-				result.push(true)
-			} else {
-				// if Freshmen fail to trigger correct verse
-				result.push(false)
-				balanceDecrement += verse.cost
-			}
-		})
-
-		await freshmenController.decrementFreshmenBalance({
-			id: freshmenDetailsId
-		}, balanceDecrement)
-
-		// สร้าง cast record ว่าน้อง cast spell แล้วผลลัพธ์เป็นยังไง
-		const res = await prisma.magicVerseCast.create({
-			data: {
-				casterId: freshmenDetailsId,
-				result,
-				verses: {
-					connect: magicVerses
+			// Loop through Sophomore's verse
+			magicVerses.forEach(async (verse, index) => {
+				if (verse.wildcard) {
+					// if Freshmen trigger wildcard
+					result.push(true);
+					balanceDecrement += verse.cost;
+				} else if (verse.handler === answer[index]) {
+					// if Freshmen trigger correct verse at this index
+					result.push(true);
+				} else {
+					// if Freshmen fail to trigger correct verse
+					result.push(false);
+					balanceDecrement += verse.cost;
 				}
-			}
-		})
+			});
 
-		return {
-			success: true,
-			payload: res
-		};
-	})
+			await freshmenController.decrementFreshmenBalance(
+				{
+					id: freshmenDetailsId
+				},
+				balanceDecrement
+			);
+
+			// สร้าง cast record ว่าน้อง cast spell แล้วผลลัพธ์เป็นยังไง
+			const res = await prisma.magicVerseCast.create({
+				data: {
+					casterId: freshmenDetailsId,
+					result,
+					verses: {
+						connect: magicVerses
+					}
+				}
+			});
+
+			return {
+				success: true,
+				payload: res
+			};
+		})
 });
