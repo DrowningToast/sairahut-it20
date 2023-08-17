@@ -36,7 +36,7 @@ export const HintSlugsScalarFieldEnumSchema = z.enum(['slug','displayName','inde
 
 export const HintsScalarFieldEnumSchema = z.enum(['hintSlugId','content','sophomoreId','craete_at','update_at']);
 
-export const MagicVerseIdentificationInstanceScalarFieldEnumSchema = z.enum(['id','content','sophomoreDetailsId','isExpired']);
+export const MagicVerseIdentificationInstanceScalarFieldEnumSchema = z.enum(['create_at','update_at','id','content','sophomoreDetailsId','isExpired']);
 
 export const StarterMagicVerseScalarFieldEnumSchema = z.enum(['id','create_at','update_at','freshmenDetailsId','sophomoreDetailsId']);
 
@@ -269,6 +269,8 @@ export type Hints = z.infer<typeof HintsSchema>
 /////////////////////////////////////////
 
 export const MagicVerseIdentificationInstanceSchema = z.object({
+  create_at: z.coerce.date(),
+  update_at: z.coerce.date(),
   id: z.string().cuid(),
   content: z.string(),
   sophomoreDetailsId: z.string(),
@@ -748,6 +750,8 @@ export const MagicVerseIdentificationInstanceArgsSchema: z.ZodType<Prisma.MagicV
 }).strict();
 
 export const MagicVerseIdentificationInstanceSelectSchema: z.ZodType<Prisma.MagicVerseIdentificationInstanceSelect> = z.object({
+  create_at: z.boolean().optional(),
+  update_at: z.boolean().optional(),
   id: z.boolean().optional(),
   content: z.boolean().optional(),
   sophomoreDetailsId: z.boolean().optional(),
@@ -1661,6 +1665,8 @@ export const MagicVerseIdentificationInstanceWhereInputSchema: z.ZodType<Prisma.
   AND: z.union([ z.lazy(() => MagicVerseIdentificationInstanceWhereInputSchema),z.lazy(() => MagicVerseIdentificationInstanceWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => MagicVerseIdentificationInstanceWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => MagicVerseIdentificationInstanceWhereInputSchema),z.lazy(() => MagicVerseIdentificationInstanceWhereInputSchema).array() ]).optional(),
+  create_at: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  update_at: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   content: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   sophomoreDetailsId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
@@ -1669,6 +1675,8 @@ export const MagicVerseIdentificationInstanceWhereInputSchema: z.ZodType<Prisma.
 }).strict();
 
 export const MagicVerseIdentificationInstanceOrderByWithRelationInputSchema: z.ZodType<Prisma.MagicVerseIdentificationInstanceOrderByWithRelationInput> = z.object({
+  create_at: z.lazy(() => SortOrderSchema).optional(),
+  update_at: z.lazy(() => SortOrderSchema).optional(),
   id: z.lazy(() => SortOrderSchema).optional(),
   content: z.lazy(() => SortOrderSchema).optional(),
   sophomoreDetailsId: z.lazy(() => SortOrderSchema).optional(),
@@ -1682,6 +1690,8 @@ export const MagicVerseIdentificationInstanceWhereUniqueInputSchema: z.ZodType<P
 }).strict();
 
 export const MagicVerseIdentificationInstanceOrderByWithAggregationInputSchema: z.ZodType<Prisma.MagicVerseIdentificationInstanceOrderByWithAggregationInput> = z.object({
+  create_at: z.lazy(() => SortOrderSchema).optional(),
+  update_at: z.lazy(() => SortOrderSchema).optional(),
   id: z.lazy(() => SortOrderSchema).optional(),
   content: z.lazy(() => SortOrderSchema).optional(),
   sophomoreDetailsId: z.lazy(() => SortOrderSchema).optional(),
@@ -1695,6 +1705,8 @@ export const MagicVerseIdentificationInstanceScalarWhereWithAggregatesInputSchem
   AND: z.union([ z.lazy(() => MagicVerseIdentificationInstanceScalarWhereWithAggregatesInputSchema),z.lazy(() => MagicVerseIdentificationInstanceScalarWhereWithAggregatesInputSchema).array() ]).optional(),
   OR: z.lazy(() => MagicVerseIdentificationInstanceScalarWhereWithAggregatesInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => MagicVerseIdentificationInstanceScalarWhereWithAggregatesInputSchema),z.lazy(() => MagicVerseIdentificationInstanceScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  create_at: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
+  update_at: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
   id: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   content: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   sophomoreDetailsId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
@@ -2886,6 +2898,8 @@ export const HintsUncheckedUpdateManyInputSchema: z.ZodType<Prisma.HintsUnchecke
 }).strict();
 
 export const MagicVerseIdentificationInstanceCreateInputSchema: z.ZodType<Prisma.MagicVerseIdentificationInstanceCreateInput> = z.object({
+  create_at: z.coerce.date().optional(),
+  update_at: z.coerce.date().optional(),
   id: z.string().cuid().optional(),
   content: z.string(),
   isExpired: z.boolean().optional(),
@@ -2893,6 +2907,8 @@ export const MagicVerseIdentificationInstanceCreateInputSchema: z.ZodType<Prisma
 }).strict();
 
 export const MagicVerseIdentificationInstanceUncheckedCreateInputSchema: z.ZodType<Prisma.MagicVerseIdentificationInstanceUncheckedCreateInput> = z.object({
+  create_at: z.coerce.date().optional(),
+  update_at: z.coerce.date().optional(),
   id: z.string().cuid().optional(),
   content: z.string(),
   sophomoreDetailsId: z.string(),
@@ -2900,6 +2916,8 @@ export const MagicVerseIdentificationInstanceUncheckedCreateInputSchema: z.ZodTy
 }).strict();
 
 export const MagicVerseIdentificationInstanceUpdateInputSchema: z.ZodType<Prisma.MagicVerseIdentificationInstanceUpdateInput> = z.object({
+  create_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   isExpired: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
@@ -2907,6 +2925,8 @@ export const MagicVerseIdentificationInstanceUpdateInputSchema: z.ZodType<Prisma
 }).strict();
 
 export const MagicVerseIdentificationInstanceUncheckedUpdateInputSchema: z.ZodType<Prisma.MagicVerseIdentificationInstanceUncheckedUpdateInput> = z.object({
+  create_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   sophomoreDetailsId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
@@ -2914,6 +2934,8 @@ export const MagicVerseIdentificationInstanceUncheckedUpdateInputSchema: z.ZodTy
 }).strict();
 
 export const MagicVerseIdentificationInstanceCreateManyInputSchema: z.ZodType<Prisma.MagicVerseIdentificationInstanceCreateManyInput> = z.object({
+  create_at: z.coerce.date().optional(),
+  update_at: z.coerce.date().optional(),
   id: z.string().cuid().optional(),
   content: z.string(),
   sophomoreDetailsId: z.string(),
@@ -2921,12 +2943,16 @@ export const MagicVerseIdentificationInstanceCreateManyInputSchema: z.ZodType<Pr
 }).strict();
 
 export const MagicVerseIdentificationInstanceUpdateManyMutationInputSchema: z.ZodType<Prisma.MagicVerseIdentificationInstanceUpdateManyMutationInput> = z.object({
+  create_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   isExpired: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const MagicVerseIdentificationInstanceUncheckedUpdateManyInputSchema: z.ZodType<Prisma.MagicVerseIdentificationInstanceUncheckedUpdateManyInput> = z.object({
+  create_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   sophomoreDetailsId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
@@ -4142,6 +4168,8 @@ export const HintsMinOrderByAggregateInputSchema: z.ZodType<Prisma.HintsMinOrder
 }).strict();
 
 export const MagicVerseIdentificationInstanceCountOrderByAggregateInputSchema: z.ZodType<Prisma.MagicVerseIdentificationInstanceCountOrderByAggregateInput> = z.object({
+  create_at: z.lazy(() => SortOrderSchema).optional(),
+  update_at: z.lazy(() => SortOrderSchema).optional(),
   id: z.lazy(() => SortOrderSchema).optional(),
   content: z.lazy(() => SortOrderSchema).optional(),
   sophomoreDetailsId: z.lazy(() => SortOrderSchema).optional(),
@@ -4149,6 +4177,8 @@ export const MagicVerseIdentificationInstanceCountOrderByAggregateInputSchema: z
 }).strict();
 
 export const MagicVerseIdentificationInstanceMaxOrderByAggregateInputSchema: z.ZodType<Prisma.MagicVerseIdentificationInstanceMaxOrderByAggregateInput> = z.object({
+  create_at: z.lazy(() => SortOrderSchema).optional(),
+  update_at: z.lazy(() => SortOrderSchema).optional(),
   id: z.lazy(() => SortOrderSchema).optional(),
   content: z.lazy(() => SortOrderSchema).optional(),
   sophomoreDetailsId: z.lazy(() => SortOrderSchema).optional(),
@@ -4156,6 +4186,8 @@ export const MagicVerseIdentificationInstanceMaxOrderByAggregateInputSchema: z.Z
 }).strict();
 
 export const MagicVerseIdentificationInstanceMinOrderByAggregateInputSchema: z.ZodType<Prisma.MagicVerseIdentificationInstanceMinOrderByAggregateInput> = z.object({
+  create_at: z.lazy(() => SortOrderSchema).optional(),
+  update_at: z.lazy(() => SortOrderSchema).optional(),
   id: z.lazy(() => SortOrderSchema).optional(),
   content: z.lazy(() => SortOrderSchema).optional(),
   sophomoreDetailsId: z.lazy(() => SortOrderSchema).optional(),
@@ -9203,12 +9235,16 @@ export const MagicVersesCreateOrConnectWithoutSophomoresInputSchema: z.ZodType<P
 }).strict();
 
 export const MagicVerseIdentificationInstanceCreateWithoutSophomoreDetailsInputSchema: z.ZodType<Prisma.MagicVerseIdentificationInstanceCreateWithoutSophomoreDetailsInput> = z.object({
+  create_at: z.coerce.date().optional(),
+  update_at: z.coerce.date().optional(),
   id: z.string().cuid().optional(),
   content: z.string(),
   isExpired: z.boolean().optional()
 }).strict();
 
 export const MagicVerseIdentificationInstanceUncheckedCreateWithoutSophomoreDetailsInputSchema: z.ZodType<Prisma.MagicVerseIdentificationInstanceUncheckedCreateWithoutSophomoreDetailsInput> = z.object({
+  create_at: z.coerce.date().optional(),
+  update_at: z.coerce.date().optional(),
   id: z.string().cuid().optional(),
   content: z.string(),
   isExpired: z.boolean().optional()
@@ -9424,6 +9460,8 @@ export const MagicVerseIdentificationInstanceScalarWhereInputSchema: z.ZodType<P
   AND: z.union([ z.lazy(() => MagicVerseIdentificationInstanceScalarWhereInputSchema),z.lazy(() => MagicVerseIdentificationInstanceScalarWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => MagicVerseIdentificationInstanceScalarWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => MagicVerseIdentificationInstanceScalarWhereInputSchema),z.lazy(() => MagicVerseIdentificationInstanceScalarWhereInputSchema).array() ]).optional(),
+  create_at: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  update_at: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   content: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   sophomoreDetailsId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
@@ -10218,6 +10256,8 @@ export const PairCreateManySophomoreInputSchema: z.ZodType<Prisma.PairCreateMany
 }).strict();
 
 export const MagicVerseIdentificationInstanceCreateManySophomoreDetailsInputSchema: z.ZodType<Prisma.MagicVerseIdentificationInstanceCreateManySophomoreDetailsInput> = z.object({
+  create_at: z.coerce.date().optional(),
+  update_at: z.coerce.date().optional(),
   id: z.string().cuid().optional(),
   content: z.string(),
   isExpired: z.boolean().optional()
@@ -10340,18 +10380,24 @@ export const MagicVersesUncheckedUpdateWithoutSophomoresInputSchema: z.ZodType<P
 }).strict();
 
 export const MagicVerseIdentificationInstanceUpdateWithoutSophomoreDetailsInputSchema: z.ZodType<Prisma.MagicVerseIdentificationInstanceUpdateWithoutSophomoreDetailsInput> = z.object({
+  create_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   isExpired: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const MagicVerseIdentificationInstanceUncheckedUpdateWithoutSophomoreDetailsInputSchema: z.ZodType<Prisma.MagicVerseIdentificationInstanceUncheckedUpdateWithoutSophomoreDetailsInput> = z.object({
+  create_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   isExpired: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const MagicVerseIdentificationInstanceUncheckedUpdateManyWithoutMagicIdInstancesInputSchema: z.ZodType<Prisma.MagicVerseIdentificationInstanceUncheckedUpdateManyWithoutMagicIdInstancesInput> = z.object({
+  create_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  update_at: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   isExpired: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),

@@ -181,6 +181,9 @@ model Hints {
 
 // Becomes expire when the newer version is generated
 model MagicVerseIdentificationInstance {
+  create_at DateTime @default(now())
+  update_at DateTime @default(now()) @updatedAt
+
   id                 String           @id @default(cuid())
   sophomoreDetails   SophomoreDetails @relation(fields: [sophomoreDetailsId], references: [id])
   // secret
