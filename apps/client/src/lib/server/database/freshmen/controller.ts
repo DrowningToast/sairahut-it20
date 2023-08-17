@@ -34,6 +34,22 @@ export const FreshmenDetailsController = (prisma: PrismaClient) => {
 		});
 	};
 
+	const decrementFreshmenBalance = (fresh: Prisma.FreshmenDetailsWhereUniqueInput, balance = 1) => {
+		// increment freshment balance
+		return prisma.freshmenDetails.update({
+			where: fresh,
+			data: {
+				user: {
+					update: {
+						balance: {
+							decrement: balance
+						}
+					}
+				}
+			}
+		});
+	};
+
 	const getUsedPasscodeByFreshmenId = (freshmenId: string) => {
 		return prisma.passcodeInstances.findMany({
 			where: {
@@ -238,6 +254,7 @@ export const FreshmenDetailsController = (prisma: PrismaClient) => {
 	return {
 		createFreshmenDetails,
 		incrementFreshmenBalance,
+		decrementFreshmenBalance,
 		getAllFreshmen,
 		getUsedPasscodeByFreshmenId,
 		getRevealedHints,

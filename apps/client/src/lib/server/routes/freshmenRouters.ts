@@ -5,12 +5,12 @@ import { prisma } from '$lib/serverUtils';
 import { TRPCError } from '@trpc/server';
 import { freshmenRegister } from '$lib/zod';
 import { AirtableController } from '$lib/airtable-api/controller';
-import { MagicVerse, type FreshmenDetails, type Prisma, type User } from 'database';
+import type { FreshmenDetails, MagicVerseCast, Prisma, User } from 'database';
 import { FreshmenDetailsController } from '../database/freshmen/controller';
-import { determineYear } from '$lib/utils';
+import { determineYear, shuffle } from '$lib/utils';
 import { PasscodeController } from '../database/passcode/controller';
 import { ResinController } from '../database/resin/controller';
-import { MagicVerseSchema } from 'database/zod';
+import { PairController } from '../database/pair/controller';
 
 interface SearchQuery {
 	where: {
@@ -625,8 +625,190 @@ export const freshmenRouters = createRouter({
 		}
 	}),
 
-	submitMagicVerse: freshmenProcedure.input(z.array(MagicVerseSchema))
-		.query(async () => {
-			return;
+	submitShowdownQR: freshmenProcedure.input(
+		z.object({
+			qrCodeContent: z.string()
 		})
+	).query(async ({ ctx, input }) => {
+		const { qrCodeContent } = input
+		// find qr code that scanned
+		const { user } = ctx
+
+		const qrRes = await prisma.magicVerseIdentificationInstance.findUnique({
+			where: {
+				content: qrCodeContent
+			}
+		})
+
+		if (!qrRes) {
+			throw new TRPCError({
+				code: 'NOT_FOUND',
+				message: `QR Code with code: "${qrCodeContent}" not found.`
+			})
+		}
+
+		const freshmenId = user?.freshmenDetails?.id
+
+		await prisma.magicVerseIdentificationInstance.update({
+			data: {
+				isExpired: true,
+			},
+			where: {
+				id: qrRes.id
+			}
+		})
+
+		const isCached = await prisma.magicVerseCast.findFirst({
+			where: {
+				casterId: freshmenId
+			}
+		})
+
+		let spells = 0;
+
+		const logs = await prisma.qRInstances.count({
+			where: {
+				AND: {
+					ownerId: qrRes?.sophomoreDetailsId,
+					scannedBy: {
+						every: {
+							id: freshmenId
+						}
+					}
+				}
+			}
+		})
+
+		if (logs !== 0) {
+			spells++;
+		}
+
+		const pair = await PairController(prisma).getPairByFreshmen({ id: freshmenId! })
+
+		const freshmenBalance = user?.balance as number;
+		const sophomoreBalance = pair?.sophomore.user.balance as number;
+
+		if (freshmenBalance >= sophomoreBalance) {
+			spells++;
+		}
+
+		const magicVerses = await prisma.magicVerses.findMany({
+			where: {
+				sophomores: {
+					every: {
+						id: pair?.sophomoreDetailsId
+					}
+				}
+			}
+		})
+
+		const randomVerses = []
+
+		for (let i = 0; i < spells; i++) {
+			const rando = shuffle(magicVerses)
+			randomVerses.push(rando)
+		}
+
+		// You can use local storage for caching
+		return {
+			success: true,
+			payload: randomVerses
+		};
+	}),
+
+	getLatestMagicVerse: freshmenProcedure
+		.input(z.object({
+			sophomoreId: z.string()
+		}))
+		.query(async ({ ctx, input }) => {
+			const { sophomoreId } = input
+			const { user } = ctx;
+
+			const res = await prisma.magicVerseCast.findFirst({
+				orderBy: {
+					update_at: 'desc'
+				},
+				where: {
+					casterId: user?.freshmenDetails?.id,
+					verses: {
+						every: {
+							sophomores: {
+								every: {
+									id: sophomoreId
+								}
+							}
+						}
+					}
+				}
+			})
+
+			return {
+				success: true,
+				payload: {
+					lastCast: res || new Array<MagicVerseCast>(3)
+				}
+			}
+		}),
+
+	// When freshmen submit verse, Code will run chcek the result of verse
+	submitMagicVerse: freshmenProcedure.input(
+		z.array(z.string()).min(3).max(3)
+	).query(async ({ ctx, input }) => {
+		const pairController = PairController(prisma)
+		const freshmenController = FreshmenDetailsController(prisma)
+
+		const { user } = ctx;
+		const freshmenDetailsId = user?.freshmenDetails?.id as string
+
+		const pair = await pairController.getPairByFreshmen({ id: freshmenDetailsId })
+		const magicVerses = await prisma.magicVerses.findMany({
+			where: {
+				sophomores: {
+					every: {
+						id: pair?.sophomoreDetailsId
+					}
+				}
+			}
+		})
+
+		const result: boolean[] = []
+
+		let balanceDecrement = 0;
+
+		// Loop through Sophomore's verse
+		magicVerses.forEach(async (verse, index) => {
+			if (verse.wildcard) {
+				// if Freshmen trigger wildcard
+				result.push(true)
+				balanceDecrement += verse.cost
+			} else if (verse.handler === input[index]) {
+				// if Freshmen trigger correct verse at this index
+				result.push(true)
+			} else {
+				// if Freshmen fail to trigger correct verse
+				result.push(false)
+				balanceDecrement += verse.cost
+			}
+		})
+
+		await freshmenController.decrementFreshmenBalance({
+			id: freshmenDetailsId
+		}, balanceDecrement)
+
+		// สร้าง cast record ว่าน้อง cast spell แล้วผลลัพธ์เป็นยังไง
+		const res = await prisma.magicVerseCast.create({
+			data: {
+				casterId: freshmenDetailsId,
+				result,
+				verses: {
+					connect: magicVerses
+				}
+			}
+		})
+
+		return {
+			success: true,
+			payload: res
+		};
+	})
 });
