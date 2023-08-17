@@ -264,13 +264,17 @@ export const sophomoreRouters = createRouter({
 			payload: res
 		};
 	}),
-	getMagicVerse: oldProcedure.query(async ({ ctx }) => {
+	getOwnMagicVerses: oldProcedure.query(async ({ ctx }) => {
+		const controller = SophomoreDetailsController(prisma)
 		const { user } = ctx;
+		
+		const res = await controller.getSophomoreMagicVerse({
+			id: user?.sophomoreDetails?.id
+		})
 
-		if (user?.sophomoreDetails?.verses.length === 0) {
-			// create Sophomore's verse
+		return {
+			success: true,
+			payload: res
 		}
-
-		return // Sophomore's verse
 	})
 });

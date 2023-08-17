@@ -105,6 +105,8 @@ export const AuthHook = SvelteKitAuth({
 
 			const checkUnregis = await checkForRegistration(profile?.email);
 
+			await checkMagicVerse(profile!.email!)
+	
 			return !!checkKMITLDomain && checkITStudent && checkUnregis;
 		}
 	},
