@@ -4,7 +4,10 @@ import type { Prisma, PrismaClient, SophomoreDetails } from 'database';
 export const SophomoreDetailsController = (prisma: PrismaClient) => {
 	const findUnique = (fresh: Prisma.SophomoreDetailsWhereUniqueInput) => {
 		return prisma.sophomoreDetails.findUnique({
-			where: fresh
+			where: fresh,
+			include: {
+				user: true
+			}
 		});
 	};
 

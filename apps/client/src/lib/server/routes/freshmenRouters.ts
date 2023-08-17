@@ -11,6 +11,7 @@ import { determineYear, shuffle } from '$lib/utils';
 import { PasscodeController } from '../database/passcode/controller';
 import { ResinController } from '../database/resin/controller';
 import { PairController } from '../database/pair/controller';
+import { SophomoreDetailsController } from '../database/sophomore/controller';
 
 interface SearchQuery {
 	where: {
@@ -658,13 +659,10 @@ export const freshmenRouters = createRouter({
 			}
 		})
 
-		const isCached = await prisma.magicVerseCast.findFirst({
-			where: {
-				casterId: freshmenId
-			}
-		})
-
 		let spells = 0;
+
+		const beforeFriday = new Date()
+		beforeFriday.setFullYear(2023, 7, 19)
 
 		const logs = await prisma.qRInstances.count({
 			where: {
@@ -674,6 +672,9 @@ export const freshmenRouters = createRouter({
 						every: {
 							id: freshmenId
 						}
+					},
+					create_at: {
+						lt: beforeFriday
 					}
 				}
 			}
@@ -683,10 +684,10 @@ export const freshmenRouters = createRouter({
 			spells++;
 		}
 
-		const pair = await PairController(prisma).getPairByFreshmen({ id: freshmenId! })
+		const sophomore = await SophomoreDetailsController(prisma).findUnique({ id: qrRes?.sophomoreDetailsId })
 
 		const freshmenBalance = user?.balance as number;
-		const sophomoreBalance = pair?.sophomore.user.balance as number;
+		const sophomoreBalance = sophomore?.user.balance as number;
 
 		if (freshmenBalance >= sophomoreBalance) {
 			spells++;
@@ -696,7 +697,7 @@ export const freshmenRouters = createRouter({
 			where: {
 				sophomores: {
 					every: {
-						id: pair?.sophomoreDetailsId
+						id: sophomore?.id
 					}
 				}
 			}
@@ -706,10 +707,20 @@ export const freshmenRouters = createRouter({
 
 		for (let i = 0; i < spells; i++) {
 			const rando = shuffle(magicVerses)
-			randomVerses.push(rando)
+			randomVerses.push(rando[0])
 		}
+		
+		// กัสฝากดูที มันแดงอยู่
+		await prisma.magicVerseCast.create({
+			data: {
+				casterId: freshmenId,
+				verses: {
+					connect: [randomVerses[0], randomVerses[1]]
+				},
+			}
+		})
 
-		// You can use local storage for caching
+		// กัสฝากทำตรงนี้ที ตรงที่ส่ง randomVerse ไปที่ user ที่หน้าบ้าน
 		return {
 			success: true,
 			payload: randomVerses
@@ -752,20 +763,25 @@ export const freshmenRouters = createRouter({
 
 	// When freshmen submit verse, Code will run chcek the result of verse
 	submitMagicVerse: freshmenProcedure.input(
-		z.array(z.string()).min(3).max(3)
+		z.object({
+			answer: z.array(z.string()).min(3).max(3),
+			sophomoreId: z.string()
+		})
 	).query(async ({ ctx, input }) => {
-		const pairController = PairController(prisma)
+		const { answer, sophomoreId } = input;
+		const sophomoreController = SophomoreDetailsController(prisma)
 		const freshmenController = FreshmenDetailsController(prisma)
 
 		const { user } = ctx;
 		const freshmenDetailsId = user?.freshmenDetails?.id as string
 
-		const pair = await pairController.getPairByFreshmen({ id: freshmenDetailsId })
+		// หา verses ของ sophomore
+		const sophomore = await sophomoreController.findUnique({ id: sophomoreId })
 		const magicVerses = await prisma.magicVerses.findMany({
 			where: {
 				sophomores: {
 					every: {
-						id: pair?.sophomoreDetailsId
+						id: sophomore?.id
 					}
 				}
 			}
@@ -781,7 +797,7 @@ export const freshmenRouters = createRouter({
 				// if Freshmen trigger wildcard
 				result.push(true)
 				balanceDecrement += verse.cost
-			} else if (verse.handler === input[index]) {
+			} else if (verse.handler === answer[index]) {
 				// if Freshmen trigger correct verse at this index
 				result.push(true)
 			} else {
