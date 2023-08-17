@@ -264,7 +264,7 @@ export const sophomoreRouters = createRouter({
 			payload: res
 		};
 	}),
-	getMagicVerse: oldProcedure.query(async ({ ctx }) => {
+	getOwnMagicVerses: oldProcedure.query(async ({ ctx }) => {
 		const controller = SophomoreDetailsController(prisma)
 		const { user } = ctx;
 		

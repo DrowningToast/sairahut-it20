@@ -1,11 +1,9 @@
-import type { PrismaClient } from "database";
+import type { Prisma, PrismaClient } from "database";
 
 export const PairController = (prisma: PrismaClient) => {
-    const getPairByFreshmenId = async (freshmenDetailsId: string) => {
+    const getPairByFreshmen = async (fresh: Prisma.FreshmenDetailsWhereUniqueInput) => {
         return await prisma.pair.findUnique({
-            where: {
-                freshmenDetailsId
-            },
+            where: fresh,
             include: {
                 freshmen: {
                     include: {
@@ -22,6 +20,6 @@ export const PairController = (prisma: PrismaClient) => {
     }
     
     return {
-        getPairByFreshmenId
+        getPairByFreshmen
     }
 }

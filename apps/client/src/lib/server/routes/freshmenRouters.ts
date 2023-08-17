@@ -677,7 +677,7 @@ export const freshmenRouters = createRouter({
 			spells++;
 		}
 
-		const pair = await PairController(prisma).getPairByFreshmenId(freshmenId!)
+		const pair = await PairController(prisma).getPairByFreshmen({ id: freshmenId! })
 
 		const freshmenBalance = user?.balance as number;
 		const sophomoreBalance = pair?.sophomore.user.balance as number;
@@ -699,11 +699,10 @@ export const freshmenRouters = createRouter({
 
 		return {
 			success: true,
-			payload: pairMagicVerse
 		};
 	}),
 
-	getMagicVerse: freshmenProcedure.query(async ({ ctx }) => {
+	getLatestMagicVerse: freshmenProcedure.query(async ({ ctx }) => {
 		const { user } = ctx;
 
 		const res = await prisma.magicVerseCast.findFirst({
@@ -732,8 +731,8 @@ export const freshmenRouters = createRouter({
 		const { user } = ctx;
 		const freshmenDetailsId = user?.freshmenDetails?.id as string
 
-		const pair = await pairController.getPairByFreshmenId(freshmenDetailsId)
-		const magicVerse = await prisma.magicVerses.findMany({
+		const pair = await pairController.getPairByFreshmen({ id: freshmenDetailsId })
+		const magicVerses = await prisma.magicVerses.findMany({
 			where: {
 				sophomores: {
 					every: {
@@ -746,7 +745,7 @@ export const freshmenRouters = createRouter({
 		const result: boolean[] = []
 
 		// Loop through Sophomore's verse
-		magicVerse.forEach(async (verse, index) => {
+		magicVerses.forEach(async (verse, index) => {
 			// if Freshmen trigger wildcard
 			if (verse.handler === input[index] && verse.wildcard) {
 				result.push(true)
@@ -770,7 +769,7 @@ export const freshmenRouters = createRouter({
 				casterId: freshmenDetailsId,
 				result,
 				verses: {
-					connect: magicVerse
+					connect: magicVerses
 				}
 			}
 		})
