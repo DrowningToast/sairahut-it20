@@ -634,15 +634,36 @@ export const freshmenRouters = createRouter({
 		)
 		.query(async ({ ctx, input }) => {
 			const { qrCodeContent } = input;
-			// find qr code that scanned
 			const { user } = ctx;
 
+			// find qr code that scanned
 			const qrRes = await prisma.magicVerseIdentificationInstance.findUnique({
 				where: {
 					content: qrCodeContent
+				},
+				include: {
+					sophomoreDetails: {
+						select: {
+							nickname: true,
+							fullname: true,
+							branch: true,
+							user: {
+								select: {
+									faction: {
+										select: {
+											handler: true,
+											name: true
+										}
+									},
+									balance: true
+								}
+							}
+						}
+					}
 				}
 			});
 
+			// if the qr is not found, (invalid qr code) throw
 			if (!qrRes) {
 				throw new TRPCError({
 					code: 'NOT_FOUND',
@@ -650,6 +671,7 @@ export const freshmenRouters = createRouter({
 				});
 			}
 
+			// if the freshmen id is not found, throw (should be found)
 			const freshmenId = user?.freshmenDetails?.id;
 			if (!freshmenId)
 				throw new TRPCError({
@@ -657,6 +679,7 @@ export const freshmenRouters = createRouter({
 					message: 'FRESHMEN ID NOT FOUND'
 				});
 
+			// mark the id as expired
 			await prisma.magicVerseIdentificationInstance.update({
 				data: {
 					isExpired: true
@@ -666,73 +689,104 @@ export const freshmenRouters = createRouter({
 				}
 			});
 
+			// Check if the player has the progress or not
+			const cached = await prisma.starterMagicVerse.findUnique({
+				where: {
+					sophomoreDetailsId_freshmenDetailsId: {
+						freshmenDetailsId: freshmenId,
+						sophomoreDetailsId: qrRes.sophomoreDetailsId
+					}
+				},
+				select: {
+					verses: true
+				}
+			});
+
+			// If yes
+			if (cached)
+				return {
+					success: true,
+					payload: {
+						target: qrRes,
+						starter: cached.verses
+					}
+				};
+
+			// If not
+			// Try to identify if the player should get starter spells?
 			let spells = 0;
 
 			const beforeFriday = new Date();
 			beforeFriday.setFullYear(2023, 7, 19);
 
-			const logs = await prisma.qRInstances.count({
+			// Check if the player has scanned the target before or not
+			const scanned = await prisma.qRInstances.findFirst({
 				where: {
-					AND: {
-						ownerId: qrRes?.sophomoreDetailsId,
-						scannedBy: {
-							every: {
-								id: freshmenId
-							}
-						},
-						create_at: {
-							lt: beforeFriday
+					owner: {
+						id: qrRes.id
+					},
+					scannedBy: {
+						some: {
+							id: freshmenId
 						}
 					}
 				}
 			});
 
-			if (logs !== 0) {
+			// If the player has scanned qr code of the target before
+			if (scanned) {
 				spells++;
 			}
 
-			const sophomore = await SophomoreDetailsController(prisma).findUnique({
-				id: qrRes?.sophomoreDetailsId
-			});
-
-			const freshmenBalance = user?.balance as number;
-			const sophomoreBalance = sophomore?.user.balance as number;
-
-			if (freshmenBalance >= sophomoreBalance) {
+			// If the player has more balance than the target
+			if (ctx.user?.balance ?? 0 >= qrRes.sophomoreDetails.user.balance) {
 				spells++;
 			}
 
+			// Get the target magic verses
 			const magicVerses = await prisma.magicVerses.findMany({
 				where: {
 					sophomores: {
 						every: {
-							id: sophomore?.id
+							id: qrRes.sophomoreDetailsId
 						}
 					}
 				}
 			});
 
+			// list of random verses choosen
 			const randomVerses = [];
 
+			//
 			for (let i = 0; i < spells; i++) {
 				const rando = shuffle(magicVerses);
 				randomVerses.push(rando[0]);
 			}
 
-			// กัสฝากดูที มันแดงอยู่
-			await prisma.magicVerseCast.create({
+			const starter = await prisma.starterMagicVerse.create({
 				data: {
-					casterId: freshmenId,
 					verses: {
-						connect: [randomVerses[0], randomVerses[1]]
-					}
+						connect: magicVerses.map((verse) => {
+							return {
+								handler: verse.handler
+							};
+						})
+					},
+					freshmenDetailsId: freshmenId,
+					sophomoreDetailsId: qrRes.sophomoreDetailsId
+				},
+				select: {
+					verses: true
 				}
 			});
 
 			// กัสฝากทำตรงนี้ที ตรงที่ส่ง randomVerse ไปที่ user ที่หน้าบ้าน
 			return {
 				success: true,
-				payload: randomVerses
+				payload: {
+					starter: starter.verses,
+					target: qrRes
+				}
 			};
 		}),
 
@@ -790,6 +844,12 @@ export const freshmenRouters = createRouter({
 
 			// หา verses ของ sophomore
 			const sophomore = await sophomoreController.findUnique({ id: sophomoreId });
+			if (!sophomore)
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message: 'Invalid sophomore id'
+				});
+
 			const magicVerses = await prisma.magicVerses.findMany({
 				where: {
 					sophomores: {
@@ -832,6 +892,7 @@ export const freshmenRouters = createRouter({
 				data: {
 					casterId: freshmenDetailsId,
 					result,
+					targetId: sophomore?.id,
 					verses: {
 						connect: magicVerses
 					}
