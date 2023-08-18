@@ -12,11 +12,6 @@
 
 	onMount(() => {
 		secretMode.set(true);
-		// ost = new Audio('/sfx/Old_Friend.mp3');
-		// ost.loop = true;
-		// ost.volume = 0.7;
-		// ost.loop = true;
-		// ost.play();
 	});
 
 	onDestroy(() => {
