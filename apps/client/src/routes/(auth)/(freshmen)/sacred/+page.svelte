@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { secretMode } from '$lib/store/secret';
+	import { ambientSound, secretMode } from '$lib/store/secret';
 	import { onDestroy, onMount } from 'svelte';
 	import type { PageData } from './$types';
 	import SrhHeading from '$components/svelte/SRHHeading.svelte';
@@ -12,18 +12,18 @@
 
 	onMount(() => {
 		secretMode.set(true);
-		ost = new Audio('/sfx/Old_Friend.ogg');
-		ost.loop = true;
-		ost.volume = 0.7;
-		ost.loop = true;
-		ost.play();
+		// ost = new Audio('/sfx/Old_Friend.mp3');
+		// ost.loop = true;
+		// ost.volume = 0.7;
+		// ost.loop = true;
+		// ost.play();
 	});
 
 	onDestroy(() => {
 		secretMode.set(false);
-		if (ost) {
-			ost.pause();
-			ost.currentTime = 0;
+		if ($ambientSound) {
+			$ambientSound.pause();
+			$ambientSound.currentTime = 0;
 		}
 	});
 </script>

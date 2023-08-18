@@ -60,7 +60,7 @@
 			const rewardSFX = new Audio();
 			rewardSFX.autoplay = true;
 			rewardSFX.src = slientSound;
-			rewardSFX.src = '/sfx/RewardSFX.ogg';
+			rewardSFX.src = '/sfx/RewardSFX.mp3';
 
 			setTimeout(() => {
 				found = undefined;
