@@ -560,6 +560,8 @@ export const freshmenRouters = createRouter({
 				message: "The user doesn't have a faction"
 			});
 
+		const AMOUNT_THRESHOLD = 6;
+
 		// query the same faction who has scanned
 		const logs = await prisma.passcodeInstances.findMany({
 			where: {
@@ -587,10 +589,8 @@ export const freshmenRouters = createRouter({
 					}
 				}
 			},
-			take: 6
+			take: AMOUNT_THRESHOLD
 		});
-
-		const AMOUNT_THRESHOLD = 6;
 
 		if (logs.length >= AMOUNT_THRESHOLD) {
 			// get the result
