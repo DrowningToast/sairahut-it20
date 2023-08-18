@@ -587,7 +587,7 @@ export const freshmenRouters = createRouter({
 					}
 				}
 			},
-			take: 8
+			take: 6
 		});
 
 		const AMOUNT_THRESHOLD = 6;
