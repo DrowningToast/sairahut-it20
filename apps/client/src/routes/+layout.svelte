@@ -39,7 +39,7 @@
 >
 <!-- End Google Tag Manager (noscript) -->
 
-<div
+<!-- <div
 	class={`bg-gradient-to-b ${
 		$userType === 'SOPHOMORE' ? 'from-primary' : 'from-primary-alt'
 	} to-black hidden md:block min-h-screen relative`}
@@ -65,15 +65,22 @@
 			</p>
 		</div>
 	</div>
-</div>
+</div> -->
 
 <QueryClientProvider client={queryClient}
-	><div class="w-screen min-h-screen flex flex-col font-noto md:hidden">
+	><div class="w-screen min-h-screen flex flex-col justify-center items-center font-noto bg-black">
 		<!-- <Header /> -->
 
-		<main>
+		<!-- <main>
 			<slot />
-		</main>
+		</main> -->
+
+		<h1 class="text-4xl font-semibold text-red-500 font-Pridi my-2">ประกาศ</h1>
+		<p class="text-white text-center px-8">
+			เนื่องจากจอมมารได้บุกมายังโลกเวทย์มนตร์
+			จอมมารได้มาทำลายเครื่องเซิฟเวอร์ที่เราตั้งอยู่ ณ โลกไอที ทางเราจึงต้องปิดปรับปรุง
+			และ รีบแก้ไขอย่างเร่งด่วน ขออภัยท่านภูติ และ เหล่าจอมเวทย์มา ณ ที่นี้ด้วย
+		</p>
 
 		<!-- <LandingFooter /> -->
 	</div>
