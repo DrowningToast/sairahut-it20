@@ -5,7 +5,6 @@ import type { Handle } from '@sveltejs/kit';
 import type { Branch } from 'database';
 
 /**
- *
  * Check if the user joins in for the first time or not.
  * If so, user data should exists in the Airtable, and further more
  * if the user still lacks hints or this or that information, the user should

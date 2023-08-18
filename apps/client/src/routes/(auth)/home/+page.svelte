@@ -89,11 +89,11 @@
 			link={'/sacred'}
 		/>
 		<CardButtonMenu
-			isActived={false}
-			img_active={'../showndown-active.png'}
+			isActived={true}
+			img_active={'../showdown-active.png'}
 			img_inactive={'/showdown-inactive.png'}
-			text={'Placeholder text'}
-			link={'/showdown'}
+			text={'ภูตของฉัน'}
+			link={$userType === 'SOPHOMORE' ? '/verses' : '/showdown'}
 		/>
 	</div>
 	<Separator class="mt-12 bg-accent" />

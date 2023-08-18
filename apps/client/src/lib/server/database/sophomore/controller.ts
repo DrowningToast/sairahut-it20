@@ -4,7 +4,10 @@ import type { Prisma, PrismaClient, SophomoreDetails } from 'database';
 export const SophomoreDetailsController = (prisma: PrismaClient) => {
 	const findUnique = (fresh: Prisma.SophomoreDetailsWhereUniqueInput) => {
 		return prisma.sophomoreDetails.findUnique({
-			where: fresh
+			where: fresh,
+			include: {
+				user: true
+			}
 		});
 	};
 
@@ -120,6 +123,15 @@ export const SophomoreDetailsController = (prisma: PrismaClient) => {
 		}
 	};
 
+	const getSophomoreMagicVerse = async (sop: Prisma.SophomoreDetailsWhereUniqueInput) => {
+		return await prisma.sophomoreDetails.findUnique({
+			where: sop,
+			select: {
+				verses: true
+			}
+		});
+	};
+
 	return {
 		findUnique,
 		findUniqueUserWithFresh: findUniqueWithUser,
@@ -127,6 +139,7 @@ export const SophomoreDetailsController = (prisma: PrismaClient) => {
 		updateOne,
 		getUsedQRsByOwnerId,
 		getUsedPasscodesByOwnerId,
-		getSophomorePasscode
+		getSophomorePasscode,
+		getSophomoreMagicVerse
 	};
 };

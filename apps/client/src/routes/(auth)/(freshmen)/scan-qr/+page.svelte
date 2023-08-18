@@ -13,7 +13,7 @@
 	import { onDestroy, onMount } from 'svelte';
 	import QrScanner from 'qr-scanner';
 	import SrhButton from '$components/svelte/SRHButton.svelte';
-	import { determineYear } from '$lib/utils';
+	import { determineYear, slientSound } from '$lib/utils';
 	import Alert from '$components/ui/alert/Alert.svelte';
 	import AlertTitle from '$components/ui/alert/AlertTitle.svelte';
 	import AlertDescription from '$components/ui/alert/AlertDescription.svelte';
@@ -58,8 +58,9 @@
 
 			// play sfx
 			const rewardSFX = new Audio();
+			rewardSFX.autoplay = true;
+			rewardSFX.src = slientSound;
 			rewardSFX.src = '/sfx/RewardSFX.ogg';
-			rewardSFX.play();
 
 			setTimeout(() => {
 				found = undefined;
