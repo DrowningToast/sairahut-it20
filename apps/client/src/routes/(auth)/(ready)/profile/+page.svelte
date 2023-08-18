@@ -4,7 +4,7 @@
 	import { z } from 'zod';
 	import type { PageServerData } from './$types';
 
-	const user = $page.data as PageServerData;
+	const user = $page.data;
 
 	const data = [
 		{ title: 'ชื่อจริง', value: user.first_name ?? user.fullname?.split(' ')[0] },

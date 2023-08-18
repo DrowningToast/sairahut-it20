@@ -118,6 +118,9 @@ importers:
       '@sveltejs/kit':
         specifier: ^1.5.0
         version: 1.21.0(svelte@3.59.2)(vite@4.3.9)
+      '@tsconfig/svelte':
+        specifier: ^5.0.0
+        version: 5.0.0
       '@types/cookie':
         specifier: ^0.5.1
         version: 0.5.1
@@ -158,8 +161,11 @@ importers:
         specifier: ^3.59.2
         version: 3.59.2
       svelte-check:
-        specifier: ^3.0.1
+        specifier: ^3.4.4
         version: 3.4.4(@babel/core@7.22.10)(postcss-load-config@4.0.1)(postcss@8.4.24)(svelte@3.59.2)
+      svelte-preprocess:
+        specifier: ^5.0.4
+        version: 5.0.4(@babel/core@7.22.10)(postcss-load-config@4.0.1)(postcss@8.4.24)(svelte@3.59.2)(typescript@5.0.4)
       tailwindcss:
         specifier: ^3.3.2
         version: 3.3.2
@@ -167,7 +173,7 @@ importers:
         specifier: ^2.4.1
         version: 2.5.0
       typescript:
-        specifier: ^5.0.0
+        specifier: ^5.0.4
         version: 5.0.4
       vite:
         specifier: ^4.3.0
@@ -2239,6 +2245,10 @@ packages:
 
   /@tsconfig/node16@1.0.4:
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
+    dev: true
+
+  /@tsconfig/svelte@5.0.0:
+    resolution: {integrity: sha512-iu5BqFjU0+OcLTNQp7fHe6Bf6zdNeJ9IZjLZMqWLuGzVFm/xx+lm//Tf6koPyRmxo55/Snm6RRQ990n89cRKFw==}
     dev: true
 
   /@turbo/gen@1.9.7(@types/node@20.5.0)(typescript@5.1.6):

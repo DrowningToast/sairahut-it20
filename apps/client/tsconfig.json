@@ -1,5 +1,5 @@
 {
-	"extends": "./.svelte-kit/tsconfig.json",
+	"extends": "@tsconfig/svelte/tsconfig.json",
 	"compilerOptions": {
 		"allowJs": true,
 		"checkJs": true,
@@ -10,10 +10,7 @@
 		"sourceMap": true,
 		"strict": true,
 		"rootDir": "./",
-		"types": [
-			"vite-plugin-pwa/client",
-			"vite-plugin-pwa/info"
-		]
+		"types": ["vite-plugin-pwa/client", "vite-plugin-pwa/info"]
 	},
 	"exclude": [
 		"./node_modules/**",

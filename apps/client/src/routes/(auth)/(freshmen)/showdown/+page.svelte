@@ -1,8 +1,17 @@
 <script lang="ts">
 	import SRHButton from './../../../../lib/components/svelte/SRHButton.svelte';
 	import { onMount } from 'svelte';
-	// import QrScaner from '$components/svelte/QrScaner.svelte';
 	import type { PageData } from './$types';
+	import QrScaner from '../../../../lib/components/svelte/QrScaner.svelte';
+	import SrhHeading from '../../../../lib/components/svelte/SRHHeading.svelte';
+
+	interface ISophomoreTarget {
+		student_id: string;
+		firstname: string;
+		lastname: string;
+		nickname: string;
+		img: `/factions/${string}.webp`;
+	}
 
 	export let data: PageData;
 
@@ -12,31 +21,26 @@
 		{ word: 'CRACKPOT', status: null }
 	];
 
-	const sophomoreTarget = {
-		student_id: '65070185',
-		firstname: 'ฟินิกซ์',
-		lastname: 'นกอมตะ',
-		ninkname: 'นก',
-		img: '/factions/phoenix.webp',
-		family: 'Phoenix'
-	};
+	// const sophomoreTarget = {
+	// 	student_id: '65070185',
+	// 	firstname: 'ฟินิกซ์',
+	// 	lastname: 'นกอมตะ',
+	// 	ninkname: 'นก',
+	// 	img: '/factions/phoenix.webp',
+	// 	family: 'Phoenix'
+	// };
 
-	// const sophomoreTarget = undefined;
+	let sophomoreTarget: undefined | ISophomoreTarget = undefined;
 
+	let balance = data.user?.balance ?? 0;
 
-
-	const words = [
-		'',
-		'CRACKPOT',
-		'BRAVE',
-		'PADFOOT',
-		'NERVE',
-		'CHIVALRY',
-		'SPELL',
-		'GOBLET',
-		'SWISH',
-		'DEMENTOR'
-	];
+	const words = data.verses.map((verse) => {
+		return {
+			handler: verse.handler,
+			name: verse.name,
+			cost: verse.cost
+		};
+	});
 
 	$: answer = [null, null, null];
 
@@ -85,10 +89,12 @@
 					<select
 						class="bg-transparent border-[#AB9F7E] border-2 outline-none w-full text-center py-3 rounded-2xl text-white font-Pridi text-2xl"
 						on:change={(e) => {
-							answer[index] = e?.target?.value;
+							//  const value = e?.target?.value! as string
+							// answer[index] = value;
 							console.log(answer);
 						}}
 					>
+						<option value={undefined} class="text-black text-base flex">{'???'}</option>
 						{#each words as w}
 							{#if !answer.includes(w) || answer[index] === w}
 								<option value={w} class="text-black text-base flex">{w}</option>
@@ -155,5 +161,6 @@
 		</div>
 	</div>
 {:else}
+	<SrhHeading class="text-center">VVV Idoit here</SrhHeading>
 	<QrScaner />
 {/if}
