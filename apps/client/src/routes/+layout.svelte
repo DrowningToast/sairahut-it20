@@ -25,14 +25,12 @@
 
 	let timer: NodeJS.Timer | null = null;
 	let timeToSaturday = 1692424800000 / 1000;
-	let current = 0;
+	let current = timeToSaturday - Date.now() / 1000;;
 	let seconds = 0;
 	let minutes = 0;
 	let hours = 0;
 
 	onMount(() => {
-		current = timeToSaturday - Date.now() / 1000;
-	
 		timer = setInterval(() => {
 			current--;
 
@@ -105,17 +103,19 @@
 		<!-- <main>
 			<slot />
 		</main> -->
+		<div class="text-white text-6xl text-center font-bold px-8">
+			<h2>{hours > 10 ? hours : '0' + hours} : {minutes > 10 ? minutes : '0' + minutes} : {seconds > 10 ? seconds : '0' + seconds}</h2>
+		</div>
 
-		<h1 class="text-4xl font-semibold text-red-500 font-Pridi">ประกาศ</h1>
+		<h1 style="font-family: 'Wingdings 3';" class="text-2xl font-semibold text-red-500">
+			Announcement
+		</h1>
 		<p class="text-white text-center px-8">
 			เนื่องจากจอมมารได้บุกมายังโลกเวทย์มนตร์ จอมมารได้มาทำลายเครื่องเซิฟเวอร์ที่เราตั้งอยู่ ณ
 			โลกไอที ทางเราจึงต้องปิดปรับปรุง และ รีบแก้ไขอย่างเร่งด่วน ขออภัยท่านเหล่าภูต และ
 			เหล่าจอมเวทย์มา ณ ที่นี้ด้วย
 		</p>
 
-		<p class="text-white text-center px-8">
-			ระบบจะกลับมาเปิดในอีก {hours} ชั่วโมง {minutes} นาที {seconds} วินาที
-		</p>
 		<!-- <LandingFooter /> -->
 	</div>
 </QueryClientProvider>
