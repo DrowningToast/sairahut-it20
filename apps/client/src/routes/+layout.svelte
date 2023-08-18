@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { browser } from '$app/environment';
 	import { userType } from '$lib/store/userType';
 	import '../app.postcss';
@@ -8,6 +8,8 @@
 	import { inject } from '@vercel/analytics';
 	import { dev } from '$app/environment';
 	import Analytics from '$components/svelte/Analytics.svelte';
+	import { onMount, onDestroy } from 'svelte';
+	import { date } from 'zod';
 
 	inject({ mode: dev ? 'development' : 'production' });
 
@@ -18,6 +20,33 @@
 			queries: {
 				enabled: browser
 			}
+		}
+	});
+
+	let timer: NodeJS.Timer | null = null;
+	let timeToSaturday = 1692424800000 / 1000;
+	let current = 0;
+	let seconds = 0;
+	let minutes = 0;
+	let hours = 0;
+
+	onMount(() => {
+		current = timeToSaturday - Date.now() / 1000;
+	
+		timer = setInterval(() => {
+			current--;
+
+			minutes = Number((current / 60).toFixed(0));
+			seconds = Number((current % 60).toFixed(0));
+
+			hours = Number((minutes / 60).toFixed(0));
+			minutes = Number((hours % 60).toFixed(0));
+		}, 1000);
+	});
+
+	onDestroy(() => {
+		if (timer) {
+			clearInterval(timer);
 		}
 	});
 </script>
@@ -68,20 +97,25 @@
 </div> -->
 
 <QueryClientProvider client={queryClient}
-	><div class="w-screen min-h-screen flex flex-col justify-center items-center font-noto bg-black">
+	><div
+		class="w-screen min-h-screen flex flex-col justify-center items-center font-noto bg-black gap-4"
+	>
 		<!-- <Header /> -->
 
 		<!-- <main>
 			<slot />
 		</main> -->
 
-		<h1 class="text-4xl font-semibold text-red-500 font-Pridi my-2">ประกาศ</h1>
+		<h1 class="text-4xl font-semibold text-red-500 font-Pridi">ประกาศ</h1>
 		<p class="text-white text-center px-8">
-			เนื่องจากจอมมารได้บุกมายังโลกเวทย์มนตร์
-			จอมมารได้มาทำลายเครื่องเซิฟเวอร์ที่เราตั้งอยู่ ณ โลกไอที ทางเราจึงต้องปิดปรับปรุง
-			และ รีบแก้ไขอย่างเร่งด่วน ขออภัยท่านภูติ และ เหล่าจอมเวทย์มา ณ ที่นี้ด้วย
+			เนื่องจากจอมมารได้บุกมายังโลกเวทย์มนตร์ จอมมารได้มาทำลายเครื่องเซิฟเวอร์ที่เราตั้งอยู่ ณ
+			โลกไอที ทางเราจึงต้องปิดปรับปรุง และ รีบแก้ไขอย่างเร่งด่วน ขออภัยท่านเหล่าภูต และ
+			เหล่าจอมเวทย์มา ณ ที่นี้ด้วย
 		</p>
 
+		<p class="text-white text-center px-8">
+			ระบบจะกลับมาเปิดในอีก {hours} ชั่วโมง {minutes} นาที {seconds} วินาที
+		</p>
 		<!-- <LandingFooter /> -->
 	</div>
 </QueryClientProvider>
