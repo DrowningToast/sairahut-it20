@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { browser } from '$app/environment';
 	import { userType } from '$lib/store/userType';
 	import '../app.postcss';
@@ -8,6 +8,8 @@
 	import { inject } from '@vercel/analytics';
 	import { dev } from '$app/environment';
 	import Analytics from '$components/svelte/Analytics.svelte';
+	import { onMount, onDestroy } from 'svelte';
+	import { date } from 'zod';
 
 	inject({ mode: dev ? 'development' : 'production' });
 
@@ -18,6 +20,31 @@
 			queries: {
 				enabled: browser
 			}
+		}
+	});
+
+	let timer: NodeJS.Timer | null = null;
+	let timeToSaturday = 1692424800000 / 1000;
+	let current = timeToSaturday - Date.now() / 1000;;
+	let seconds = 0;
+	let minutes = 0;
+	let hours = 0;
+
+	onMount(() => {
+		timer = setInterval(() => {
+			current--;
+
+			minutes = Number((current / 60).toFixed(0));
+			seconds = Number((current % 60).toFixed(0));
+
+			hours = Number((minutes / 60).toFixed(0));
+			minutes = Number((hours % 60).toFixed(0));
+		}, 1000);
+	});
+
+	onDestroy(() => {
+		if (timer) {
+			clearInterval(timer);
 		}
 	});
 </script>
@@ -39,7 +66,7 @@
 >
 <!-- End Google Tag Manager (noscript) -->
 
-<div
+<!-- <div
 	class={`bg-gradient-to-b ${
 		$userType === 'SOPHOMORE' ? 'from-primary' : 'from-primary-alt'
 	} to-black hidden md:block min-h-screen relative`}
@@ -65,15 +92,29 @@
 			</p>
 		</div>
 	</div>
-</div>
+</div> -->
 
 <QueryClientProvider client={queryClient}
-	><div class="w-screen min-h-screen flex flex-col font-noto md:hidden">
+	><div
+		class="w-screen min-h-screen flex flex-col justify-center items-center font-noto bg-black gap-4"
+	>
 		<!-- <Header /> -->
 
-		<main>
+		<!-- <main>
 			<slot />
-		</main>
+		</main> -->
+		<div class="text-white text-6xl text-center font-bold px-8">
+			<h2>{hours > 10 ? hours : '0' + hours} : {minutes > 10 ? minutes : '0' + minutes} : {seconds > 10 ? seconds : '0' + seconds}</h2>
+		</div>
+
+		<h1 style="font-family: 'Wingdings 3';" class="text-2xl font-semibold text-red-500">
+			Announcement
+		</h1>
+		<p class="text-white text-center px-8">
+			เนื่องจากจอมมารได้บุกมายังโลกเวทย์มนตร์ จอมมารได้มาทำลายเครื่องเซิฟเวอร์ที่เราตั้งอยู่ ณ
+			โลกไอที ทางเราจึงต้องปิดปรับปรุง และ รีบแก้ไขอย่างเร่งด่วน ขออภัยท่านเหล่าภูต และ
+			เหล่าจอมเวทย์มา ณ ที่นี้ด้วย
+		</p>
 
 		<!-- <LandingFooter /> -->
 	</div>

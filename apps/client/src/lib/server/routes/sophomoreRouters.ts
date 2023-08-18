@@ -263,5 +263,56 @@ export const sophomoreRouters = createRouter({
 			success: true,
 			payload: res
 		};
+	}),
+	getOwnMagicVerses: oldProcedure.query(async ({ ctx }) => {
+		const controller = SophomoreDetailsController(prisma);
+		const { user } = ctx;
+
+		const res = await controller.getSophomoreMagicVerse({
+			id: user?.sophomoreDetails?.id
+		});
+
+		return res;
+	}),
+	getMagicVerseID: oldProcedure.query(async ({ ctx }) => {
+		const sophomoreID = ctx.user?.sophomoreDetails?.id;
+		if (!sophomoreID)
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'Missing sophomore id'
+			});
+
+		// check for the latest magic id
+		const magicID = await prisma.magicVerseIdentificationInstance.findFirst({
+			where: {
+				isExpired: false,
+				sophomoreDetailsId: sophomoreID
+			},
+			orderBy: {
+				update_at: 'desc'
+			},
+			include: {
+				sophomoreDetails: true
+			}
+		});
+
+		// if not found, generate a new one
+		if (!magicID) {
+			const secretID = generateRandomString(6);
+
+			const newID = await prisma.magicVerseIdentificationInstance.create({
+				data: {
+					content: secretID,
+					sophomoreDetailsId: sophomoreID
+				},
+				include: {
+					sophomoreDetails: true
+				}
+			});
+
+			return newID;
+		}
+
+		return magicID;
 	})
 });

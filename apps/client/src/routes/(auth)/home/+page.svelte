@@ -15,6 +15,7 @@
 	import AlertDialogAction from '$components/ui/alert-dialog/AlertDialogAction.svelte';
 	import { userType } from '$lib/store/userType';
 	import FactionDisplay from '$components/svelte/FactionDisplay.svelte';
+	import { ambientSound } from '$lib/store/secret';
 
 	const { session, homePageState, user, playerType, hasPair, vip, easterEgg } =
 		$page.data as PageData;
@@ -83,18 +84,22 @@
 			link={homePageState.profile.href}
 		/>
 		<CardButtonMenu
-			isActived={$userType === 'FRESH' && ((easterEgg ?? false) || vip)}
+			on:click={() => {
+				ambientSound.set(new Audio('/sfx/Old_Friend.mp3'));
+				$ambientSound?.play();
+			}}
+			isActived={!!($userType === 'FRESH' && ((easterEgg ?? false) || vip))}
 			img_active={'../sacred-active.png'}
 			img_inactive={'/sacred-inactive.png'}
 			text={$userType === 'FRESH' && ((easterEgg ?? false) || vip) ? 'เวทมนต์ต้องห้าม' : '???'}
 			link={'/sacred'}
 		/>
 		<CardButtonMenu
-			isActived={false}
-			img_active={'../showndown-active.png'}
+			isActived={true}
+			img_active={'../showdown-active.png'}
 			img_inactive={'/showdown-inactive.png'}
-			text={'Placeholder text'}
-			link={'/showdown'}
+			text={'ภูตของฉัน'}
+			link={$userType === 'SOPHOMORE' ? '/verses' : '/showdown'}
 		/>
 	</div>
 	<Separator class="mt-12 bg-accent" />

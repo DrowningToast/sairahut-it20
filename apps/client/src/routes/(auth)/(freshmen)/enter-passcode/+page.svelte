@@ -87,13 +87,13 @@
 			const rewardSFX = new Audio();
 			rewardSFX.autoplay = true;
 			rewardSFX.src = slientSound;
-			rewardSFX.src = '/sfx/RewardSFX.ogg';
+			rewardSFX.src = '/sfx/RewardSFX.mp3';
 		} else {
 			// play murmur sfx, notifying the user has completed the challenge
 			const rewardSFX = new Audio();
 			rewardSFX.autoplay = true;
 			rewardSFX.src = slientSound;
-			rewardSFX.src = '/sfx/Murmur.ogg';
+			rewardSFX.src = '/sfx/Murmur.mp3';
 		}
 
 		setTimeout(() => {

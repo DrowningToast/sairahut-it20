@@ -1,7 +1,7 @@
-import { seniorParticipant } from "./table";
+import { freshmenParticipant } from './table';
 
 export const getParticipantByStudentId = async (studentId: string) => {
-	const query = await seniorParticipant
+	const query = await freshmenParticipant
 		.select({
 			filterByFormula: `student_id = ${studentId}`
 		})
@@ -16,12 +16,10 @@ export const getParticipantByStudentId = async (studentId: string) => {
 		surname: query[0].get('surname') as string,
 		nickname: query[0].get('nickname') as string,
 		branch: query[0].get('branch'),
-		facebook_link: query[0].get('facebook') as string,
-		instragram_link: query[0].get('instagram') as string,
-		many_fresh: query[0].get('many_fresh') as boolean,
+		facebook_link: query[0].get('facebook_link') as string,
+		instragram_link: query[0].get('instagram_link') as string | undefined,
 		phone: query[0].get('phone') as string,
 		airtableId: query[0].getId(),
-		hints: query[0].get('hints') as string,
 		wontcome: query[0].get('wontcome') as boolean
 	};
 

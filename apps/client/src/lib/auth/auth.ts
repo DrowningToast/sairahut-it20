@@ -4,7 +4,58 @@ import { SvelteKitAuth } from '@auth/sveltekit';
 import { client } from 'database/db';
 import Google from '@auth/core/providers/google';
 import { AirtableController } from '$lib/airtable-api/controller';
-import { determineYear } from '$lib/utils';
+import { determineYear, shuffle } from '$lib/utils';
+import { prisma } from '$lib/serverUtils';
+
+/**
+ * If the sophomore doesn't have their magic verse, create one
+ * @param param0
+ */
+export const checkMagicVerse = async (email: string) => {
+	// check if the user is a sophomore and if participating
+	const user = await prisma.user.findUnique({
+		where: {
+			email
+		},
+		select: {
+			email: true,
+			sophomoreDetails: {
+				select: {
+					verses: true
+				}
+			},
+			id: true,
+			type: true
+		}
+	});
+
+	if (user?.type === 'SOPHOMORE' && !user.sophomoreDetails?.verses.length) {
+		// get all the magic verses
+		const verses = await prisma.magicVerses.findMany({
+			where: {
+				wildcard: false
+			}
+		});
+
+		// randomize 3 of them (no duplicate)
+		const shuffled = shuffle(verses);
+		const first = shuffled[0]!;
+		const second = shuffled[1]!;
+		const third = shuffled[2]!;
+
+		// if the user sophomore, proceed to check for magic verses
+		const sop = await prisma.sophomoreDetails.update({
+			where: {
+				userId: user.id
+			},
+			data: {
+				verses: {
+					connect: [first, second, third]
+				}
+			}
+		});
+	}
+};
 
 /**
  *
@@ -36,7 +87,14 @@ export const AuthHook = SvelteKitAuth({
 		//@ts-ignore
 		Google({
 			clientId: GOOGLE_CLIENT_ID,
-			clientSecret: GOOGLE_CLIENT_SECRET
+			clientSecret: GOOGLE_CLIENT_SECRET,
+			authorization: {
+				params: {
+					prompt: 'consent',
+					access_type: 'offline',
+					response_type: 'code'
+				}
+			}
 		})
 	],
 	adapter: PrismaAdapter(client),
@@ -53,6 +111,8 @@ export const AuthHook = SvelteKitAuth({
 			const checkITStudent = profile?.email?.slice(2, 4) === '07';
 
 			const checkUnregis = await checkForRegistration(profile?.email);
+
+			await checkMagicVerse(profile!.email!);
 
 			return !!checkKMITLDomain && checkITStudent && checkUnregis;
 		}

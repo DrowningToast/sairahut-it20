@@ -153,8 +153,8 @@ model FreshmenDetails {
   // จะเป็น true เมื่อได้เข้าร่วมกิจกรรม ITGG เท่านั้น
   vip Boolean @default(false)
 
-  // Freshmen quota of guessing their pair for free
-  quota Int @default(3)
+  StarterMagicVerse StarterMagicVerse[]
+  MagicVerseCast    MagicVerseCast[]
 }
 
 model HintSlugs {
@@ -177,6 +177,66 @@ model Hints {
   update_at DateTime @default(now()) @updatedAt
 
   @@id([hintSlugId, sophomoreId])
+}
+
+// Becomes expire when the newer version is generated
+model MagicVerseIdentificationInstance {
+  create_at DateTime @default(now())
+  update_at DateTime @default(now()) @updatedAt
+
+  id                 String           @id @default(cuid())
+  sophomoreDetails   SophomoreDetails @relation(fields: [sophomoreDetailsId], references: [id])
+  // secret
+  content            String           @unique
+  sophomoreDetailsId String
+  isExpired          Boolean          @default(false)
+}
+
+// บางที บางครั้ง น้องอาจจะรู้ verses ของพี่ล่วงหน้า
+model StarterMagicVerse {
+  id String @id @default(cuid())
+
+  create_at DateTime @default(now())
+  update_at DateTime @default(now()) @updatedAt
+
+  // the length shouldn't be longer than 3, and should be unordered
+  verses             MagicVerses[]
+  fresh              FreshmenDetails  @relation(fields: [freshmenDetailsId], references: [id])
+  freshmenDetailsId  String
+  sophomore          SophomoreDetails @relation(fields: [sophomoreDetailsId], references: [id])
+  sophomoreDetailsId String
+
+  @@unique([sophomoreDetailsId, freshmenDetailsId])
+}
+
+// ทุกครั้งที่เดาหนึ่งครั้งจะสร้าง 1 record
+model MagicVerseCast {
+  create_at DateTime @default(now())
+  update_at DateTime @updatedAt
+
+  id       String          @id @default(cuid())
+  caster   FreshmenDetails @relation(fields: [casterId], references: [id])
+  casterId String
+
+  target   SophomoreDetails @relation(fields: [targetId], references: [id])
+  targetId String
+
+  // the length should all be 3
+  verses MagicVerses[]
+  result Boolean[]
+}
+
+model MagicVerses {
+  handler  String  @id @unique
+  name     String
+  // Wildcard allow to bypass a slot in the game
+  wildcard Boolean @default(false)
+  // cost of using this card
+  cost     Float   @default(1)
+
+  casts      MagicVerseCast[]
+  sophomores SophomoreDetails[]
+  starters   StarterMagicVerse[]
 }
 
 model SophomoreDetails {
@@ -202,6 +262,11 @@ model SophomoreDetails {
   QRInstances       QRInstances[]
   user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   pair              Pair[]
+
+  verses            MagicVerses[]
+  magicIdInstances  MagicVerseIdentificationInstance[]
+  starterVerses     StarterMagicVerse[]
+  magicVersesCasted MagicVerseCast[]
 }
 
 model TodayResin {

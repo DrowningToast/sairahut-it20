@@ -1,7 +1,6 @@
-import { trpcOnServer } from '$lib/trpc';
 import type { PageLoad } from './$types';
 
-export const load = (async ({ fetch }) => {
+export const load = (async () => {
 	return {};
 }) satisfies PageLoad;
 
