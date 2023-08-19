@@ -34,6 +34,10 @@
 		timer = setInterval(() => {
 			current--;
 
+			if (current <= 0) {
+				return;
+			}
+
 			minutes = Number((current / 60).toFixed(0));
 			seconds = Number((current % 60).toFixed(0));
 
