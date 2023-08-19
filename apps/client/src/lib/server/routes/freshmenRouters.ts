@@ -655,7 +655,8 @@ export const freshmenRouters = createRouter({
 											name: true
 										}
 									},
-									balance: true
+									balance: true,
+									email: true
 								}
 							}
 						}
@@ -670,6 +671,13 @@ export const freshmenRouters = createRouter({
 					message: `QR Code with code: "${qrCodeContent}" not found.`
 				});
 			}
+
+			// if the qr code is used
+			if (qrRes.isExpired)
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message: `The qr has expired`
+				});
 
 			// if the freshmen id is not found, throw (should be found)
 			const freshmenId = user?.freshmenDetails?.id;
@@ -690,7 +698,7 @@ export const freshmenRouters = createRouter({
 			});
 
 			// Check if the player has the progress or not
-			const cached = await prisma.starterMagicVerse.findUnique({
+			const starterVerses = await prisma.starterMagicVerse.findUnique({
 				where: {
 					sophomoreDetailsId_freshmenDetailsId: {
 						freshmenDetailsId: freshmenId,
@@ -703,12 +711,23 @@ export const freshmenRouters = createRouter({
 			});
 
 			// If yes
-			if (cached)
+			if (starterVerses)
 				return {
 					success: true,
 					payload: {
+						type: 'CACHED',
+						/**
+						 * QR Code target information
+						 */
 						target: qrRes,
-						starter: cached.verses
+						/**
+						 * Starter hints
+						 */
+						starter: starterVerses?.verses
+						/**
+						 * The result of last attempt
+						 */
+						// last: last
 					}
 				};
 
@@ -744,20 +763,26 @@ export const freshmenRouters = createRouter({
 			}
 
 			// Get the target magic verses
-			const magicVerses = await prisma.magicVerses.findMany({
+			const target = await prisma.sophomoreDetails.findUnique({
 				where: {
-					sophomores: {
-						every: {
-							id: qrRes.sophomoreDetailsId
+					id: qrRes.sophomoreDetailsId
+				},
+				select: {
+					verses: {
+						select: {
+							cost: true,
+							name: true,
+							handler: true
 						}
 					}
 				}
 			});
+			const magicVerses = target?.verses ?? [];
 
 			// list of random verses choosen
 			const randomVerses = [];
+			console.log(spells);
 
-			//
 			for (let i = 0; i < spells; i++) {
 				const rando = shuffle(magicVerses);
 				randomVerses.push(rando[0]);
@@ -766,7 +791,7 @@ export const freshmenRouters = createRouter({
 			const starter = await prisma.starterMagicVerse.create({
 				data: {
 					verses: {
-						connect: magicVerses.map((verse) => {
+						connect: randomVerses.map((verse) => {
 							return {
 								handler: verse.handler
 							};
@@ -780,12 +805,13 @@ export const freshmenRouters = createRouter({
 				}
 			});
 
-			// กัสฝากทำตรงนี้ที ตรงที่ส่ง randomVerse ไปที่ user ที่หน้าบ้าน
 			return {
 				success: true,
 				payload: {
 					starter: starter.verses,
-					target: qrRes
+					target: qrRes,
+					type: 'NEW',
+					last: undefined
 				}
 			};
 		}),
@@ -802,26 +828,24 @@ export const freshmenRouters = createRouter({
 
 			const res = await prisma.magicVerseCast.findFirst({
 				orderBy: {
-					update_at: 'desc'
+					create_at: 'desc'
 				},
 				where: {
 					casterId: user?.freshmenDetails?.id,
-					verses: {
-						every: {
-							sophomores: {
-								every: {
-									id: sophomoreId
-								}
-							}
-						}
+					targetId: sophomoreId,
+					caster: {
+						id: ctx.user?.freshmenDetails?.id
 					}
+				},
+				include: {
+					verses: true
 				}
 			});
 
 			return {
 				success: true,
 				payload: {
-					lastCast: res || new Array<MagicVerseCast>(3)
+					lastCast: res ?? undefined
 				}
 			};
 		}),
@@ -840,7 +864,7 @@ export const freshmenRouters = createRouter({
 			const freshmenController = FreshmenDetailsController(prisma);
 
 			const { user } = ctx;
-			const freshmenDetailsId = user?.freshmenDetails?.id as string;
+			const freshId = user?.freshmenDetails?.id as string;
 
 			// หา verses ของ sophomore
 			const sophomore = await sophomoreController.findUnique({ id: sophomoreId });
@@ -850,47 +874,123 @@ export const freshmenRouters = createRouter({
 					message: 'Invalid sophomore id'
 				});
 
-			const magicVerses = await prisma.magicVerses.findMany({
-				where: {
-					sophomores: {
-						every: {
-							id: sophomore?.id
+			// Fetch and validate the user input verses
+			const answerVerses = await Promise.all(
+				answer.map(async (a) => {
+					return await prisma.magicVerses.findUnique({
+						where: {
+							handler: a
 						}
+					});
+				})
+			);
+
+			// If found invalid verse
+			if (answerVerses.find((verse) => verse === null))
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message: 'Invalid verse, verse not found'
+				});
+
+			const target = await prisma.sophomoreDetails.findUnique({
+				where: {
+					id: sophomoreId
+				},
+				select: {
+					verses: true
+				}
+			});
+
+			const magicVerses = target?.verses;
+
+			if (!magicVerses)
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Target Magic Verses not found'
+				});
+
+			const result: boolean[] = [true, true, true];
+
+			// Ensure the user only has 1 wild card
+			const wildCards = answerVerses.filter((verse) => verse!.wildcard);
+			if (wildCards.length > 1)
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message: 'The input has more than 1 wild cards'
+				});
+
+			// Override the freshmen answer with previous partially successful attempts
+			const lastCast = await prisma.magicVerseCast.findFirst({
+				where: {
+					casterId: freshId,
+					targetId: sophomoreId
+				},
+				include: {
+					verses: true
+				},
+				orderBy: {
+					create_at: 'desc'
+				}
+			});
+			// Only override if the last attempt is found
+			if (lastCast) {
+				lastCast.verses.forEach((verse, index) => {
+					// if the verse in {index} slot was successful last time, override it for this time
+					if (lastCast.result[index]) {
+						answerVerses[index] = { ...verse };
 					}
-				}
-			});
+				});
+			}
 
-			const result: boolean[] = [];
+			let isCorrect = true;
+			let cost = 0;
 
-			let balanceDecrement = 0;
-
-			// Loop through Sophomore's verse
-			magicVerses.forEach(async (verse, index) => {
-				if (verse.wildcard) {
+			answerVerses.forEach((answer, index) => {
+				if (answer?.wildcard) {
 					// if Freshmen trigger wildcard
-					result.push(true);
-					balanceDecrement += verse.cost;
-				} else if (verse.handler === answer[index]) {
-					// if Freshmen trigger correct verse at this index
-					result.push(true);
+					// Don't mark the slot as correct yet, because it may be cached and remember as correct in long term
+					// Charge the user
+					cost += answer.cost;
+				} else if (answer?.handler === magicVerses[index].handler) {
+					// The user guessed correctly (first time or cache)
+					result[index] = true;
 				} else {
-					// if Freshmen fail to trigger correct verse
-					result.push(false);
-					balanceDecrement += verse.cost;
+					// The user guessed incorrectly
+					result[index] = false;
+					isCorrect = false;
+					cost += answer!.cost;
 				}
 			});
 
+			// If the user guessed incorrectly, do not cache the wild card usage
+			if (!isCorrect) {
+				answerVerses.forEach((answer, index) => {
+					if (answer?.wildcard) {
+						result[index] = false;
+					}
+				});
+			}
+
+			// Check the user balance
+
+			if (cost > (ctx.user?.balance ?? 0))
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message: 'Insufficient balance (Prediction)'
+				});
+
+			// Charge the user
 			await freshmenController.decrementFreshmenBalance(
 				{
-					id: freshmenDetailsId
+					id: freshId
 				},
-				balanceDecrement
+				cost
 			);
 
 			// สร้าง cast record ว่าน้อง cast spell แล้วผลลัพธ์เป็นยังไง
 			const res = await prisma.magicVerseCast.create({
 				data: {
-					casterId: freshmenDetailsId,
+					casterId: freshId,
 					result,
 					targetId: sophomore?.id,
 					verses: {
@@ -899,9 +999,33 @@ export const freshmenRouters = createRouter({
 				}
 			});
 
+			const freshmenPairInstance = await prisma.pair.findUnique({
+				where: {
+					freshmenDetailsId: freshId
+				}
+			});
+
+			const correctPair = freshmenPairInstance?.sophomoreDetailsId === sophomore.id;
+
+			if (correctPair) {
+				await prisma.freshmenDetails.update({
+					where: {
+						id: freshId
+					},
+					data: {
+						foundPair: true
+					}
+				});
+			}
+
 			return {
-				success: true,
-				payload: res
+				payload: {
+					...res,
+					cost,
+					isCorrect,
+					correctPair: isCorrect ? correctPair : undefined,
+					balanceLeft: (ctx.user?.balance ?? 0) - cost
+				}
 			};
 		})
 });
