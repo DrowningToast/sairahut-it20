@@ -26,9 +26,10 @@
 	let timer: NodeJS.Timeout | null = null;
 	let timeToSaturday = 1692424800000 / 1000;
 	let current = timeToSaturday - Date.now() / 1000;
-	let seconds = 0;
-	let minutes = 0;
-	let hours = 0;
+	console.log(Date.now())
+	$: seconds = 0;
+	$: minutes = 0;
+	$: hours = 0;
 
 	onMount(() => {
 		timer = setInterval(() => {
@@ -38,11 +39,16 @@
 				return;
 			}
 
-			minutes = Number((current / 60).toFixed(0));
-			seconds = Number((current % 60).toFixed(0));
+			minutes = Math.floor(current / 60);
+			seconds = Math.floor(current % 60);
 
-			hours = Number((minutes / 60).toFixed(0));
-			minutes = Number((minutes % 60).toFixed(0));
+			hours = Math.floor(minutes / 60);
+			minutes = Math.floor(minutes % 60);
+			// minutes = Number((current / 60).toFixed(0));
+			// seconds = Number((current % 60).toFixed(0));
+
+			// hours = Number((minutes / 60).toFixed(0));
+			// minutes = Number((minutes % 60).toFixed(0));
 		}, 1000);
 	});
 
