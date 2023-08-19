@@ -104,7 +104,7 @@
 			<slot />
 		</main> -->
 		<div class="text-white text-6xl text-center font-bold px-8">
-			<h2>{hours > 10 ? hours : '0' + hours} : {minutes > 10 ? minutes : '0' + minutes} : {seconds > 10 ? seconds : '0' + seconds}</h2>
+			<h2>{hours >= 10 ? hours : '0' + hours} : {minutes >= 10 ? minutes : '0' + minutes} : {seconds >= 10 ? seconds : '0' + seconds}</h2>
 		</div>
 
 		<h1 style="font-family: 'Wingdings 3';" class="text-2xl font-semibold text-red-500">
