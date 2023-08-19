@@ -155,6 +155,8 @@ model FreshmenDetails {
 
   StarterMagicVerse StarterMagicVerse[]
   MagicVerseCast    MagicVerseCast[]
+
+  foundPair Boolean @default(false)
 }
 
 model HintSlugs {
