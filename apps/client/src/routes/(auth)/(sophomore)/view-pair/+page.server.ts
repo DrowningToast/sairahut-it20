@@ -18,7 +18,8 @@ export const load = (async ({ locals }) => {
 					facebook_link: true,
 					instagram_link: true,
 					branch: true,
-					title: true
+					title: true,
+					student_id: true
 				}
 			}
 		}

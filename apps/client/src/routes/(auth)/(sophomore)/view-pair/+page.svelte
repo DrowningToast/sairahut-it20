@@ -68,6 +68,7 @@
 		{/if}
 
 		<div>
+			<h5>{pair.freshmen.student_id}</h5>
 			<h1 class="text-lg font-semibold">
 				{`${pair.freshmen.title === 'MRS' ? 'นางสาว' : 'นาย'} ${pair.freshmen.first_name} ${
 					pair.freshmen.last_name
