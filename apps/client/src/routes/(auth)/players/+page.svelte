@@ -116,6 +116,8 @@
 			queryString = undefined;
 		}
 	}
+
+	const data = $page.data as PageData;
 </script>
 
 <div class="font-krub text-white drop-shadow-[0px_0px_10px_#FFAEBD] flex gap-y-2 flex-col">
@@ -149,6 +151,20 @@
 	</div>
 </RadioGroup>
 
+<div class="mt-2">
+	{#if data.factions && queryTarget === 'SOP'}
+		<p class=" text-right text-sm text-accent font-semibold">เลือกเผ่า</p>
+		<Dropdown
+			class="text-white mt-1 outline-2 outline-white bg-neutral-900/25"
+			bind:value={filterByFaction}
+		>
+			{#each data.factions as faction}
+				<option class="text-white" value={faction.handler}>{faction.name}</option>
+			{/each}
+		</Dropdown>
+	{/if}
+</div>
+
 <div class="grid grid-cols-12 gap-x-2 mt-2">
 	<Input
 		placeholder="ค้นหา"
@@ -174,7 +190,7 @@
 				<TableHead>รุ่น</TableHead>
 				<TableHead>ชื่อเล่น</TableHead>
 				<TableHead>ชื่อจริง</TableHead>
-				<TableHead>{targetPointTitle}</TableHead>
+				<TableHead>{queryTarget === 'SOP' ? 'ภูต' : targetPointTitle}</TableHead>
 				<TableHead>Contact</TableHead>
 			</TableRow>
 		</TableHeader>
@@ -187,7 +203,7 @@
 						<TableCell>
 							{d.fullname?.split(' ')[0] ?? `${d.first_name}`}</TableCell
 						>
-						<TableCell>{d.fullname ? '???' : d.user.balance}</TableCell>
+						<TableCell>{queryTarget === 'SOP' ? d.user.faction.name : d.user.balance}</TableCell>
 						<TableCell class="flex flex-row gap-1">
 							{#if z.string().url().safeParse(d.facebook_link).success}
 								<a href={d.facebook_link} target="_blank" rel="noreferrer">
