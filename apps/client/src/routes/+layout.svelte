@@ -25,7 +25,7 @@
 
 	let timer: NodeJS.Timer | null = null;
 	let timeToSaturday = 1692424800000 / 1000;
-	let current = timeToSaturday - Date.now() / 1000;;
+	let current = timeToSaturday - Date.now() / 1000;
 	let seconds = 0;
 	let minutes = 0;
 	let hours = 0;
@@ -38,7 +38,7 @@
 			seconds = Number((current % 60).toFixed(0));
 
 			hours = Number((minutes / 60).toFixed(0));
-			minutes = Number((hours % 60).toFixed(0));
+			minutes = Number((minutes % 60).toFixed(0));
 		}, 1000);
 	});
 
