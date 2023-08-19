@@ -23,9 +23,9 @@
 		}
 	});
 
-	let timer: NodeJS.Timer | null = null;
+	let timer: NodeJS.Timeout | null = null;
 	let timeToSaturday = 1692424800000 / 1000;
-	let current = timeToSaturday - Date.now() / 1000;;
+	let current = timeToSaturday - Date.now() / 1000;
 	let seconds = 0;
 	let minutes = 0;
 	let hours = 0;
@@ -34,11 +34,15 @@
 		timer = setInterval(() => {
 			current--;
 
+			if (current <= 0) {
+				return;
+			}
+
 			minutes = Number((current / 60).toFixed(0));
 			seconds = Number((current % 60).toFixed(0));
 
 			hours = Number((minutes / 60).toFixed(0));
-			minutes = Number((hours % 60).toFixed(0));
+			minutes = Number((minutes % 60).toFixed(0));
 		}, 1000);
 	});
 
@@ -104,7 +108,7 @@
 			<slot />
 		</main> -->
 		<div class="text-white text-6xl text-center font-bold px-8">
-			<h2>{hours > 10 ? hours : '0' + hours} : {minutes > 10 ? minutes : '0' + minutes} : {seconds > 10 ? seconds : '0' + seconds}</h2>
+			<h2>{hours >= 10 ? hours : '0' + hours} : {minutes >= 10 ? minutes : '0' + minutes} : {seconds >= 10 ? seconds : '0' + seconds}</h2>
 		</div>
 
 		<h1 style="font-family: 'Wingdings 3';" class="text-2xl font-semibold text-red-500">
