@@ -2,7 +2,12 @@
 	import Dropdown from '$components/svelte/Dropdown.svelte';
 	import SrhButton from '$components/svelte/SRHButton.svelte';
 	import type { PageData } from './$types';
-	import type { AnswerResult, CachedResults, ISophomoreTarget } from '$lib/utils';
+	import {
+		requiremSounds,
+		type AnswerResult,
+		type CachedResults,
+		type ISophomoreTarget
+	} from '$lib/utils';
 	import { z } from 'zod';
 	import { trpc } from '$lib/trpc';
 
@@ -205,6 +210,10 @@
 							}
 							// @ts-ignore
 							const value = e.target.value;
+
+							const audio = new Audio(requiremSounds[index]);
+							audio.volume = 0.2;
+							audio.play();
 							answer[index] = value;
 						}}
 					>

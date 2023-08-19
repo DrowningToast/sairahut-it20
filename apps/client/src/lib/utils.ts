@@ -81,3 +81,15 @@ export type CachedResults = {
 		cost: number;
 	}[];
 } | null;
+
+export const requiremSounds = [
+	'/sfx/requiem/fass.mp3',
+	'/sfx/requiem/jaho.mp3',
+	'/sfx/requiem/kra.mp3',
+	'/sfx/requiem/lohk.mp3',
+	'/sfx/requiem/netra.mp3',
+	'/sfx/requiem/oull.mp3',
+	'/sfx/requiem/ris.mp3',
+	'/sfx/requiem/vom.mp3',
+	'/sfx/requiem/zata.mp3'
+];
