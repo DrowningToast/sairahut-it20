@@ -44,3 +44,5 @@ export const insertFreshmen = async (freshmenDetails: IInsertFreshmen) => {
 		}
 	]);
 };
+
+

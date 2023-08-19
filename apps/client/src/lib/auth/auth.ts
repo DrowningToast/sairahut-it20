@@ -87,7 +87,14 @@ export const AuthHook = SvelteKitAuth({
 		//@ts-ignore
 		Google({
 			clientId: GOOGLE_CLIENT_ID,
-			clientSecret: GOOGLE_CLIENT_SECRET
+			clientSecret: GOOGLE_CLIENT_SECRET,
+			authorization: {
+				params: {
+					prompt: 'consent',
+					access_type: 'offline',
+					response_type: 'code'
+				}
+			}
 		})
 	],
 	adapter: PrismaAdapter(client),
@@ -117,7 +124,7 @@ export const AuthHook = SvelteKitAuth({
 				httpOnly: true,
 				sameSite: 'none',
 				path: '/',
-				secure: process.env.NODE_ENV === 'production'
+				secure: true
 			}
 		}
 	},

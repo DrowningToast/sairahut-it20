@@ -4,16 +4,18 @@
 	import { ChevronDown, ChevronDownIcon } from 'lucide-svelte';
 
 	let className: string | undefined | null = undefined;
+	let containerClassName: string | undefined | null = undefined;
 	export let isDisabled: boolean = false;
 	export let value: HTMLInputAttributes['value'] = undefined;
 	export { className as class };
+	export { containerClassName as containerClass };
 	export let placeholder = '';
 </script>
 
-<div class="relative">
+<div class={cn('relative', containerClassName)}>
 	<select
 		class={cn(
-			'flex h-10 w-full rounded-2xl border border-none bg-transparent px-3 pr-6 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-white focus-visible:ring-1 disabled:cursor-not-allowed disabled:opacity-50 appearance-none',
+			'flex h-10 w-full rounded-2xl bg-transparent px-3 pr-6 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-white focus-visible:ring-1 disabled:cursor-not-allowed disabled:opacity-50 appearance-none',
 			className
 		)}
 		{placeholder}

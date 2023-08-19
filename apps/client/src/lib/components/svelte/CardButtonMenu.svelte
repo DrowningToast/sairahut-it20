@@ -6,7 +6,7 @@
 	export let link: string;
 </script>
 
-<div class="flex flex-col justify-center items-center">
+<div on:click on:keydown class="flex flex-col justify-center items-center">
 	{#if isActived}
 		<a href={link}>
 			<img src={img_active} alt="" />

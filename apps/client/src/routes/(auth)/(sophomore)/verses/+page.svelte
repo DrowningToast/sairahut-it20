@@ -19,8 +19,10 @@
 
 	$: isLoading = true;
 	$: secret = 'ABCDEF';
+	let sfx: undefined | HTMLAudioElement;
 
 	const initQr = async () => {
+		sfx = undefined;
 		isLoading = true;
 		const res = await trpc.sophomores.getMagicVerseID.query();
 
@@ -29,6 +31,10 @@
 	};
 
 	onMount(() => {
+		sfx = new Audio('/sfx/Murmur_small.mp3');
+		sfx.volume = 0.2;
+		sfx.play();
+
 		initQr();
 	});
 
