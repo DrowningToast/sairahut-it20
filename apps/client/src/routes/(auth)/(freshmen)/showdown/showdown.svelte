@@ -258,7 +258,7 @@
 						`แน่ใจนะว่าเจ้าจะร่ายเวทย์นี้? เจ้าอาจจะเสียสูงสุด ${costPrediction} Spirit Shards!`
 					);
 					checkAnswer();
-				}}>ตรวจสอบรหัสภูต</SrhButton
+				}}>ร่ายคาถา</SrhButton
 			>
 		</div>
 	</div>
