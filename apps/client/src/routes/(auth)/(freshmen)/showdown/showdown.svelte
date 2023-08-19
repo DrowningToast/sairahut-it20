@@ -212,7 +212,7 @@
 							const value = e.target.value;
 
 							const audio = new Audio(requiremSounds[index]);
-							audio.volume = 0.2;
+							audio.volume = 0.1;
 							audio.play();
 							answer[index] = value;
 						}}
